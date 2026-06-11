@@ -45,7 +45,7 @@
   width: 50px;
   height: 50px;
   background: transparent;
-  border: .2rem solid var(--blue);
+  border: .2rem solid var(--iris-core);
   border-radius: 50%;
   position: relative; /* Position relative to place labels inside */
 }  
@@ -60,5 +60,12 @@
   height: 30px;
   margin: auto;
   filter: invert(100%);
-}  
+}
+
+/* The fixed rail overlaps the content column on narrow viewports. */
+@media screen and (max-width: 1240px) {
+  .side-panel {
+    display: none;
+  }
+}
 

@@ -1,0 +1,143 @@
+.projects-note {
+  color: var(--mist);
+  margin-bottom: 40px;
+  font-size: 1.02rem;
+}
+
+/* Vertical timeline: a soft gradient spine with a node per project. */
+.projects-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  padding-left: 8px;
+}
+
+.projects-timeline::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 8px;
+  width: 2px;
+  background: linear-gradient(var(--iris-deep), var(--iris-bright), transparent);
+  opacity: 0.45;
+}
+
+.project-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 26px;
+  align-items: start;
+  position: relative;
+}
+
+.project-meta {
+  position: relative;
+  padding-left: 26px;
+  padding-top: 6px;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.9s var(--drift), transform 0.9s var(--drift);
+}
+
+.project-node {
+  position: absolute;
+  left: -5px;
+  top: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink-deep);
+  border: 2px solid var(--iris-core);
+  box-shadow: 0 0 12px rgba(0, 191, 255, 0.7);
+}
+
+.project-row.in-view .project-meta {
+  opacity: 1;
+  transform: none;
+}
+
+.project-period {
+  color: var(--iris-pale);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.project-role {
+  color: var(--mist);
+  font-size: 0.72rem;
+  margin-top: 6px;
+  line-height: 1.6;
+}
+
+.project-card {
+  padding: 24px 28px;
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.95s var(--drift) 0.1s, transform 0.95s var(--drift) 0.1s,
+    border-color 0.5s var(--drift), box-shadow 0.6s var(--drift);
+}
+
+.project-row.in-view .project-card {
+  opacity: 1;
+  transform: none;
+}
+
+.project-card:hover {
+  border-color: rgba(0, 191, 255, 0.55);
+  box-shadow: 0 24px 48px -28px rgba(0, 191, 255, 0.5);
+}
+
+.project-card h3 {
+  font-size: 1.12rem;
+  letter-spacing: -0.01em;
+}
+
+.project-index {
+  color: var(--iris-core);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.project-description {
+  color: var(--mist);
+  font-size: 0.95rem;
+  margin: 10px 0 16px;
+  line-height: 1.7;
+}
+
+.project-stack {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.project-stack li {
+  font-size: 0.72rem;
+  color: var(--iris-pale);
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--ink-line);
+  background: rgba(0, 191, 255, 0.08);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.7s var(--drift), transform 0.7s var(--drift);
+}
+
+.project-row.in-view .project-stack li {
+  opacity: 1;
+  transform: none;
+}
+
+@media screen and (max-width: 860px) {
+  .project-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .project-meta {
+    padding-top: 0;
+  }
+}

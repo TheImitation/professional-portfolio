@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/components/Transformations.css"
+import "../styles/components/Transformations.css";
 
 const RotatingCube: React.FC = () => {
 
@@ -11,8 +11,8 @@ const RotatingCube: React.FC = () => {
       <div className="face4">4</div>
       <div className="face5">5</div>
       <div className="face6">6</div>
-    </div> 
-  )
-}
+    </div>
+  );
+};
 
 export default RotatingCube;

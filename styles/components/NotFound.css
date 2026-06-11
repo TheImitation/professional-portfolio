@@ -1,0 +1,36 @@
+.not-found {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+}
+
+.nf-pal {
+  animation: nf-drift 5s var(--drift) infinite;
+  filter: drop-shadow(0 0 14px rgba(125, 249, 255, 0.6));
+}
+
+@keyframes nf-drift {
+  0%, 100% { transform: translateY(-8px) rotate(-4deg); }
+  50% { transform: translateY(10px) rotate(4deg); }
+}
+
+.nf-code {
+  font-size: clamp(5rem, 16vw, 9rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.nf-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--iris-pale);
+}
+
+.nf-copy {
+  color: var(--mist);
+  font-size: 0.85rem;
+  line-height: 1.9;
+  margin-bottom: 18px;
+}
