@@ -1,5 +1,5 @@
 .contact-note {
-  color: var(--text-dim);
+  color: var(--mist);
   margin-bottom: 36px;
   max-width: 56ch;
   font-size: 1.02rem;
@@ -21,7 +21,7 @@
   gap: 10px;
   opacity: 0;
   transform: translateY(26px);
-  transition: opacity 0.9s var(--ease-lazy), transform 0.9s var(--ease-lazy);
+  transition: opacity 0.9s var(--drift), transform 0.9s var(--drift);
 }
 
 .contact.in-view .contact-form {
@@ -31,7 +31,7 @@
 
 .contact-form label {
   font-size: 0.78rem;
-  color: var(--blue);
+  color: var(--iris-core);
   letter-spacing: 0.1em;
 }
 
@@ -39,25 +39,25 @@
 .contact-form textarea {
   font-family: inherit;
   font-size: 0.95rem;
-  color: var(--text-light);
+  color: var(--chalk);
   background: rgba(6, 15, 26, 0.6);
-  border: 1px solid var(--surface-line);
+  border: 1px solid var(--ink-line);
   border-radius: 10px;
   padding: 12px 14px;
   resize: vertical;
   outline: none;
-  transition: border-color 0.45s var(--ease-lazy), box-shadow 0.45s var(--ease-lazy);
+  transition: border-color 0.45s var(--drift), box-shadow 0.45s var(--drift);
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-  border-color: var(--blue);
+  border-color: var(--iris-core);
   box-shadow: 0 0 0 4px rgba(0, 191, 255, 0.14);
 }
 
 .form-hint {
   font-size: 0.72rem;
-  color: var(--text-dim);
+  color: var(--mist);
   text-align: right;
 }
 
@@ -75,13 +75,13 @@
   gap: 16px;
   padding: 20px;
   cursor: pointer;
-  color: var(--text-light);
+  color: var(--chalk);
   text-align: left;
   font-family: inherit;
   opacity: 0;
   transform: translateX(28px);
-  transition: opacity 0.9s var(--ease-lazy), transform 0.9s var(--ease-lazy),
-    border-color 0.45s var(--ease-lazy), box-shadow 0.45s var(--ease-lazy);
+  transition: opacity 0.9s var(--drift), transform 0.9s var(--drift),
+    border-color 0.45s var(--drift), box-shadow 0.45s var(--drift);
 }
 
 .contact.in-view .channel-card {
@@ -100,7 +100,7 @@
 
 .channel-card:hover .channel-arrow {
   transform: translateX(6px);
-  color: var(--ice-300);
+  color: var(--iris-bright);
 }
 
 .channel-glyph {
@@ -110,9 +110,9 @@
   display: grid;
   place-items: center;
   border-radius: 12px;
-  color: var(--blue);
+  color: var(--iris-core);
   background: rgba(0, 191, 255, 0.1);
-  border: 1px solid var(--surface-line);
+  border: 1px solid var(--ink-line);
 }
 
 .channel-glyph svg {
@@ -132,23 +132,23 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   font-size: 0.92rem;
-  color: var(--ice-200);
+  color: var(--iris-pale);
 }
 
 .channel-desc {
   font-size: 0.72rem;
-  color: var(--text-dim);
+  color: var(--mist);
 }
 
 .channel-arrow {
   font-size: 1.2rem;
-  color: var(--text-dim);
-  transition: transform 0.45s var(--ease-springy), color 0.45s var(--ease-lazy);
+  color: var(--mist);
+  transition: transform 0.45s var(--spring), color 0.45s var(--drift);
 }
 
 .channel-footnote {
   font-size: 0.75rem;
-  color: var(--text-dim);
+  color: var(--mist);
   padding-left: 4px;
 }
 
@@ -157,13 +157,13 @@
 .site-footer {
   margin-top: 80px;
   padding-top: 24px;
-  border-top: 1px solid var(--surface-line);
+  border-top: 1px solid var(--ink-line);
   text-align: center;
 }
 
 .site-footer p {
   font-size: 0.75rem;
-  color: var(--text-dim);
+  color: var(--mist);
 }
 
 @media screen and (max-width: 860px) {

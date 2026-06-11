@@ -260,8 +260,8 @@ const SpriteQuest: React.FC = () =>
         onClick={handlePicClick}
       >
         <img
-          src="/mugshot.jpg"
-          alt="Headshot of Nic Defaux — Senior Software Engineer and Technical Strategist, with light blue eyes that inspired this site's palette"
+          src="/headshot.jpg"
+          alt="Headshot of Nic Defaux — Senior Software Engineer and Technical Strategist — backlit by a golden sunset that lends this site its warm accent colour"
         />
         <div className="reveal-layer" aria-hidden="true">
           <PixelPal />
@@ -269,7 +269,7 @@ const SpriteQuest: React.FC = () =>
         <span className="orbit-ring" aria-hidden="true" />
       </figure>
 
-      <p className="sprite-hint mono" aria-live="polite">
+      <p className="sprite-hint faux-mono" aria-live="polite">
         {roaming ? (
           isCoarse
             ? <>he&apos;s loose! steer with the d-pad — <kbd>✕</kbd> tucks him back in</>

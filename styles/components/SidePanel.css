@@ -45,7 +45,7 @@
   width: 50px;
   height: 50px;
   background: transparent;
-  border: .2rem solid var(--blue);
+  border: .2rem solid var(--iris-core);
   border-radius: 50%;
   position: relative; /* Position relative to place labels inside */
 }  

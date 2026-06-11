@@ -44,7 +44,7 @@ const Navbar = () =>
   return (
     <nav className="navbar">
       <div className="nav-wrapper">
-        <a className="logo mono" href="#home" aria-label="TheImitation — back to top">
+        <a className="logo faux-mono" href="#home" aria-label="TheImitation — back to top">
           <span className="logo-bracket">{"{"}</span>
           TheImitation
           <span className="logo-caret">_</span>

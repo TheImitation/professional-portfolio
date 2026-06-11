@@ -74,7 +74,7 @@ const personJsonLd = {
   jobTitle: PERSON.title,
   description: PERSON.tagline,
   url: SITE_URL,
-  image: `${SITE_URL}/mugshot.jpg`,
+  image: `${SITE_URL}/headshot.jpg`,
   worksFor: { "@type": "Organization", name: "IBM" },
   knowsAbout: [
     "Artificial Intelligence",
@@ -100,8 +100,8 @@ export default function RootLayout({
         />
       </head>
       <body className={`${spaceGrotesk.variable} ${jetBrainsMono.variable}`}>
-        <div className="backdrop" aria-hidden="true">
-          <div className="grid-overlay" />
+        <div className="faux-veil" aria-hidden="true">
+          <div className="faux-grid" />
         </div>
         <SidePanel />
         <Navbar />

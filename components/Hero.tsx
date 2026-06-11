@@ -20,11 +20,11 @@ export default function Hero()
     <section id="home" className="hero">
       <div className="hero-grid">
         <div className="hero-copy">
-          <p className="hero-kicker mono" data-sprite-target>
+          <p className="hero-kicker faux-mono" data-sprite-target>
             {"// hello, world — transmission from"}
           </p>
           <h1 data-sprite-target>
-            Nic Defaux <span className="brand-mark gradient-text">TheImitation</span>
+            Nic Defaux <span className="brand-mark faux-shimmer">TheImitation</span>
           </h1>
           <div className="role-ticker" role="text" aria-label={jobRoles.join(", ")}>
             <ul aria-hidden="true">
@@ -39,13 +39,13 @@ export default function Hero()
             pixel creatures behind my own photograph.
           </p>
           <div className="hero-actions">
-            <a className="btn primary" href="#contact">Open a channel</a>
-            <a className="btn ghost" href="#skills">Inspect my stack</a>
+            <a className="faux-btn faux-solid" href="#contact">Open a channel</a>
+            <a className="faux-btn faux-ghost" href="#skills">Inspect my stack</a>
           </div>
         </div>
         <SpriteQuest />
       </div>
-      <a className="scroll-cue mono" href="#about" aria-label="Scroll to about section">
+      <a className="scroll-cue faux-mono" href="#about" aria-label="Scroll to about section">
         <span>scroll</span>
         <span className="cue-arrow">▾</span>
       </a>

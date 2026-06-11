@@ -20,7 +20,7 @@
 }
 
 .hero-kicker {
-  color: var(--blue);
+  color: var(--iris-core);
   font-size: 0.85rem;
   letter-spacing: 0.12em;
 }
@@ -42,7 +42,7 @@
   content: "aka ";
   font-family: var(--font-mono), monospace;
   font-size: 0.55em;
-  -webkit-text-fill-color: var(--text-dim);
+  -webkit-text-fill-color: var(--mist);
   font-weight: 400;
 }
 
@@ -62,13 +62,13 @@
   width: 3px;
   height: calc(var(--row) * 0.72);
   margin-top: calc(var(--row) * 0.14);
-  background: var(--blue);
+  background: var(--iris-core);
   animation: caret-blink 1.1s steps(1) infinite;
 }
 
 .role-ticker ul {
   list-style: none;
-  animation: ticker-glide 16s var(--ease-lazy) infinite;
+  animation: ticker-glide 16s var(--drift) infinite;
 }
 
 .role-ticker li {
@@ -78,7 +78,7 @@
   font-size: 1.35rem;
   font-weight: 600;
   white-space: nowrap;
-  color: var(--ice-200);
+  color: var(--iris-pale);
 }
 
 @keyframes ticker-glide {
@@ -94,7 +94,7 @@
 }
 
 .hero-blurb {
-  color: var(--text-dim);
+  color: var(--mist);
   font-size: 1.05rem;
   max-width: 46ch;
 }
@@ -117,19 +117,19 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  color: var(--text-dim);
+  color: var(--mist);
   text-decoration: none;
   font-size: 0.75rem;
   letter-spacing: 0.3em;
-  transition: color 0.5s var(--ease-lazy);
+  transition: color 0.5s var(--drift);
 }
 
 .scroll-cue:hover {
-  color: var(--ice-300);
+  color: var(--iris-bright);
 }
 
 .cue-arrow {
-  animation: cue-bob 2.6s var(--ease-lazy) infinite;
+  animation: cue-bob 2.6s var(--drift) infinite;
 }
 
 @keyframes cue-bob {

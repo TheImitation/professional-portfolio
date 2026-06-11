@@ -50,19 +50,19 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
 
   return (
     <article ref={ref} className={`project-row${inView ? " in-view" : ""}`}>
-      <div className="project-meta mono">
+      <div className="project-meta faux-mono">
         <span className="project-node" aria-hidden="true" />
         <p className="project-period">{project.period}</p>
         <p className="project-role">{project.role}</p>
       </div>
-      <div className="project-card glass">
+      <div className="project-card faux-pane">
         <h3 data-sprite-target>
-          <span className="mono project-index">0{index + 1}.</span> {project.title}
+          <span className="faux-mono project-index">0{index + 1}.</span> {project.title}
         </h3>
         <p className="project-description">{project.description}</p>
         <ul className="project-stack" aria-label="Technologies used">
           {project.stack.map((tech, techIndex) => (
-            <li className="mono" style={{ transitionDelay: `${0.35 + techIndex * 0.12}s` }} key={tech}>
+            <li className="faux-mono" style={{ transitionDelay: `${0.35 + techIndex * 0.12}s` }} key={tech}>
               {tech}
             </li>
           ))}
@@ -74,9 +74,9 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
 
 const Projects: React.FC = () => (
   <section id="projects">
-    <p className="section-kicker">03 / selected works</p>
-    <h2 className="section-heading" data-sprite-target>
-      <span className="hash">#</span>Projects, <span className="gradient-text">battle-tested</span>
+    <p className="faux-kicker">03 / selected works</p>
+    <h2 className="faux-heading" data-sprite-target>
+      <span className="faux-hash">#</span>Projects, <span className="faux-shimmer">battle-tested</span>
     </h2>
     <p className="projects-note">
       Multi-million-pound public sector transformations — plus one nerdy side quest.

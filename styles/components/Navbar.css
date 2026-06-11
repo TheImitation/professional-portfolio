@@ -6,7 +6,7 @@
   background: linear-gradient(rgba(6, 15, 26, 0.85), rgba(6, 15, 26, 0.55));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--surface-line);
+  border-bottom: 1px solid var(--ink-line);
 }
 
 .nav-wrapper {
@@ -32,25 +32,25 @@
   text-align: center;
   cursor: pointer;
   text-decoration: none;
-  color: var(--text-light);
+  color: var(--chalk);
   letter-spacing: 0.5px;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: color 0.5s var(--ease-lazy), background-color 0.5s var(--ease-lazy),
-    transform 0.5s var(--ease-springy);
+  transition: color 0.5s var(--drift), background-color 0.5s var(--drift),
+    transform 0.5s var(--spring);
 }
 
 .nav-index {
   font-family: var(--font-mono), monospace;
-  color: var(--blue-dark);
+  color: var(--iris-deep);
   margin-right: 4px;
   font-size: 0.8rem;
   opacity: 0;
-  transition: opacity 0.4s var(--ease-lazy);
+  transition: opacity 0.4s var(--drift);
 }
 
 .nav-item a:hover {
-  color: var(--ice-300);
+  color: var(--iris-bright);
   transform: translateY(-2px);
 }
 
@@ -60,7 +60,7 @@
 }
 
 .nav-item.selected a {
-  color: var(--blue);
+  color: var(--iris-core);
   background: rgba(0, 191, 255, 0.1);
 }
 
@@ -69,11 +69,11 @@
   align-items: center;
   gap: 2px;
   text-decoration: none;
-  color: var(--ice-200);
+  color: var(--iris-pale);
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  transition: transform 0.6s var(--ease-springy), text-shadow 0.6s var(--ease-lazy);
+  transition: transform 0.6s var(--spring), text-shadow 0.6s var(--drift);
 }
 
 .logo:hover {
@@ -82,12 +82,12 @@
 }
 
 .logo-bracket {
-  color: var(--blue-dark);
+  color: var(--iris-deep);
   font-weight: 400;
 }
 
 .logo-caret {
-  color: var(--blue);
+  color: var(--iris-core);
   animation: logo-blink 1.2s steps(1) infinite;
 }
 

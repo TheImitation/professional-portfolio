@@ -23,9 +23,9 @@ const About: React.FC = () =>
 
   return (
     <section id="about" ref={ref} className={`about${inView ? " in-view" : ""}`}>
-      <p className="section-kicker">01 / the human behind the handle</p>
-      <h2 className="section-heading" data-sprite-target>
-        <span className="hash">#</span>About <span className="gradient-text">TheImitation</span>
+      <p className="faux-kicker">01 / the human behind the handle</p>
+      <h2 className="faux-heading" data-sprite-target>
+        <span className="faux-hash">#</span>About <span className="faux-shimmer">TheImitation</span>
       </h2>
       <p className="about-pun" data-sprite-target>
         <em>Defaux</em> is French — <em>faux</em>, as in fake.
@@ -33,12 +33,12 @@ const About: React.FC = () =>
       </p>
 
       <div className="about-grid">
-        <div className="terminal glass" role="img" aria-label="Terminal-styled biography of Nic Defaux">
+        <div className="terminal faux-pane" role="img" aria-label="Terminal-styled biography of Nic Defaux">
           <div className="terminal-bar">
             <i /><i /><i />
-            <span className="mono">nic@theimitation: ~/about</span>
+            <span className="faux-mono">nic@theimitation: ~/about</span>
           </div>
-          <div className="terminal-body mono">
+          <div className="terminal-body faux-mono">
             {logLines.map((line, index) => (
               <div className="terminal-line" style={{ transitionDelay: `${0.25 + index * 0.35}s` }} key={line.prompt}>
                 <p className="prompt"><span>❯</span> {line.prompt}</p>
@@ -51,12 +51,12 @@ const About: React.FC = () =>
         <div className="stat-stack">
           {stats.map((stat, index) => (
             <div
-              className="stat-card glass"
+              className="stat-card faux-pane"
               style={{ transitionDelay: `${0.2 + index * 0.18}s` }}
               key={stat.label}
               data-sprite-target
             >
-              <p className="stat-value gradient-text">
+              <p className="stat-value faux-shimmer">
                 {stat.value} <span className="stat-unit">{stat.unit}</span>
               </p>
               <p className="stat-label">{stat.label}</p>

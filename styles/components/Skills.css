@@ -1,5 +1,5 @@
 .skills-note {
-  color: var(--text-dim);
+  color: var(--mist);
   margin-bottom: 40px;
   font-size: 1.02rem;
 }
@@ -16,8 +16,8 @@
   flex-direction: column;
   opacity: 0;
   transform: translateY(34px);
-  transition: opacity 1s var(--ease-lazy), transform 1s var(--ease-lazy),
-    border-color 0.5s var(--ease-lazy), box-shadow 0.6s var(--ease-lazy);
+  transition: opacity 1s var(--drift), transform 1s var(--drift),
+    border-color 0.5s var(--drift), box-shadow 0.6s var(--drift);
 }
 
 .skill-card.in-view {
@@ -37,13 +37,13 @@
 }
 
 .skill-index {
-  color: var(--blue);
+  color: var(--iris-core);
   font-size: 0.85rem;
   font-weight: 400;
 }
 
 .skill-caption {
-  color: var(--text-dim);
+  color: var(--mist);
   font-size: 0.85rem;
   margin: 6px 0 16px;
   min-height: 2.6em;
@@ -60,10 +60,10 @@
   position: relative;
   padding-left: 22px;
   font-size: 0.92rem;
-  color: var(--text-light);
+  color: var(--chalk);
   opacity: 0;
   transform: translateX(-14px);
-  transition: opacity 0.8s var(--ease-lazy), transform 0.8s var(--ease-lazy);
+  transition: opacity 0.8s var(--drift), transform 0.8s var(--drift);
 }
 
 .skill-card.in-view li {
@@ -75,7 +75,7 @@
   content: "▹";
   position: absolute;
   left: 0;
-  color: var(--blue);
+  color: var(--iris-core);
 }
 
 /* --- Self-drawing SVG icons --------------------------------------------------
@@ -91,7 +91,7 @@
 
 .drawn-icon path {
   fill: none;
-  stroke: var(--ice-300);
+  stroke: var(--iris-bright);
   stroke-width: 2.6;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -112,9 +112,9 @@
 }
 
 .drawn-icon .node {
-  fill: var(--blue);
+  fill: var(--iris-core);
   opacity: 0;
-  transition: opacity 0.4s var(--ease-lazy);
+  transition: opacity 0.4s var(--drift);
 }
 
 .drawn-icon.active .node {

@@ -157,10 +157,10 @@ const SkillPanel: React.FC<{ card: SkillCard; index: number }> = ({ card, index 
   const { ref, inView } = useInView({ threshold: 0.35, triggerOnce: false });
 
   return (
-    <article ref={ref} className={`skill-card glass${inView ? " in-view" : ""}`}>
+    <article ref={ref} className={`skill-card faux-pane${inView ? " in-view" : ""}`}>
       <DrawnIcon card={card} active={inView} />
       <h3 data-sprite-target>
-        <span className="mono skill-index">0{index + 1}.</span> {card.title}
+        <span className="faux-mono skill-index">0{index + 1}.</span> {card.title}
       </h3>
       <p className="skill-caption">{card.caption}</p>
       <ul>
@@ -176,9 +176,9 @@ const SkillPanel: React.FC<{ card: SkillCard; index: number }> = ({ card, index 
 
 const Skills: React.FC = () => (
   <section id="skills">
-    <p className="section-kicker">02 / what i bring to the table</p>
-    <h2 className="section-heading" data-sprite-target>
-      <span className="hash">#</span>Skills, <span className="gradient-text">drawn from memory</span>
+    <p className="faux-kicker">02 / what i bring to the table</p>
+    <h2 className="faux-heading" data-sprite-target>
+      <span className="faux-hash">#</span>Skills, <span className="faux-shimmer">drawn from memory</span>
     </h2>
     <p className="skills-note">
       Each illustration sketches itself in a single unbroken line — pencil down, no lifting.

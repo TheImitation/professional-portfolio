@@ -1,36 +1,47 @@
 /* ==========================================================================
-   TheImitation — global styles
-   Palette is tuned to a pale glacier blue (a nod to the light blue eyes
-   in the headshot). Animations are deliberately slow and easy-going.
+   FAUX — the in-house design system of theimitation.dev
+   --------------------------------------------------------------------------
+   Hand-rolled, zero dependencies, ironically named. Every token is named
+   for the thing it imitates:
+
+     iris   — the blues, graded like the eyes in the old headshot
+     ember  — the warm accent, sampled from the sunset in the new one
+     ink    — the dark surfaces the site is printed on
+     chalk  — what you write on ink
+     mist   — chalk at a distance
+     drift  — how everything here prefers to move (slowly)
+     spring — how it lands
+
+   Components use `faux-*` classes for shared primitives and keep their own
+   bespoke classes for everything else.
    ========================================================================== */
 
 :root {
-  /* Iris palette — light blue eyes */
-  --ice-100: #eafbff;
-  --ice-200: #bdf0ff;
-  --ice-300: #7df9ff;
-  --ice-400: #38cdf4;
-  --blue: #00bfff;
-  --blue-dark: #0087e0;
-  --iris-deep: #045d8c;
+  /* iris — cold blues */
+  --iris-frost: #eafbff;
+  --iris-pale: #bdf0ff;
+  --iris-bright: #7df9ff;
+  --iris-core: #00bfff;
+  --iris-deep: #0087e0;
+  --iris-abyss: #045d8c;
 
-  /* Kept for legacy components (Gauge, etc.) */
-  --blue-light: #7df9ff;
+  /* ember — sunset warmth, used sparingly */
+  --ember: #ffb454;
+  --ember-deep: #e8893a;
 
-  /* Surfaces */
-  --background-dark: #060f1a;
-  --background-secondary: #0b1c2e;
-  --surface-glass: rgba(17, 46, 66, 0.45);
-  --surface-line: rgba(125, 249, 255, 0.16);
+  /* ink — surfaces */
+  --ink-deep: #060f1a;
+  --ink-raised: #0b1c2e;
+  --ink-glass: rgba(17, 46, 66, 0.45);
+  --ink-line: rgba(125, 249, 255, 0.16);
 
-  /* Text */
-  --text-light: #e8f4fb;
-  --text-dim: #9db8c9;
-  --text-dark: #333333;
+  /* chalk & mist — text */
+  --chalk: #e8f4fb;
+  --mist: #9db8c9;
 
-  /* Motion — laid-back by design */
-  --ease-lazy: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-springy: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* motion — laid-back by design */
+  --drift: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 * {
@@ -47,20 +58,22 @@ html {
 
 body {
   font-family: var(--font-body), "Space Grotesk", sans-serif;
-  background-color: var(--background-dark);
-  color: var(--text-light);
+  background-color: var(--ink-deep);
+  color: var(--chalk);
   line-height: 1.6;
   position: relative;
   min-height: 100vh;
 }
 
-code, kbd, .mono {
+code, kbd, .faux-mono {
   font-family: var(--font-mono), "JetBrains Mono", monospace;
 }
 
-/* --- Ambient backdrop: slow aurora blobs + dotted grid ------------------- */
+/* --- faux-veil: ambient backdrop — drifting aurora + dotted grid ----------
+   One blob runs cold (iris), one runs warm (ember) so the sunset headshot
+   has an echo somewhere on the page. ------------------------------------- */
 
-.backdrop {
+.faux-veil {
   position: fixed;
   inset: 0;
   z-index: -2;
@@ -68,32 +81,33 @@ code, kbd, .mono {
   pointer-events: none;
 }
 
-.backdrop::before,
-.backdrop::after {
+.faux-veil::before,
+.faux-veil::after {
   content: "";
   position: absolute;
   width: 55vmax;
   height: 55vmax;
   border-radius: 50%;
   filter: blur(90px);
-  opacity: 0.16;
 }
 
-.backdrop::before {
-  background: radial-gradient(circle at center, var(--blue), transparent 65%);
+.faux-veil::before {
+  background: radial-gradient(circle at center, var(--iris-core), transparent 65%);
+  opacity: 0.16;
   top: -20vmax;
   left: -10vmax;
-  animation: drift-a 36s var(--ease-lazy) infinite alternate;
+  animation: faux-drift-a 36s var(--drift) infinite alternate;
 }
 
-.backdrop::after {
-  background: radial-gradient(circle at center, var(--ice-300), transparent 65%);
+.faux-veil::after {
+  background: radial-gradient(circle at center, var(--ember), transparent 65%);
+  opacity: 0.1;
   bottom: -25vmax;
   right: -15vmax;
-  animation: drift-b 44s var(--ease-lazy) infinite alternate;
+  animation: faux-drift-b 44s var(--drift) infinite alternate;
 }
 
-.backdrop .grid-overlay {
+.faux-veil .faux-grid {
   position: absolute;
   inset: 0;
   background-image: radial-gradient(rgba(125, 249, 255, 0.14) 1px, transparent 1.5px);
@@ -102,11 +116,11 @@ code, kbd, .mono {
   -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 30%, transparent 80%);
 }
 
-@keyframes drift-a {
+@keyframes faux-drift-a {
   to { transform: translate(12vmax, 8vmax) scale(1.15); }
 }
 
-@keyframes drift-b {
+@keyframes faux-drift-b {
   to { transform: translate(-10vmax, -6vmax) scale(1.1); }
 }
 
@@ -127,61 +141,45 @@ section {
   scroll-margin-top: 70px;
 }
 
-.section-heading {
+.faux-heading {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 0.4em;
 }
 
-.section-heading .hash {
-  color: var(--blue);
+.faux-heading .faux-hash {
+  color: var(--iris-core);
   font-family: var(--font-mono), monospace;
   margin-right: 0.35em;
   font-weight: 400;
 }
 
-.section-kicker {
+.faux-kicker {
   font-family: var(--font-mono), monospace;
   font-size: 0.85rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--mist);
   margin-bottom: 0.8em;
 }
 
-.gradient-text {
-  background-image: linear-gradient(110deg, var(--ice-300), var(--blue) 45%, var(--blue-dark));
+.faux-shimmer {
+  background-image: linear-gradient(110deg, var(--iris-bright), var(--iris-core) 45%, var(--iris-deep));
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: shimmer 9s var(--ease-lazy) infinite alternate;
+  animation: faux-shimmer-slide 9s var(--drift) infinite alternate;
 }
 
-@keyframes shimmer {
+@keyframes faux-shimmer-slide {
   to { background-position: 100% 0; }
 }
 
-.row {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
+/* --- faux-btn ----------------------------------------------------------------- */
 
-.col {
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-/* --- Buttons -------------------------------------------------------------- */
-
-.btn {
+.faux-btn {
   display: inline-block;
   padding: 0.7em 1.6em;
   border-radius: 999px;
@@ -189,35 +187,35 @@ section {
   font-size: 0.95rem;
   text-decoration: none;
   cursor: pointer;
-  border: 1px solid var(--blue);
-  transition: transform 0.45s var(--ease-springy), box-shadow 0.45s var(--ease-lazy),
-    background-color 0.45s var(--ease-lazy), color 0.45s var(--ease-lazy);
+  border: 1px solid var(--iris-core);
+  transition: transform 0.45s var(--spring), box-shadow 0.45s var(--drift),
+    background-color 0.45s var(--drift), color 0.45s var(--drift);
 }
 
-.btn:hover {
+.faux-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 32px -12px rgba(0, 191, 255, 0.55);
 }
 
-.btn.primary {
-  background: linear-gradient(120deg, var(--blue-dark), var(--blue));
+.faux-btn.faux-solid {
+  background: linear-gradient(120deg, var(--iris-deep), var(--iris-core));
   color: #fff;
 }
 
-.btn.ghost {
+.faux-btn.faux-ghost {
   background: transparent;
-  color: var(--ice-200);
+  color: var(--iris-pale);
 }
 
-.btn.ghost:hover {
+.faux-btn.faux-ghost:hover {
   background: rgba(0, 191, 255, 0.12);
 }
 
-/* --- Glass card ------------------------------------------------------------ */
+/* --- faux-pane: frosted glass card -------------------------------------------- */
 
-.glass {
-  background: var(--surface-glass);
-  border: 1px solid var(--surface-line);
+.faux-pane {
+  background: var(--ink-glass);
+  border: 1px solid var(--ink-line);
   border-radius: 18px;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -232,11 +230,11 @@ section {
 }
 
 [data-sprite-target].bumped {
-  animation: sprite-bump 0.75s var(--ease-springy);
+  animation: faux-bump 0.75s var(--spring);
 }
 
-@keyframes sprite-bump {
-  20% { transform: translateY(-9px) rotate(-1.6deg) scale(1.03); color: var(--ice-300); }
+@keyframes faux-bump {
+  20% { transform: translateY(-9px) rotate(-1.6deg) scale(1.03); color: var(--iris-bright); }
   55% { transform: translateY(3px) rotate(1deg); }
   80% { transform: translateY(-2px); }
   100% { transform: none; }
@@ -245,8 +243,8 @@ section {
 /* --- Scrollbar & selection -------------------------------------------------- */
 
 ::selection {
-  background: var(--blue);
-  color: var(--background-dark);
+  background: var(--iris-core);
+  color: var(--ink-deep);
 }
 
 ::-webkit-scrollbar {
@@ -254,11 +252,11 @@ section {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background-dark);
+  background: var(--ink-deep);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(var(--blue-dark), var(--iris-deep));
+  background: linear-gradient(var(--iris-deep), var(--iris-abyss));
   border-radius: 8px;
 }
 
@@ -278,13 +276,5 @@ section {
 @media screen and (max-width: 860px) {
   section {
     padding: 72px 12px;
-  }
-
-  .row {
-    flex-direction: column;
-  }
-
-  .col {
-    width: 100%;
   }
 }

@@ -17,14 +17,14 @@ export default function NotFound()
         <div className="nf-pal" aria-hidden="true">
           <PixelPal />
         </div>
-        <h1 className="nf-code gradient-text mono">404</h1>
+        <h1 className="nf-code faux-shimmer faux-mono">404</h1>
         <p className="nf-title">This route is an imitation.</p>
-        <p className="nf-copy mono">
+        <p className="nf-copy faux-mono">
           {"// a convincing one, but false — nothing renders here."}
           <br />
           {"// even the sprite came up empty."}
         </p>
-        <Link className="btn primary" href="/">
+        <Link className="faux-btn faux-solid" href="/">
           cd ~/home
         </Link>
       </section>

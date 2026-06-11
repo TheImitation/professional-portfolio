@@ -34,9 +34,9 @@ const Contact: React.FC = () =>
 
   return (
     <section id="contact" ref={ref} className={`contact${inView ? " in-view" : ""}`}>
-      <p className="section-kicker">04 / open a channel</p>
-      <h2 className="section-heading" data-sprite-target>
-        <span className="hash">#</span>Contact <span className="gradient-text">/dev/nic</span>
+      <p className="faux-kicker">04 / open a channel</p>
+      <h2 className="faux-heading" data-sprite-target>
+        <span className="faux-hash">#</span>Contact <span className="faux-shimmer">/dev/nic</span>
       </h2>
       <p className="contact-note" data-sprite-target>
         No address harvesting here — both channels decode client-side, only
@@ -45,10 +45,10 @@ const Contact: React.FC = () =>
 
       <div className="contact-grid">
         <form
-          className="contact-form glass"
+          className="contact-form faux-pane"
           onSubmit={(event) => { event.preventDefault(); openEmail(); }}
         >
-          <label className="mono" htmlFor="contact-subject">subject:</label>
+          <label className="faux-mono" htmlFor="contact-subject">subject:</label>
           <input
             id="contact-subject"
             type="text"
@@ -56,7 +56,7 @@ const Contact: React.FC = () =>
             value={subject}
             onChange={(event) => setSubject(event.target.value)}
           />
-          <label className="mono" htmlFor="contact-message">payload:</label>
+          <label className="faux-mono" htmlFor="contact-message">payload:</label>
           <textarea
             id="contact-message"
             placeholder="Your message — drafted here, sent from your own app. I never see a byte until you hit send."
@@ -64,11 +64,11 @@ const Contact: React.FC = () =>
             value={message}
             onChange={(event) => setMessage(event.target.value)}
           />
-          <p className="form-hint mono">message routes through the proxy of your choosing →</p>
+          <p className="form-hint faux-mono">message routes through the proxy of your choosing →</p>
         </form>
 
         <div className="channel-stack">
-          <button type="button" className="channel-card glass" onClick={openEmail}>
+          <button type="button" className="channel-card faux-pane" onClick={openEmail}>
             <span className="channel-glyph" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
@@ -77,12 +77,12 @@ const Contact: React.FC = () =>
             </span>
             <span className="channel-meta">
               <span className="channel-name">EMAIL_PROXY</span>
-              <span className="channel-desc mono">mailto decodes on click · base64 at rest</span>
+              <span className="channel-desc faux-mono">mailto decodes on click · base64 at rest</span>
             </span>
             <span className="channel-arrow" aria-hidden="true">→</span>
           </button>
 
-          <button type="button" className="channel-card glass" onClick={openWhatsApp}>
+          <button type="button" className="channel-card faux-pane" onClick={openWhatsApp}>
             <span className="channel-glyph" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" />
@@ -91,18 +91,18 @@ const Contact: React.FC = () =>
             </span>
             <span className="channel-meta">
               <span className="channel-name">WHATSAPP_PROXY</span>
-              <span className="channel-desc mono">wa.me relay · number stays encoded</span>
+              <span className="channel-desc faux-mono">wa.me relay · number stays encoded</span>
             </span>
             <span className="channel-arrow" aria-hidden="true">→</span>
           </button>
 
-          <p className="channel-footnote mono">
+          <p className="channel-footnote faux-mono">
             {"// heart on sleeve, inbox always open"}
           </p>
         </div>
       </div>
 
-      <footer className="site-footer mono">
+      <footer className="site-footer faux-mono">
         <p>© {new Date().getFullYear()} TheImitation — designed & built by Nic Defaux, fuelled by curiosity.</p>
       </footer>
     </section>

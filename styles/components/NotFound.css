@@ -6,7 +6,7 @@
 }
 
 .nf-pal {
-  animation: nf-drift 5s var(--ease-lazy) infinite;
+  animation: nf-drift 5s var(--drift) infinite;
   filter: drop-shadow(0 0 14px rgba(125, 249, 255, 0.6));
 }
 
@@ -25,11 +25,11 @@
 .nf-title {
   font-size: 1.4rem;
   font-weight: 600;
-  color: var(--ice-200);
+  color: var(--iris-pale);
 }
 
 .nf-copy {
-  color: var(--text-dim);
+  color: var(--mist);
   font-size: 0.85rem;
   line-height: 1.9;
   margin-bottom: 18px;
