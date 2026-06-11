@@ -60,5 +60,12 @@
   height: 30px;
   margin: auto;
   filter: invert(100%);
-}  
+}
+
+/* The fixed rail overlaps the content column on narrow viewports. */
+@media screen and (max-width: 1240px) {
+  .side-panel {
+    display: none;
+  }
+}
 

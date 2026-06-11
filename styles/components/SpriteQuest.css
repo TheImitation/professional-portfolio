@@ -1,0 +1,209 @@
+/* --- Headshot with the hidden sprite ------------------------------------- */
+
+.profile-orbit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.profile-picture {
+  --mx: -200px;
+  --my: -200px;
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  cursor: none;
+  /* Let a finger drag the flashlight around without scrolling the page. */
+  touch-action: none;
+}
+
+.profile-picture img {
+  position: absolute;
+  inset: 5%;
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  border: 0.3rem solid var(--blue);
+  object-fit: cover;
+}
+
+/* The layer hiding behind the photo. A radial-gradient mask anchored to the
+   cursor (--mx/--my) cuts a flashlight hole through it on hover. */
+.reveal-layer {
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(0, 191, 255, 0.25), transparent 70%),
+    repeating-linear-gradient(0deg, transparent 0 11px, rgba(125, 249, 255, 0.12) 11px 12px),
+    repeating-linear-gradient(90deg, transparent 0 11px, rgba(125, 249, 255, 0.12) 11px 12px),
+    #04121f;
+  -webkit-mask-image: radial-gradient(circle 54px at var(--mx) var(--my), #000 97%, transparent 100%);
+  mask-image: radial-gradient(circle 54px at var(--mx) var(--my), #000 97%, transparent 100%);
+  pointer-events: none;
+}
+
+.profile-picture.sprite-away .reveal-layer .pixel-pal {
+  opacity: 0;
+}
+
+.reveal-layer .pixel-pal {
+  animation: pal-idle 2.4s var(--ease-lazy) infinite;
+}
+
+/* Homage to the original cut-circle: a slow conic ring orbiting the photo. */
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--blue) 0 70deg,
+    transparent 70deg 180deg,
+    var(--ice-300) 180deg 250deg,
+    transparent 250deg 360deg
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+  animation: orbit-spin 32s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes orbit-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- The pixel pal itself -------------------------------------------------- */
+
+.pixel-pal {
+  position: relative;
+  display: block;
+  color: var(--ice-300);
+  filter: drop-shadow(0 0 6px rgba(125, 249, 255, 0.7));
+}
+
+.pal-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  background: transparent;
+}
+
+/* Wing-flap: the two frames alternate with a stepped (8-bit) cadence. */
+.frame-a { animation: pal-flap-a 0.9s steps(1) infinite; }
+.frame-b { animation: pal-flap-b 0.9s steps(1) infinite; }
+
+@keyframes pal-flap-a {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes pal-flap-b {
+  0%, 49% { opacity: 0; }
+  50%, 100% { opacity: 1; }
+}
+
+@keyframes pal-idle {
+  0%, 100% { transform: translateY(-4px); }
+  50% { transform: translateY(6px); }
+}
+
+/* Free-roaming sprite (portaled to <body>, moved via JS transform). */
+.roaming-pal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  pointer-events: none;
+  animation: pal-spawn 0.5s var(--ease-springy);
+}
+
+@keyframes pal-spawn {
+  from { scale: 0.2; opacity: 0; }
+  to { scale: 1; opacity: 1; }
+}
+
+/* --- Touch d-pad ------------------------------------------------------------ */
+
+.dpad {
+  position: fixed;
+  right: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: repeat(3, 54px);
+  grid-template-rows: repeat(3, 54px);
+  gap: 6px;
+  touch-action: none;
+  animation: pal-spawn 0.5s var(--ease-springy);
+}
+
+.dpad-btn {
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  border: 1px solid var(--surface-line);
+  background: rgba(17, 46, 66, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--ice-200);
+  font-size: 1.05rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s var(--ease-lazy), transform 0.2s var(--ease-springy);
+}
+
+.dpad-btn:active {
+  background: rgba(0, 191, 255, 0.35);
+  transform: scale(0.92);
+}
+
+.dpad-up { grid-area: 1 / 2; }
+.dpad-left { grid-area: 2 / 1; }
+.dpad-dismiss { grid-area: 2 / 2; color: var(--text-dim); font-size: 0.9rem; }
+.dpad-right { grid-area: 2 / 3; }
+.dpad-down { grid-area: 3 / 2; }
+
+/* --- Hint ------------------------------------------------------------------- */
+
+.sprite-hint {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 2;
+  animation: hint-breathe 4s var(--ease-lazy) infinite;
+}
+
+.sprite-hint kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  margin: 0 2px;
+  padding: 1px 5px;
+  border: 1px solid var(--surface-line);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--background-secondary);
+  color: var(--ice-200);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+@keyframes hint-breathe {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+@media screen and (max-width: 860px) {
+  .profile-picture {
+    width: 240px;
+    height: 240px;
+  }
+}

@@ -1,0 +1,131 @@
+.skills-note {
+  color: var(--text-dim);
+  margin-bottom: 40px;
+  font-size: 1.02rem;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.skill-card {
+  padding: 28px 26px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 1s var(--ease-lazy), transform 1s var(--ease-lazy),
+    border-color 0.5s var(--ease-lazy), box-shadow 0.6s var(--ease-lazy);
+}
+
+.skill-card.in-view {
+  opacity: 1;
+  transform: none;
+}
+
+.skill-card:hover {
+  border-color: rgba(0, 191, 255, 0.55);
+  box-shadow: 0 24px 48px -28px rgba(0, 191, 255, 0.5);
+}
+
+.skill-card h3 {
+  font-size: 1.15rem;
+  margin-top: 18px;
+  letter-spacing: -0.01em;
+}
+
+.skill-index {
+  color: var(--blue);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.skill-caption {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin: 6px 0 16px;
+  min-height: 2.6em;
+}
+
+.skill-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.skill-card li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 0.92rem;
+  color: var(--text-light);
+  opacity: 0;
+  transform: translateX(-14px);
+  transition: opacity 0.8s var(--ease-lazy), transform 0.8s var(--ease-lazy);
+}
+
+.skill-card.in-view li {
+  opacity: 1;
+  transform: none;
+}
+
+.skill-card li::before {
+  content: "▹";
+  position: absolute;
+  left: 0;
+  color: var(--blue);
+}
+
+/* --- Self-drawing SVG icons --------------------------------------------------
+   pathLength=1 normalises every stroke, so dasharray/dashoffset of 1 hides
+   it completely; sliding the offset to 0 "draws" it. Per-path delays are
+   set inline so each stroke begins exactly when the previous one ends. */
+
+.drawn-icon {
+  width: 132px;
+  height: 132px;
+  align-self: center;
+}
+
+.drawn-icon path {
+  fill: none;
+  stroke: var(--ice-300);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition-property: stroke-dashoffset;
+  transition-timing-function: linear;
+}
+
+.drawn-icon.active path {
+  stroke-dashoffset: 0;
+}
+
+/* Snap back instantly when the card scrolls away, ready to redraw. */
+.drawn-icon:not(.active) path,
+.drawn-icon:not(.active) .node {
+  transition: none;
+}
+
+.drawn-icon .node {
+  fill: var(--blue);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-lazy);
+}
+
+.drawn-icon.active .node {
+  opacity: 1;
+}
+
+@media screen and (max-width: 980px) {
+  .skills-grid {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+    margin: auto;
+    width: 100%;
+  }
+}
