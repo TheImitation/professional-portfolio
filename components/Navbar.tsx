@@ -13,6 +13,7 @@ const navOptions: MenuItem[] = [
   { name: "About", anchor: "about" },
   { name: "Skills", anchor: "skills" },
   { name: "Projects", anchor: "projects" },
+  { name: "Reviews", anchor: "reviews" },
   { name: "Contact", anchor: "contact" },
 ];
 

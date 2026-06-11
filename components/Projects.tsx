@@ -2,7 +2,10 @@
 
 import React from "react";
 import { useInView } from "react-intersection-observer";
+import { SOCIALS } from "@/datasets/Site";
 import "../styles/components/Projects.css";
+
+const githubUrl = SOCIALS.find((social) => social.label === "GitHub")?.url ?? "https://github.com/TheImitation/";
 
 interface Project
 {
@@ -12,6 +15,8 @@ interface Project
   role: string;
   description: string;
   stack: string[];
+  href?: string;
+  locked?: boolean;
 }
 
 const projects: Project[] = [
@@ -23,6 +28,7 @@ const projects: Project[] = [
     description:
       "Propositions and proof-of-concept solutions showing public sector clients what Generative AI can actually do: bespoke AWS cloud architectures, foundational software, and GPT-4-powered showcases that modernised technical and customer-support capabilities for genuine service excellence.",
     stack: ["AWS", "GPT-4", "TypeScript", "Serverless"],
+    locked: true,
   },
   {
     id: "ai-platform",
@@ -32,15 +38,17 @@ const projects: Project[] = [
     description:
       "Built, stress-tested, torn down and rebuilt. The platform survived full architectural reincarnations on its way to becoming the first successful AI platform delivered for public sector clients — and the blueprint I still measure every platform against.",
     stack: ["AI Platform", "Cloud Architecture", "Technical Strategy"],
+    locked: true,
   },
   {
-    id: "theimitation",
-    period: "2026 · Side quest",
-    title: "theimitation.dev — the site you're reading",
-    role: "Designer, engineer & resident sprite wrangler",
+    id: "wc-sweeps",
+    period: "2026 · Personal challenge",
+    title: "World Cup 2026 Sweepstakes Tracker",
+    role: "Solo build — design to production",
     description:
-      "A heavy-CSS playground: self-drawing SVGs, a flashlight-masked easter egg with its own physics loop, scroll-driven reveals — and not a single animation library in the bundle. You are currently standing inside the deliverable.",
-    stack: ["Next.js", "TypeScript", "Pure CSS"],
+      "A production sweepstakes platform for the 2026 World Cup: live brackets, draw management and leaderboards that update as the tournament unfolds. Built end-to-end as a personal challenge and shipped for real players to use all summer.",
+    stack: ["Next.js", "TypeScript", "Vercel"],
+    href: "https://wc-sweeps-five.vercel.app/",
   },
 ];
 
@@ -58,6 +66,26 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
       <div className="project-card faux-pane">
         <h3 data-sprite-target>
           <span className="faux-mono project-index">0{index + 1}.</span> {project.title}
+          {project.href && (
+            <a
+              className="project-link faux-mono"
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Visit ${project.title} (opens in a new tab)`}
+            >
+              live ↗
+            </a>
+          )}
+          {project.locked && (
+            <a
+              className="project-link project-link-locked faux-mono"
+              href="#contact"
+              aria-label={`${project.title} is under NDA — contact me to hear about it`}
+            >
+              NDA · ask me about it
+            </a>
+          )}
         </h3>
         <p className="project-description">{project.description}</p>
         <ul className="project-stack" aria-label="Technologies used">
@@ -86,6 +114,31 @@ const Projects: React.FC = () => (
         <ProjectRow project={project} index={index} key={project.id} />
       ))}
     </div>
+
+    <aside className="project-vault faux-pane" aria-label="Where the rest of the work lives">
+      <svg className="vault-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="4.5" y="10.5" width="15" height="10" rx="2" />
+        <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
+        <circle cx="12" cy="15.5" r="1.4" />
+      </svg>
+      <div className="vault-copy">
+        <h3 className="faux-mono">{"/* 99% of my commits are "}<span className="redacted">redacted</span>{" */"}</h3>
+        <p>
+          The work above is real and I&apos;ll happily talk through any of it —
+          but the commits live in enterprise GitLab behind client walls, so I
+          can&apos;t link you to the proof. A couple of hobby builds escaped
+          to GitHub.
+        </p>
+      </div>
+      <a
+        className="faux-btn faux-ghost"
+        href={githubUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Browse the escapees ↗
+      </a>
+    </aside>
   </section>
 );
 

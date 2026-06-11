@@ -34,13 +34,14 @@ const Contact: React.FC = () =>
 
   return (
     <section id="contact" ref={ref} className={`contact${inView ? " in-view" : ""}`}>
-      <p className="faux-kicker">04 / open a channel</p>
+      <p className="faux-kicker">05 / open a channel</p>
       <h2 className="faux-heading" data-sprite-target>
         <span className="faux-hash">#</span>Contact <span className="faux-shimmer">/dev/nic</span>
       </h2>
       <p className="contact-note" data-sprite-target>
-        No address harvesting here — both channels decode client-side, only
-        when you knock. Geek out, propose a project, or just say hi.
+        Currently <strong>open to contract work</strong> — and no address
+        harvesting here: both channels decode client-side, only when you
+        knock. Geek out, propose an engagement, or just say hi.
       </p>
 
       <div className="contact-grid">

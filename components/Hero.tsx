@@ -3,6 +3,7 @@
 import React from "react";
 import "../styles/pages/Home.css";
 import SpriteQuest from "./SpriteQuest";
+import { CV_PATH, PERSON } from "@/datasets/Site";
 
 const jobRoles = [
   "Senior Software Engineer",
@@ -11,7 +12,7 @@ const jobRoles = [
   "Self-Taught & Proud Of It",
 ];
 
-export default function Hero()
+export default function Hero({ cvAvailable = false }: { cvAvailable?: boolean })
 {
   // The first role is repeated at the end so the vertical ticker loops seamlessly.
   const tickerRoles = [...jobRoles, jobRoles[0]];
@@ -20,6 +21,10 @@ export default function Hero()
     <section id="home" className="hero">
       <div className="hero-grid">
         <div className="hero-copy">
+          <p className="status-chip faux-mono">
+            <span className="status-dot" aria-hidden="true" />
+            {PERSON.availability.toLowerCase()}
+          </p>
           <p className="hero-kicker faux-mono" data-sprite-target>
             {"// hello, world — transmission from"}
           </p>
@@ -41,6 +46,11 @@ export default function Hero()
           <div className="hero-actions">
             <a className="faux-btn faux-solid" href="#contact">Open a channel</a>
             <a className="faux-btn faux-ghost" href="#skills">Inspect my stack</a>
+            {cvAvailable && (
+              <a className="faux-btn faux-ghost" href={CV_PATH} download>
+                Grab my CV
+              </a>
+            )}
           </div>
         </div>
         <SpriteQuest />

@@ -1,0 +1,111 @@
+.reviews-note {
+  color: var(--mist);
+  margin-bottom: 40px;
+  font-size: 1.02rem;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.review-card {
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s var(--drift), transform 0.9s var(--drift),
+    border-color 0.5s var(--drift), box-shadow 0.6s var(--drift);
+}
+
+.reviews.in-view .review-card {
+  opacity: 1;
+  transform: none;
+}
+
+.review-card:hover {
+  border-color: rgba(0, 191, 255, 0.55);
+  box-shadow: 0 24px 48px -28px rgba(0, 191, 255, 0.5);
+}
+
+.review-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.review-avatar {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--iris-bright);
+  background: rgba(0, 191, 255, 0.1);
+  border: 1px solid var(--ink-line);
+}
+
+.review-head figcaption {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.review-name {
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--chalk);
+}
+
+.review-role {
+  font-size: 0.78rem;
+  color: var(--mist);
+}
+
+.review-approved {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--iris-bright);
+  border: 1px solid rgba(125, 249, 255, 0.3);
+  border-radius: 999px;
+  padding: 3px 10px;
+  background: rgba(125, 249, 255, 0.06);
+}
+
+.review-card blockquote {
+  position: relative;
+  margin: 0;
+  padding-left: 26px;
+  color: var(--mist);
+  font-size: 0.93rem;
+  line-height: 1.75;
+}
+
+.review-card blockquote::before {
+  content: "\201C";
+  position: absolute;
+  left: 0;
+  top: -4px;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--iris-core);
+  font-family: var(--font-mono), monospace;
+}
+
+@media screen and (max-width: 860px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .review-approved {
+    display: none;
+  }
+}

@@ -14,7 +14,11 @@ export const PERSON = {
   title: "Senior Software Engineer & Technical Strategist",
   tagline:
     "Self-taught engineer, consultant and architect. Five years at IBM. Builder of the first successful AI platform for public sector clients.",
+  availability: "Open to contract work",
 };
+
+/* Drop your CV at public/Nic-Defaux-CV.pdf and the download button appears. */
+export const CV_PATH = "/Nic-Defaux-CV.pdf";
 
 export const SOCIALS = [
   { url: "https://www.linkedin.com/in/nicolaas-defaux/", icon: "/linkedin.png", label: "LinkedIn" },

@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     default: `${PERSON.name} — ${PERSON.brand} | ${PERSON.title}`,
     template: `%s | ${PERSON.brand}`,
   },
-  description: `${PERSON.name} (${PERSON.brand}) — ${PERSON.title}. ${PERSON.tagline}`,
+  description: `${PERSON.name} (${PERSON.brand}) — ${PERSON.title}. ${PERSON.tagline} ${PERSON.availability}.`,
   keywords: [
     "Nic Defaux",
     "TheImitation",
