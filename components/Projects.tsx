@@ -27,7 +27,7 @@ const projects: Project[] = [
     role: "Senior Technical Consultant",
     description:
       "Propositions and proof-of-concept solutions showing public sector clients what Generative AI can actually do: bespoke AWS cloud architectures, foundational software, and GPT-4-powered showcases that modernised technical and customer-support capabilities for genuine service excellence.",
-    stack: ["AWS", "GPT-4", "TypeScript", "Serverless"],
+    stack: ["AI Platform", "Cloud Architecture", "Technical Strategy", "Business Analysis"],
     locked: true,
   },
   {
@@ -37,7 +37,7 @@ const projects: Project[] = [
     role: "Engineer → Consultant → Architect",
     description:
       "Built, stress-tested, torn down and rebuilt. The platform survived full architectural reincarnations on its way to becoming the first successful AI platform delivered for public sector clients — and the blueprint I still measure every platform against.",
-    stack: ["AI Platform", "Cloud Architecture", "Technical Strategy"],
+    stack: ["AWS", "Meta", "TypeScript", "Kubernetes", "Terraform"],
     locked: true,
   },
   {
@@ -47,7 +47,7 @@ const projects: Project[] = [
     role: "Solo build — design to production",
     description:
       "A production sweepstakes platform for the 2026 World Cup: live brackets, draw management and leaderboards that update as the tournament unfolds. Built end-to-end as a personal challenge and shipped for real players to use all summer.",
-    stack: ["Next.js", "TypeScript", "Vercel"],
+    stack: ["Next.js", "TypeScript", "Vercel", "Vibes"],
     href: "https://wc-sweeps-five.vercel.app/",
   },
 ];
