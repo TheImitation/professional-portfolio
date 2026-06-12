@@ -31,6 +31,9 @@ export default function Hero({ cvAvailable = false }: { cvAvailable?: boolean })
           <h1 data-sprite-target>
             Nic Defaux <span className="brand-mark faux-shimmer">TheImitation</span>
           </h1>
+          <p className="brand-gloss faux-mono" data-sprite-target>
+            {"// Defaux is French for 'of false' — the handle is just my surname, translated"}
+          </p>
           <div className="role-ticker" role="text" aria-label={jobRoles.join(", ")}>
             <ul aria-hidden="true">
               {tickerRoles.map((role, index) => (

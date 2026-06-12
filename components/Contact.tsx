@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { EMAIL_B64, WHATSAPP_B64 } from "@/datasets/Site";
+import { EMAIL_B64, WHATSAPP_B64, PERSON } from "@/datasets/Site";
 import "../styles/components/Contact.css";
 
 /* ==========================================================================
@@ -39,9 +39,11 @@ const Contact: React.FC = () =>
         <span className="faux-hash">#</span>Contact <span className="faux-shimmer">/dev/nic</span>
       </h2>
       <p className="contact-note" data-sprite-target>
-        Currently <strong>open to contract work</strong> — and no address
-        harvesting here: both channels decode client-side, only when you
-        knock. Geek out, propose an engagement, or just say hi.
+        Currently <strong>open to contract work</strong> — {PERSON.services}.
+      </p>
+      <p className="contact-note contact-note-sub" data-sprite-target>
+        No address harvesting here: both channels decode client-side, only
+        when you knock. Geek out, propose an engagement, or just say hi.
       </p>
 
       <div className="contact-grid">

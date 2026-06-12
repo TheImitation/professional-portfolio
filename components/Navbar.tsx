@@ -58,9 +58,13 @@ const Navbar = () =>
   return (
     <nav className={`navbar${menuOpen ? " menu-open" : ""}`}>
       <div className="nav-wrapper">
-        <a className="logo faux-mono" href="#home" aria-label="TheImitation — back to top" onClick={() => setMenuOpen(false)}>
+        <a className="logo faux-mono" href="#home" aria-label="TheImitation — Nic Defaux — back to top" onClick={() => setMenuOpen(false)}>
           <span className="logo-bracket">{"{"}</span>
-          TheImitation
+          {/* Hovering the handle declassifies the surname it translates. */}
+          <span className="logo-word" aria-hidden="true">
+            <span className="word-handle">TheImitation</span>
+            <span className="word-name">Defaux</span>
+          </span>
           <span className="logo-caret">_</span>
           <span className="logo-bracket">{"}"}</span>
         </a>

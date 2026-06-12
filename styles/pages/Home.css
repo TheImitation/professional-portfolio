@@ -74,6 +74,14 @@
   font-weight: 400;
 }
 
+/* The pun, settled immediately rather than three sections later. */
+.brand-gloss {
+  color: var(--mist);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  margin-top: -6px;
+}
+
 /* Vertical role ticker — one line tall, the list glides up one row at a
    time with a long lazy pause on each role. */
 .role-ticker {

@@ -14,6 +14,7 @@ interface Project
   title: string;
   role: string;
   description: string;
+  outcomes?: string[];
   stack: string[];
   href?: string;
   locked?: boolean;
@@ -27,6 +28,7 @@ const projects: Project[] = [
     role: "Senior Technical Consultant",
     description:
       "Propositions and proof-of-concept solutions showing public sector clients what Generative AI can actually do: bespoke AWS cloud architectures, foundational software, and GPT-4-powered showcases that modernised technical and customer-support capabilities for genuine service excellence.",
+    outcomes: ["8 PoCs delivered", "2 MVPs shipped", "AI ethics framework", "Strategic AI pipeline"],
     stack: ["AI Platform", "Cloud Architecture", "Technical Strategy", "Business Analysis"],
     locked: true,
   },
@@ -37,6 +39,7 @@ const projects: Project[] = [
     role: "Engineer → Consultant → Architect",
     description:
       "Built, stress-tested, torn down and rebuilt. The platform survived full architectural reincarnations on its way to becoming the first successful AI platform delivered for public sector clients — and the blueprint I still measure every platform against.",
+    outcomes: ["£4m programme", "+77% process throughput", "10 NPS"],
     stack: ["AWS", "Meta", "TypeScript", "Kubernetes", "Terraform"],
     locked: true,
   },
@@ -88,6 +91,15 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
           )}
         </h3>
         <p className="project-description">{project.description}</p>
+        {project.outcomes && (
+          <ul className="project-outcomes" aria-label="Measured outcomes">
+            {project.outcomes.map((outcome, outcomeIndex) => (
+              <li className="faux-mono" style={{ transitionDelay: `${0.3 + outcomeIndex * 0.12}s` }} key={outcome}>
+                {outcome}
+              </li>
+            ))}
+          </ul>
+        )}
         <ul className="project-stack" aria-label="Technologies used">
           {project.stack.map((tech, techIndex) => (
             <li className="faux-mono" style={{ transitionDelay: `${0.35 + techIndex * 0.12}s` }} key={tech}>

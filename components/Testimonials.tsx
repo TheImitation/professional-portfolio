@@ -10,6 +10,7 @@ interface Review
   name: string;
   role: string;
   initials: string;
+  linkedin?: string;
 }
 
 const reviews: Review[] = [
@@ -19,6 +20,7 @@ const reviews: Review[] = [
     name: "Mark Hughes-D'Aeth",
     role: "Managing Consultant",
     initials: "MH",
+    linkedin: "https://uk.linkedin.com/in/mark-hughes-d-aeth-2015b268",
   },
   {
     quote:
@@ -26,6 +28,7 @@ const reviews: Review[] = [
     name: "Kaspars Strods",
     role: "Managing Technical Consultant",
     initials: "KS",
+    linkedin: "https://uk.linkedin.com/in/kaspars-s",
   },
   {
     quote:
@@ -33,6 +36,7 @@ const reviews: Review[] = [
     name: "James Skinner",
     role: "Data Scientist",
     initials: "JS",
+    linkedin: "https://uk.linkedin.com/in/james-skinner-26004a1a4",
   },
   {
     quote:
@@ -40,6 +44,7 @@ const reviews: Review[] = [
     name: "Nick Wright",
     role: "Senior Managing Consultant",
     initials: "NW",
+    linkedin: "https://uk.linkedin.com/in/nickwrightnz",
   },
 ];
 
@@ -67,7 +72,19 @@ const Testimonials: React.FC = () =>
             <div className="review-head">
               <span className="review-avatar faux-mono" aria-hidden="true">{review.initials}</span>
               <figcaption>
-                <span className="review-name" data-sprite-target>{review.name}</span>
+                {review.linkedin ? (
+                  <a
+                    className="review-name review-name-link"
+                    href={review.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-sprite-target
+                  >
+                    {review.name} <span aria-hidden="true">↗</span>
+                  </a>
+                ) : (
+                  <span className="review-name" data-sprite-target>{review.name}</span>
+                )}
                 <span className="review-role">{review.role}</span>
               </figcaption>
               <span className="review-approved faux-mono">✓ approved</span>

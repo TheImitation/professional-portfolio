@@ -64,6 +64,26 @@
   color: var(--chalk);
 }
 
+.review-name-link {
+  text-decoration: none;
+  width: fit-content;
+  transition: color 0.4s var(--drift);
+}
+
+.review-name-link span {
+  font-size: 0.75em;
+  color: var(--mist);
+  transition: color 0.4s var(--drift);
+}
+
+.review-name-link:hover {
+  color: var(--iris-bright);
+}
+
+.review-name-link:hover span {
+  color: var(--iris-bright);
+}
+
 .review-role {
   font-size: 0.78rem;
   color: var(--mist);

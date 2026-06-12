@@ -15,6 +15,8 @@ export const PERSON = {
   tagline:
     "Self-taught engineer, consultant and architect. Five years at IBM. Builder of the first successful AI platform for public sector clients.",
   availability: "Open to contract work",
+  services:
+    "taking contracts for AI platform builds, GenAI strategy sprints, and rescue-and-rebuild missions on systems that matter",
 };
 
 /* Drop your CV at public/Nic-Defaux-CV.pdf and the download button appears. */
