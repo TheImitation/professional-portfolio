@@ -56,7 +56,7 @@ const skillCards: SkillCard[] = [
     caption: "Systems sketched on napkins, shipped to clouds",
     skills: [
       "Cloud architecture (AWS)",
-      "TypeScript / Node.js / Next.js",
+      "TypeScript / Next.js / Python",
       "Distributed systems & APIs",
       "Technical strategy & consulting",
       "DevOps & infrastructure as code",
