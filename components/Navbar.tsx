@@ -20,6 +20,7 @@ const navOptions: MenuItem[] = [
 const Navbar = () =>
 {
   const [activeSection, setActiveSection] = useState("home");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() =>
   {
@@ -42,21 +43,43 @@ const Navbar = () =>
     return () => observer.disconnect();
   }, []);
 
+  /* Escape closes the mobile menu (the sprite handles its own Escape). */
+  useEffect(() =>
+  {
+    if (!menuOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) =>
+    {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [menuOpen]);
+
   return (
-    <nav className="navbar">
+    <nav className={`navbar${menuOpen ? " menu-open" : ""}`}>
       <div className="nav-wrapper">
-        <a className="logo faux-mono" href="#home" aria-label="TheImitation — back to top">
+        <a className="logo faux-mono" href="#home" aria-label="TheImitation — back to top" onClick={() => setMenuOpen(false)}>
           <span className="logo-bracket">{"{"}</span>
           TheImitation
           <span className="logo-caret">_</span>
           <span className="logo-bracket">{"}"}</span>
         </a>
-        <ul className="nav-list">
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          aria-controls="site-nav"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <span /><span /><span />
+        </button>
+        <ul className="nav-list" id="site-nav">
           {navOptions.map((item) => (
             <li key={item.anchor}
               className={`nav-item${activeSection === item.anchor ? " selected" : ""}`}
             >
-              <a href={`#${item.anchor}`}>
+              <a href={`#${item.anchor}`} onClick={() => setMenuOpen(false)}>
                 <span className="nav-index">/</span>
                 {item.name}
               </a>

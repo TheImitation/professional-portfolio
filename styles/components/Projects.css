@@ -224,17 +224,53 @@
 }
 
 @media screen and (max-width: 860px) {
+  /* The spine and node indents cost too much width on a phone —
+     drop them and let the cards breathe full-bleed. */
+  .projects-timeline {
+    padding-left: 0;
+    gap: 26px;
+  }
+
+  .projects-timeline::before,
+  .project-node {
+    display: none;
+  }
+
   .project-row {
     grid-template-columns: 1fr;
     gap: 10px;
   }
 
   .project-meta {
+    padding-left: 4px;
     padding-top: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 14px;
+  }
+
+  .project-role {
+    margin-top: 0;
+  }
+
+  .project-card {
+    padding: 20px 18px;
+  }
+
+  .project-card h3 {
+    line-height: 1.5;
+  }
+
+  /* Chips drop out of the title flow onto their own line. */
+  .project-link {
+    display: inline-block;
+    margin: 10px 8px 0 0;
   }
 
   .project-vault {
     flex-direction: column;
     text-align: center;
+    padding: 22px 18px;
   }
 }

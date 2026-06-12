@@ -95,6 +95,48 @@
   50% { opacity: 0; }
 }
 
+/* --- Hamburger toggle: three bars that morph into an X ----------------------- */
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 40px;
+  padding: 9px 10px;
+  background: transparent;
+  border: 1px solid var(--ink-line);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.4s var(--drift);
+}
+
+.menu-toggle:hover {
+  border-color: rgba(0, 191, 255, 0.5);
+}
+
+.menu-toggle span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--iris-pale);
+  transition: transform 0.45s var(--spring), opacity 0.3s var(--drift);
+}
+
+.menu-open .menu-toggle span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-open .menu-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-open .menu-toggle span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
 @media screen and (max-width: 700px) {
   .nav-wrapper {
     width: 100%;
@@ -106,23 +148,38 @@
     flex-shrink: 0;
   }
 
-  .nav-list {
-    gap: 2px;
-    overflow-x: auto;
-    scrollbar-width: none;
+  .menu-toggle {
+    display: flex;
   }
 
-  .nav-list::-webkit-scrollbar {
-    display: none;
+  /* The list becomes a glass dropdown hanging off the sticky bar. */
+  .nav-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 18px 20px;
+    background: rgba(6, 15, 26, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--ink-line);
+    opacity: 0;
+    transform: translateY(-14px);
+    pointer-events: none;
+    transition: opacity 0.4s var(--drift), transform 0.4s var(--drift);
+  }
+
+  .menu-open .nav-list {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
   }
 
   .nav-item a {
-    padding: 5px 8px;
-    font-size: 0.82rem;
-    white-space: nowrap;
-  }
-
-  .nav-index {
-    display: none;
+    display: block;
+    padding: 11px 14px;
+    font-size: 1rem;
   }
 }
