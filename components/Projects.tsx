@@ -39,7 +39,7 @@ const projects: Project[] = [
     role: "Engineer → Consultant → Architect",
     description:
       "Built, stress-tested, torn down and rebuilt. The platform survived full architectural reincarnations on its way to becoming the first successful AI platform delivered for public sector clients — and the blueprint I still measure every platform against.",
-    outcomes: ["£4m programme", "+77% process throughput", "10 NPS"],
+    outcomes: ["£4m programme", "+77% process throughput", "10/10 NPS"],
     stack: ["AWS", "Meta", "TypeScript", "Kubernetes", "Terraform"],
     locked: true,
   },
