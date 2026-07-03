@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useInView } from "react-intersection-observer";
+import CarouselDots, { useCarouselIndex } from "./CarouselDots";
 import "../styles/components/Testimonials.css";
 
 interface Review
@@ -51,6 +52,7 @@ const reviews: Review[] = [
 const Testimonials: React.FC = () =>
 {
   const { ref, inView } = useInView({ threshold: 0.15, triggerOnce: false });
+  const { containerRef, activeIndex, scrollToIndex } = useCarouselIndex(reviews.length);
 
   return (
     <section id="reviews" ref={ref} className={`reviews${inView ? " in-view" : ""}`}>
@@ -62,7 +64,7 @@ const Testimonials: React.FC = () =>
         Pulled straight from recommendations — merged without edits, zero conflicts.
       </p>
 
-      <div className="reviews-grid">
+      <div className="reviews-grid" ref={containerRef}>
         {reviews.map((review, index) => (
           <figure
             className="review-card faux-pane"
@@ -93,6 +95,8 @@ const Testimonials: React.FC = () =>
           </figure>
         ))}
       </div>
+
+      <CarouselDots count={reviews.length} activeIndex={activeIndex} onSelect={scrollToIndex} label="Review slides" />
     </section>
   );
 };

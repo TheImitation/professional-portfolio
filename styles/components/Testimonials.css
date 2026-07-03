@@ -121,8 +121,40 @@
 }
 
 @media screen and (max-width: 860px) {
+  /* Swap the grid for a swipeable carousel, one card per view. */
   .reviews-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 14px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .reviews-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Cards run near-full-width so the content has room to breathe, snapping
+     centred so a sliver of the previous/next card peeks in on each side. */
+  .review-card {
+    flex: 0 0 92%;
+    scroll-snap-align: center;
+  }
+
+  /* The first/last card can't reach a centred snap without something to
+     centre against on their outer side — a matching 4% margin (the other
+     half of the 92%/8% split) gives them the same room every other card
+     already has on both sides. Margin (not container padding) is required:
+     padding on the scroller would shrink the box the 92% resolves against. */
+  .review-card:first-child {
+    margin-left: 4%;
+  }
+
+  .review-card:last-child {
+    margin-right: 4%;
   }
 
   .review-approved {

@@ -110,7 +110,9 @@
   border: 1px solid rgba(255, 180, 84, 0.35);
   border-radius: 999px;
   padding: 3px 10px;
-  vertical-align: middle;
+  /* The pill's border+padding make it taller than the heading text, so
+     `middle` (aligned to the text's x-height midpoint) reads as sunk low. */
+  vertical-align: 2.5px;
   white-space: nowrap;
   transition: background-color 0.4s var(--drift), transform 0.4s var(--spring);
 }
@@ -252,11 +254,23 @@
 }
 
 @media screen and (max-width: 860px) {
-  /* The spine and node indents cost too much width on a phone —
-     drop them and let the cards breathe full-bleed. */
+  /* The spine and node indents cost too much width on a phone — drop them,
+     and swap the vertical stack for a swipeable carousel (the vault card
+     below is a sibling of this container, so it's never part of the scroller). */
   .projects-timeline {
     padding-left: 0;
-    gap: 26px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 14px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .projects-timeline::-webkit-scrollbar {
+    display: none;
   }
 
   .projects-timeline::before,
@@ -264,9 +278,26 @@
     display: none;
   }
 
+  /* Cards run near-full-width so the content has room to breathe, snapping
+     centred so a sliver of the previous/next card peeks in on each side. */
   .project-row {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 4px;
+    flex: 0 0 92%;
+    scroll-snap-align: center;
+  }
+
+  /* The first/last card can't reach a centred snap without something to
+     centre against on their outer side — a matching 4% margin (the other
+     half of the 92%/8% split) gives them the same room every other card
+     already has on both sides. Margin (not container padding) is required:
+     padding on the scroller would shrink the box the 92% resolves against. */
+  .project-row:first-child {
+    margin-left: 4%;
+  }
+
+  .project-row:last-child {
+    margin-right: 4%;
   }
 
   .project-meta {
@@ -290,10 +321,13 @@
     line-height: 1.5;
   }
 
-  /* Chips drop out of the title flow onto their own line. */
+  /* Chips drop out of the title flow onto their own line — but often just
+     trail the wrapped title's last word instead, so keep the base rule's
+     margin-left (12px) rather than zeroing it via the shorthand. */
   .project-link {
     display: inline-block;
-    margin: 10px 8px 0 0;
+    margin-top: 10px;
+    margin-right: 8px;
   }
 
   .project-vault {

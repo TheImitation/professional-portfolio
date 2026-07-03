@@ -3,6 +3,7 @@
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import { SOCIALS } from "@/datasets/Site";
+import CarouselDots, { useCarouselIndex } from "./CarouselDots";
 import "../styles/components/Projects.css";
 
 const githubUrl = SOCIALS.find((social) => social.label === "GitHub")?.url ?? "https://github.com/TheImitation/";
@@ -50,8 +51,18 @@ const projects: Project[] = [
     role: "Solo build — design to production",
     description:
       "A production sweepstakes platform for the 2026 World Cup: live brackets, draw management and leaderboards that update as the tournament unfolds. Built end-to-end as a personal challenge and shipped for real players to use all summer.",
-    stack: ["Next.js", "TypeScript", "Vercel", "Vibes"],
-    href: "https://wc-sweeps-five.vercel.app/",
+    stack: ["Next.js", "TypeScript", "Render", "Neon", "Cloudflare R2", "Vibes"],
+    href: "https://sportssweepstakes.co.uk/",
+  },
+  {
+    id: "mak99-interiors",
+    period: "2026 · Freelance client",
+    title: "MAK99 Interiors — Studio Site Rebuild",
+    role: "Freelance build — redesign to production",
+    description:
+      "A full Next.js rebuild of a Washington D.C. interior design studio's marketing site: filterable project galleries with lightbox carousels, client testimonials, an Instagram feed and SEO groundwork (JSON-LD, OG cards, sitemap). Delivered end-to-end as billed freelance client work, from redesign to production launch.",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
+    href: "https://www.mak99interiors.co.uk/",
   },
 ];
 
@@ -112,46 +123,53 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
   );
 };
 
-const Projects: React.FC = () => (
-  <section id="projects">
-    <p className="faux-kicker">03 / selected works</p>
-    <h2 className="faux-heading" data-sprite-target>
-      <span className="faux-hash">#</span>Projects, <span className="faux-shimmer">battle-tested</span>
-    </h2>
-    <p className="projects-note">
-      Multi-million-pound public sector transformations — plus one nerdy side quest.
-    </p>
-    <div className="projects-timeline">
-      {projects.map((project, index) => (
-        <ProjectRow project={project} index={index} key={project.id} />
-      ))}
-    </div>
+const Projects: React.FC = () =>
+{
+  const { containerRef, activeIndex, scrollToIndex } = useCarouselIndex(projects.length);
 
-    <aside className="project-vault faux-pane" aria-label="Where the rest of the work lives">
-      <svg className="vault-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="4.5" y="10.5" width="15" height="10" rx="2" />
-        <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
-        <circle cx="12" cy="15.5" r="1.4" />
-      </svg>
-      <div className="vault-copy">
-        <h3 className="faux-mono">{"/* 99% of my commits are "}<span className="redacted">redacted</span>{" */"}</h3>
-        <p>
-          The work above is real and I&apos;ll happily talk through any of it —
-          but the commits live in enterprise GitLab behind client walls, so I
-          can&apos;t link you to the proof. A couple of hobby builds escaped
-          to GitHub.
-        </p>
+  return (
+    <section id="projects">
+      <p className="faux-kicker">03 / selected works</p>
+      <h2 className="faux-heading" data-sprite-target>
+        <span className="faux-hash">#</span>Projects, <span className="faux-shimmer">battle-tested</span>
+      </h2>
+      <p className="projects-note">
+        Multi-million-pound public sector transformations — plus a couple of freelance and side-quest builds.
+      </p>
+      <div className="projects-timeline" ref={containerRef}>
+        {projects.map((project, index) => (
+          <ProjectRow project={project} index={index} key={project.id} />
+        ))}
       </div>
-      <a
-        className="faux-btn faux-ghost"
-        href={githubUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Browse the escapees ↗
-      </a>
-    </aside>
-  </section>
-);
+
+      <CarouselDots count={projects.length} activeIndex={activeIndex} onSelect={scrollToIndex} label="Project slides" />
+
+      <aside className="project-vault faux-pane" aria-label="Where the rest of the work lives">
+        <svg className="vault-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <rect x="4.5" y="10.5" width="15" height="10" rx="2" />
+          <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
+          <circle cx="12" cy="15.5" r="1.4" />
+        </svg>
+        <div className="vault-copy">
+          <h3 className="faux-mono">{"/* 99% of my commits are "}<span className="redacted">redacted</span>{" */"}</h3>
+          <p>
+            The work above is real and I&apos;ll happily talk through any of it —
+            but the commits live in enterprise GitLab behind client walls, so I
+            can&apos;t link you to the proof. A couple of hobby builds escaped
+            to GitHub.
+          </p>
+        </div>
+        <a
+          className="faux-btn faux-ghost"
+          href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Browse the escapees ↗
+        </a>
+      </aside>
+    </section>
+  );
+};
 
 export default Projects;

@@ -1,0 +1,49 @@
+.carousel-dots {
+  display: none;
+}
+
+@media screen and (max-width: 860px) {
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin-top: 18px;
+  }
+
+  /* Buttons are sized for a comfortable tap target; the visible dot is a
+     smaller centred pseudo-element so the hit area doesn't look oversized. */
+  .carousel-dot {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .carousel-dot::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--ink-line);
+    transform: translate(-50%, -50%);
+    transition: background-color 0.4s var(--drift), width 0.4s var(--drift);
+  }
+
+  .carousel-dot.active::before {
+    width: 22px;
+    background: var(--iris-core);
+  }
+
+  .carousel-dot:focus-visible {
+    outline: none;
+    border-radius: 999px;
+    box-shadow: 0 0 0 4px rgba(0, 191, 255, 0.14);
+  }
+}
