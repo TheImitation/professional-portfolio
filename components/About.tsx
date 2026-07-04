@@ -28,7 +28,7 @@ const About: React.FC = () =>
         <span className="faux-hash">#</span>About <span className="faux-shimmer">TheImitation</span>
       </h2>
       <p className="about-pun" data-sprite-target>
-        <em>Defaux</em> is French — <em>faux</em>, as in fake.
+        <em>Defaux</em> is French — <em>faux</em>, as in false.
         And what is faux, if not an imitation? The code, however, is all true.
       </p>
 
