@@ -19,6 +19,8 @@ interface Project
   stack: string[];
   href?: string;
   locked?: boolean;
+  /* Site is temporarily down — show a badge instead of a dead `href`. */
+  pending?: boolean;
 }
 
 const projects: Project[] = [
@@ -52,7 +54,8 @@ const projects: Project[] = [
     description:
       "A production sweepstakes platform for the 2026 World Cup: live brackets, draw management and leaderboards that update as the tournament unfolds. Built end-to-end as a personal challenge and shipped for real players to use all summer.",
     stack: ["Next.js", "TypeScript", "Render", "Neon", "Cloudflare R2", "Vibes"],
-    href: "https://sportssweepstakes.co.uk/",
+    /* href: "https://sportssweepstakes.co.uk/" — offline for now. */
+    pending: true,
   },
   {
     id: "mak99-interiors",
@@ -90,6 +93,11 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
             >
               live ↗
             </a>
+          )}
+          {project.pending && (
+            <span className="project-link project-link-pending faux-mono">
+              Coming back soon
+            </span>
           )}
           {project.locked && (
             <a

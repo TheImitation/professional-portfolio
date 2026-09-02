@@ -138,6 +138,19 @@
   background: rgba(125, 249, 255, 0.1);
 }
 
+/* Live site is down for now: same pill, but static — nothing to click. */
+.project-link-pending {
+  color: var(--mist);
+  border-color: rgba(255, 255, 255, 0.22);
+  border-style: dashed;
+  cursor: default;
+}
+
+.project-link-pending:hover {
+  background: none;
+  transform: none;
+}
+
 .project-description {
   color: var(--mist);
   font-size: 0.95rem;
