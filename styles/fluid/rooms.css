@@ -112,17 +112,23 @@
 .plates-4 > .fluid-plate:nth-child(3) { animation-range: cover 50% cover 71%; }
 .plates-4 > .fluid-plate:nth-child(4) { animation-range: cover 68% cover 89%; }
 
+.plates-5 > .fluid-plate:nth-child(1) { animation-range: cover 14% cover 32%; }
+.plates-5 > .fluid-plate:nth-child(2) { animation-range: cover 29% cover 47%; }
+.plates-5 > .fluid-plate:nth-child(3) { animation-range: cover 44% cover 62%; }
+.plates-5 > .fluid-plate:nth-child(4) { animation-range: cover 59% cover 77%; }
+.plates-5 > .fluid-plate:nth-child(5) { animation-range: cover 74% cover 92%; }
+
 /* every room's ground: plain alpha, tinted by the weather underneath */
 .air-approach::before  { background: radial-gradient(120% 80% at 50% 62%, transparent 0%, rgb(0 0 0 / 0.58) 74%); }
 .air-ganzfeld::before  { background: radial-gradient(100% 70% at 50% 46%, rgb(255 255 255 / 0.13) 0%, transparent 68%); }
 .air-colonnade::before { background: radial-gradient(70% 60% at 50% 46%, transparent 0%, rgb(0 0 0 / 0.62) 78%); }
 .air-horizon::before   { background: rgb(0 0 0 / 0.48); }
 .air-volume::before    { background: radial-gradient(90% 70% at 60% 40%, rgb(255 255 255 / 0.15) 0%, transparent 58%, rgb(0 0 0 / 0.5) 92%); }
-.air-field::before     { background: radial-gradient(85% 65% at 50% 52%, transparent 0%, rgb(0 0 0 / 0.6) 80%); }
+.air-field::before     { background: radial-gradient(85% 65% at 50% 52%, transparent 0%, rgb(0 0 0 / 0.42) 82%); }
 .air-egress::before {
   background:
     radial-gradient(130% 85% at 50% 0%, rgb(255 255 255 / 0.11) 0%, transparent 62%),
-    linear-gradient(180deg, transparent 0%, rgb(0 0 0 / 0.55) 74%);
+    linear-gradient(180deg, transparent 0%, rgb(0 0 0 / 0.38) 78%);
 }
 
 
@@ -221,6 +227,37 @@
   white-space: nowrap;
 }
 
+/* education, now that there is some to show */
+.about-edu { display: grid; gap: clamp(0.8rem, 2.4vh, 1.4rem); align-content: center; }
+.about-edu ul { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(0.7rem, 2vh, 1.2rem); }
+.about-edu li {
+  display: grid;
+  gap: 0.25em;
+  padding-block-end: clamp(0.7rem, 2vh, 1.2rem);
+  border-block-end: 1px solid rgb(189 240 255 / 0.12);
+}
+.about-edu li:last-child { border-block-end: 0; padding-block-end: 0; }
+.about-edu b {
+  font-family: var(--font-body), sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.05rem, 0.98rem + 0.7vw, 1.6rem);
+  letter-spacing: -0.02em;
+  color: var(--f-chalk);
+}
+.about-edu span {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--f-mist);
+}
+
+.hero-chips { display: flex; flex-wrap: wrap; gap: 0.5rem 1.1rem; align-items: center; }
+.hero-chip.quiet {
+  color: var(--f-mist);
+  padding-inline-start: 1.1em;
+  border-inline-start: 1px solid rgb(189 240 255 / 0.25);
+}
+
 /* the role ticker, restored from the live hero */
 .role-ticker {
   --row: clamp(1.8rem, 1.5rem + 1vw, 2.4rem);
@@ -273,31 +310,6 @@
   border-radius: 50%;
   background: var(--f-ember);
   box-shadow: 0 0 10px 2px rgb(255 180 84 / 0.6);
-}
-.scroll-cue {
-  position: absolute;
-  z-index: 2;
-  inset-block-end: clamp(1.6rem, 5vh, 3.4rem);
-  display: grid;
-  justify-items: center;
-  gap: 0.9em;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.56rem;
-  text-transform: uppercase;
-  letter-spacing: 0.4em;
-  color: var(--f-mist);
-  text-decoration: none;
-}
-.scroll-cue i {
-  width: 1px;
-  height: clamp(2.2rem, 6vh, 3.6rem);
-  background: linear-gradient(currentColor, transparent);
-  transform-origin: 50% 0;
-  animation: cue-pulse 4.2s var(--f-slow) infinite;
-}
-@keyframes cue-pulse {
-  0%, 100% { scale: 1 0.2; opacity: 0.25; }
-  50%      { scale: 1 1;   opacity: 0.9; }
 }
 
 
@@ -632,28 +644,65 @@
 
 
 /* ╔══════════════════════════════════════════════════════════════════════╗
-   ║  vi · FIELD — testimonials in the mote field                         ║
+   ║  v · VOLUME + vi · FIELD + vii · EGRESS — one starfield across all   ║
+   ║                                                                      ║
+   ║  The starfield is deliberately NOT confined to a room. Its wrapper   ║
+   ║  spans the last THREE, which lets it:                                ║
+   ║                                                                      ║
+   ║    - ghost in at a third opacity while you are still reading the     ║
+   ║      work, so the scenes dissolve into each other over thousands of  ║
+   ║      pixels instead of cutting over one viewport                      ║
+   ║    - hold at full through the testimonials and the closing notes     ║
+   ║    - keep zooming all the way to the foot of the document, with the  ║
+   ║      content riding on top of it the whole way                       ║
+   ║                                                                      ║
+   ║  `cover 0%` is the wrapper's top edge at the viewport bottom, one    ║
+   ║  viewport before the work. `contain 100%` is its bottom edge at the  ║
+   ║  viewport bottom — which IS the end of the page. Both exact, so      ║
+   ║  neither drifts when a room's height changes.                        ║
    ╚══════════════════════════════════════════════════════════════════════╝ */
-.motes {
-  position: absolute;
+.tail { view-timeline: --tail block; }
+
+.starfield {
+  position: fixed;
   inset: 0;
-  transform-style: preserve-3d;
-  animation-name: fluid-motes;
+  z-index: 0;                 /* above the rooms' air, below their content */
+  pointer-events: none;
+  perspective: 900px;
+  animation-name: starfield-in;
   animation-duration: auto;
   animation-timing-function: linear;
   animation-fill-mode: both;
-  animation-timeline: --room;
+  animation-timeline: --tail;
   animation-range: cover 0% cover 100%;
 }
-@keyframes fluid-motes {
-  from { transform: translateZ(-2100px) rotate(-2.2deg); }
-  to   { transform: translateZ(850px)   rotate(2.2deg); }
+/* quiet behind the work, full by the time the testimonials arrive */
+@keyframes starfield-in {
+  0%        { opacity: 0; }
+  22%       { opacity: 0.34; }
+  48%, 100% { opacity: 1; }
 }
-.motes i {
+
+.starfield-depth {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation-name: starfield-zoom;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --tail;
+  animation-range: cover 0% contain 100%;
+}
+@keyframes starfield-zoom {
+  from { transform: translateZ(-3200px) rotate(-3.5deg); }
+  to   { transform: translateZ(1150px)  rotate(3.5deg); }
+}
+.starfield-depth i {
   position: absolute;
   inset: -34%;
-  transform: translateZ(calc(var(--i) * -315px));
-  opacity: calc(0.9 - var(--i) * 0.07);
+  transform: translateZ(calc(var(--i) * -330px));
+  opacity: calc(0.92 - var(--i) * 0.06);
   background-size: 21vmin 21vmin;
   background-image:
     radial-gradient(2.1px 2.1px at 14% 22%, rgb(234 251 255 / 0.9), transparent 100%),
@@ -663,6 +712,7 @@
     radial-gradient(1.8px 1.8px at 24% 88%, rgb(234 251 255 / 0.9), transparent 100%),
     radial-gradient(1.4px 1.4px at 72% 78%, rgb(234 251 255 / 0.9), transparent 100%);
 }
+
 .quote-plate {
   position: relative;
   z-index: 3;
@@ -754,7 +804,8 @@
 .no-sdt .fluid-label { animation-name: none; opacity: 1; visibility: visible; translate: none; }
 .no-sdt .fluid-plate:not(:first-child) { display: none; }
 .no-sdt .corridor { transform: translateZ(calc(-1000px + var(--p, 0) * 8500px)); }
-.no-sdt .motes    { transform: translateZ(calc(-2100px + var(--p, 0) * 2950px)); }
+.no-sdt .starfield { opacity: 1; animation-name: none; }
+.no-sdt .starfield-depth { transform: translateZ(calc(-3200px + var(--page, 0) * 4350px)); }
 .no-sdt .bloom    { scale: calc(0.5 + var(--p, 0) * 0.8); }
 .no-sdt .aperture { scale: calc(0.18 + var(--p, 0) * 1.62); opacity: 0.55; }
 .no-sdt .portrait { animation-name: none; transform: perspective(1200px) rotateY(-3deg) scale(1); }
@@ -780,8 +831,6 @@
   .hero-actions { gap: 0.45rem; }
   .hero-actions .fluid-btn { padding: 0.7em 1.05em; font-size: 0.62rem; letter-spacing: 0.12em; }
   #approach .fluid-label { display: none; }
-  #approach .scroll-cue { inset-block-end: clamp(0.8rem, 2.5vh, 1.6rem); }
-  #approach .scroll-cue i { height: clamp(1.4rem, 3.5vh, 2.2rem); }
 }
 
 @media (max-width: 760px) {
@@ -794,14 +843,16 @@
 /* ── reduced motion: the camera stops, the atmosphere still travels with
    the reader's own scrolling, and every room settles into one still view ── */
 @media (prefers-reduced-motion: reduce) {
-  .glass-turn, .scroll-cue i, .role-ticker ul, .role-ticker::after { animation: none; }
+  .glass-turn, .role-ticker ul, .role-ticker::after { animation: none; }
   .portrait { animation-name: none; transform: perspective(1200px) rotateY(-3deg) scale(1); }
   .glass-turn { transform: rotateY(-24deg); }
-  .corridor, .motes, .glass, .bloom, .aperture, .skyspace, .skyspace .line {
+  .corridor, .starfield, .starfield-depth, .glass, .bloom, .aperture,
+  .skyspace, .skyspace .line {
     animation-name: none;
   }
   .corridor { transform: translateZ(-150px); }
-  .motes    { transform: translateZ(-500px) rotate(-1deg); }
+  .starfield { opacity: 1; }
+  .starfield-depth { transform: translateZ(-600px) rotate(-1deg); }
   .glass    { transform: rotateX(6deg) scale(0.95); }
   .bloom    { scale: 1.05; }
   .aperture { scale: 1.2; opacity: 0.55; }

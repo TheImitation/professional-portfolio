@@ -335,6 +335,75 @@ body:has(.fluid) { overflow-x: clip; }
 .fluid-ticks a:hover { width: 24px; }
 .fluid-ticks a.here { width: 28px; background: var(--f-glow); }
 
+/* ── the tour bar ───────────────────────────────────────────────────────
+   Always states which of three things is happening — waiting, driving, or
+   handing control back — because a page that scrolls itself without saying
+   so reads as broken rather than as a feature. -------------------------- */
+.fluid-tour {
+  position: fixed;
+  inset-block-end: clamp(1.4rem, 4vh, 2.6rem);
+  inset-inline: 0;
+  z-index: 53;
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  pointer-events: none;
+}
+.fluid-tour-cue {
+  width: 1px;
+  height: clamp(1.8rem, 5vh, 3rem);
+  background: linear-gradient(var(--f-mist), transparent);
+  transform-origin: 50% 100%;
+  animation: cue-pulse 4.2s var(--f-slow) infinite;
+}
+.fluid-tour-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.6em 1.1em;
+  border: 1px solid rgb(189 240 255 / 0.18);
+  border-radius: 999px;
+  background: rgb(6 15 26 / 0.55);
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(0.58rem, 0.55rem + 0.12vw, 0.68rem);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--f-mist);
+  cursor: pointer;
+  transition: color 0.35s, border-color 0.35s, background 0.35s;
+}
+.fluid-tour-btn:hover,
+.fluid-tour-btn:focus-visible { color: var(--f-chalk); border-color: rgb(189 240 255 / 0.45); }
+.fluid-tour-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.fluid-tour.is-touring .fluid-tour-dot {
+  background: var(--f-ember);
+  box-shadow: 0 0 10px 2px rgb(255 180 84 / 0.6);
+  animation: tour-pulse 2.4s ease-in-out infinite;
+}
+.fluid-tour.is-paused .fluid-tour-dot { background: var(--f-glow); }
+.fluid-tour.is-touring .fluid-tour-label,
+.fluid-tour.is-done .fluid-tour-label { color: var(--f-chalk); }
+@keyframes cue-pulse {
+  0%, 100% { scale: 1 0.2; opacity: 0.25; }
+  50%      { scale: 1 1;   opacity: 0.9; }
+}
+@keyframes tour-pulse {
+  0%, 100% { opacity: 0.45; scale: 0.85; }
+  50%      { opacity: 1;    scale: 1.15; }
+}
+
+@media (max-width: 560px) {
+  .fluid-tour-btn { max-width: calc(100vw - 2 * var(--f-pad)); }
+  .fluid-tour-label { white-space: normal; text-align: center; line-height: 1.5; }
+}
+
 /* ── shared bits ───────────────────────────────────────────────────────── */
 .fluid-btn {
   display: inline-block;
@@ -386,6 +455,7 @@ body:has(.fluid) { overflow-x: clip; }
 
 @media (prefers-reduced-motion: reduce) {
   .fluid-in, .fluid-label { animation-name: none; opacity: 1; translate: none; }
-  .fluid-logo .lc, .fluid-shimmer { animation: none; }
+  .fluid-logo .lc, .fluid-shimmer, .fluid-tour-cue,
+  .fluid-tour.is-touring .fluid-tour-dot { animation: none; }
   .fluid-shimmer { color: var(--f-glow); background-image: none; }
 }

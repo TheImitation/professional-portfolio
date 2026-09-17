@@ -17,7 +17,7 @@ export interface Stat
 export const STATS: Stat[] = [
   { value: "5", unit: "years", label: "engineering at IBM" },
   { value: "1st", unit: "of its kind", label: "successful AI platform for public sector clients" },
-  { value: "100%", unit: "self-taught", label: "engineer, consultant & architect" },
+  { value: "MSc", unit: "first class", label: "Digital Technology Solutions Specialist, Northeastern" },
 ];
 
 export interface LogLine
@@ -28,7 +28,7 @@ export interface LogLine
 
 export const LOG_LINES: LogLine[] = [
   { prompt: "whoami", output: "Nic Defaux — Senior Software Engineer & Technical Strategist" },
-  { prompt: "cat origin_story.txt", output: "No degree pipeline, no bootcamp script. Self-taught from first principles — engineer, then consultant, then architect." },
+  { prompt: "cat origin_story.txt", output: "A biology degree, then a Level 5 software engineering apprenticeship with Distinction, then an MSc in Digital Technology Solutions — First. Not the standard computer science pipeline; every step of it earned." },
   { prompt: "history | grep IBM", output: "Five years building and rebuilding AI platforms; delivered the first successful AI platform for public sector clients, a Generative AI centre of excellence." },
   { prompt: "echo $PERSONALITY", output: "Laid-back, nerdy, heart firmly on sleeve. Will absolutely talk your ear off about elegant architectures." },
 ];
@@ -139,6 +139,15 @@ export const PROJECTS: Project[] = [
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
     href: "https://www.mak99interiors.co.uk/",
   },
+  {
+    id: "seqflow",
+    period: "Ongoing · Solo build",
+    title: "seqflow — one source of truth for system design",
+    role: "Solo build — design through implementation",
+    description:
+      "A DSL-driven single source of truth for sequence diagrams, architecture inference, interface definitions and schema management — built to live alongside the code from the first commit rather than rot in a wiki. Hybrid text and visual canvas, message-contract modelling, and exports straight to OpenAPI and AsyncAPI.",
+    stack: ["TypeScript", "DSL design", "OpenAPI", "AsyncAPI"],
+  },
 ];
 
 export interface Review
@@ -185,10 +194,47 @@ export const REVIEWS: Review[] = [
   },
 ];
 
+export interface Credential
+{
+  qualification: string;
+  institution?: string;
+  grade: string;
+  years: string;
+}
+
+export const EDUCATION: Credential[] = [
+  {
+    qualification: "MSc Digital Technology Solutions Specialist",
+    institution: "Northeastern University",
+    grade: "First",
+    years: "2024 – 2026",
+  },
+  {
+    qualification: "Software Engineering Apprenticeship, Level 5",
+    grade: "Distinction",
+    years: "2021 – 2023",
+  },
+  {
+    qualification: "BSc Biology",
+    institution: "University of York",
+    grade: "2:1",
+    years: "2016 – 2019",
+  },
+];
+
+/* Contracting particulars — the things a prospective client checks first,
+   and which the site never actually said out loud. */
+export const CONTRACTING = {
+  clearance: "SC Cleared",
+  dayRate: "from £650 / day",
+  notice: "1 month notice",
+  working: "London · Remote · Hybrid",
+};
+
 /* The hero's vertical role ticker. */
 export const JOB_ROLES = [
   "Senior Software Engineer",
   "Technical Strategist",
   "AI Platform Architect",
-  "Self-Taught & Proud Of It",
+  "GenAI & Agentic Systems",
 ];

@@ -3,9 +3,10 @@ import fs from "fs";
 import path from "path";
 import type { Metadata } from "next";
 import { CV_PATH, PERSON, SOCIALS } from "@/datasets/Site";
-import { JOB_ROLES, LOG_LINES, PROJECTS, REVIEWS, SKILL_DOMAINS, STATS } from "@/datasets/Content";
+import { CONTRACTING, EDUCATION, JOB_ROLES, LOG_LINES, PROJECTS, REVIEWS, SKILL_DOMAINS, STATS } from "@/datasets/Content";
 import FluidChrome, { type RoomRef } from "@/components/fluid/FluidChrome";
 import FluidChannels from "@/components/fluid/FluidChannels";
+import FluidTour from "@/components/fluid/FluidTour";
 import "@/styles/fluid/atmosphere.css";
 import "@/styles/fluid/rooms.css";
 
@@ -37,6 +38,7 @@ export default function FluidPage()
     <div className="fluid">
       <div className="fluid-weather" aria-hidden="true" />
       <FluidChrome rooms={ROOMS} />
+      <FluidTour />
 
       <main>
         <h1 className="fluid-sr">
@@ -50,9 +52,12 @@ export default function FluidPage()
             <div className="aperture" aria-hidden="true" />
             <div className="approach-grid">
               <div className="hero-copy">
-                <p className="hero-chip">
-                  <i aria-hidden="true" />
-                  {PERSON.availability.toLowerCase()}
+                <p className="hero-chips">
+                  <span className="hero-chip">
+                    <i aria-hidden="true" />
+                    {PERSON.availability.toLowerCase()}
+                  </span>
+                  <span className="hero-chip quiet">{CONTRACTING.clearance}</span>
                 </p>
                 <h2 className="fluid-display fluid-xl hero-name">
                   Nic Defaux <b className="fluid-shimmer">TheImitation</b>
@@ -87,10 +92,6 @@ export default function FluidPage()
                 <figcaption>headshot.jpg — backlit</figcaption>
               </figure>
             </div>
-            <a className="scroll-cue" href="#ganzfeld" aria-label="Enter the exhibition">
-              <span>enter</span>
-              <i aria-hidden="true" />
-            </a>
             <div className="fluid-label">
               <span>Room i</span>
               <b>Nic Defaux, backlit</b>
@@ -100,13 +101,13 @@ export default function FluidPage()
         </section>
 
         {/* ─── ii · GANZFELD — about ────────────────────────────────── */}
-        <section className="fluid-room" id="ganzfeld" style={{ ["--span" as string]: 280 } as React.CSSProperties}>
+        <section className="fluid-room" id="ganzfeld" style={{ ["--span" as string]: 340 } as React.CSSProperties}>
           <div className="fluid-air air-ganzfeld" aria-hidden="true" />
           <div className="fluid-stage">
             <div className="bloom" aria-hidden="true" />
             {/* two plates: the log arrives line by line, then the numbers.
                 One screen could not hold both legibly. */}
-            <div className="fluid-plates plates-2 about-body">
+            <div className="fluid-plates plates-3 about-body">
               <div className="fluid-plate about-log">
                 {LOG_LINES.map((line) => (
                   <div key={line.prompt}>
@@ -122,6 +123,21 @@ export default function FluidPage()
                     <p>{stat.label}</p>
                   </div>
                 ))}
+              </div>
+              <div className="fluid-plate about-edu">
+                <p className="fluid-over">the route here</p>
+                <ul>
+                  {EDUCATION.map((credential) => (
+                    <li key={credential.qualification}>
+                      <b>{credential.qualification}</b>
+                      <span>
+                        {[credential.institution, credential.grade, credential.years]
+                          .filter(Boolean)
+                          .join("  ·  ")}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
             <div className="fluid-label">
@@ -179,8 +195,13 @@ export default function FluidPage()
           </div>
         </section>
 
+        {/* ─── v · VOLUME + vi · FIELD + vii · EGRESS ────────────────
+            Wrapped together so one starfield spans all three: it ghosts in
+            behind the work, reaches full by the testimonials, and keeps
+            zooming to the foot of the page with the content on top. */}
+        <div className="tail">
         {/* ─── v · VOLUME — projects ────────────────────────────────── */}
-        <section className="fluid-room" id="volume" style={{ ["--span" as string]: 440 } as React.CSSProperties}>
+        <section className="fluid-room" id="volume" style={{ ["--span" as string]: 520 } as React.CSSProperties}>
           <div className="fluid-air air-volume" aria-hidden="true" />
           <div className="fluid-stage fluid-3d">
             {/* seven panes — the platform's architectural reincarnations */}
@@ -189,7 +210,7 @@ export default function FluidPage()
                 {[-3, -2, -1, 0, 1, 2, 3].map((i) => <i key={i} style={depth(i)} />)}
               </div>
             </div>
-            <div className="fluid-plates plates-4">
+            <div className="fluid-plates plates-5">
               {PROJECTS.map((project) => (
                 <article className="fluid-plate work-plate" key={project.id}>
                   <p className="work-period">{project.period}</p>
@@ -225,10 +246,7 @@ export default function FluidPage()
         {/* ─── vi · FIELD — testimonials ────────────────────────────── */}
         <section className="fluid-room" id="field" style={{ ["--span" as string]: 360 } as React.CSSProperties}>
           <div className="fluid-air air-field" aria-hidden="true" />
-          <div className="fluid-stage fluid-3d">
-            <div className="motes" aria-hidden="true">
-              {Array.from({ length: 8 }, (_, i) => <i key={i} style={depth(i)} />)}
-            </div>
+          <div className="fluid-stage">
             <div className="fog soft" aria-hidden="true" />
             <div className="fluid-plates plates-4">
               {REVIEWS.map((review) => (
@@ -248,7 +266,7 @@ export default function FluidPage()
             <div className="fluid-label">
               <span>Room vi</span>
               <b>Field — what colleagues said</b>
-              <span>eight point-planes in depth, parallax by translateZ</span>
+              <span>eight point-planes in depth, zooming to the end of the page</span>
             </div>
           </div>
         </section>
@@ -266,10 +284,12 @@ export default function FluidPage()
               <div className="fluid-in">
                 <h3>Available for</h3>
                 <p>Currently <strong>{PERSON.availability.toLowerCase()}</strong> — {PERSON.services}.</p>
-                <p>
-                  No address harvesting here: both channels decode client-side,
-                  only when you knock.
-                </p>
+                <ul className="egress-list">
+                  <li>{CONTRACTING.clearance}</li>
+                  <li>{CONTRACTING.dayRate}</li>
+                  <li>{CONTRACTING.notice}</li>
+                  <li>{CONTRACTING.working}</li>
+                </ul>
               </div>
 
               <div className="fluid-in">
@@ -310,6 +330,13 @@ export default function FluidPage()
             <div className="fluid-in"><FluidChannels /></div>
           </div>
         </section>
+
+        <div className="starfield" aria-hidden="true">
+          <div className="starfield-depth">
+            {Array.from({ length: 8 }, (_, i) => <i key={i} style={depth(i)} />)}
+          </div>
+        </div>
+        </div>
       </main>
     </div>
   );
