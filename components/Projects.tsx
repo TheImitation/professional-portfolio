@@ -4,70 +4,10 @@ import React from "react";
 import { useInView } from "react-intersection-observer";
 import { SOCIALS } from "@/datasets/Site";
 import CarouselDots, { useCarouselIndex } from "./CarouselDots";
+import { PROJECTS as projects, type Project } from "@/datasets/Content";
 import "../styles/components/Projects.css";
 
 const githubUrl = SOCIALS.find((social) => social.label === "GitHub")?.url ?? "https://github.com/TheImitation/";
-
-interface Project
-{
-  id: string;
-  period: string;
-  title: string;
-  role: string;
-  description: string;
-  outcomes?: string[];
-  stack: string[];
-  href?: string;
-  locked?: boolean;
-  /* Site is temporarily down — show a badge instead of a dead `href`. */
-  pending?: boolean;
-}
-
-const projects: Project[] = [
-  {
-    id: "lighthouse",
-    period: "IBM · Public Sector",
-    title: "Generative AI Lighthouse — Centre of Excellence",
-    role: "Senior Technical Consultant",
-    description:
-      "Propositions and proof-of-concept solutions showing public sector clients what Generative AI can actually do: bespoke AWS cloud architectures, foundational software, and GPT-4-powered showcases that modernised technical and customer-support capabilities for genuine service excellence.",
-    outcomes: ["8 PoCs delivered", "2 MVPs shipped", "AI ethics framework", "Strategic AI pipeline"],
-    stack: ["AI Platform", "Cloud Architecture", "Technical Strategy", "Business Analysis"],
-    locked: true,
-  },
-  {
-    id: "ai-platform",
-    period: "IBM · Public Sector",
-    title: "The First Successful Public-Sector AI Platform",
-    role: "Engineer → Consultant → Architect",
-    description:
-      "Built, stress-tested, torn down and rebuilt. The platform survived full architectural reincarnations on its way to becoming the first successful AI platform delivered for public sector clients — and the blueprint I still measure every platform against.",
-    outcomes: ["£4m programme", "+77% process throughput", "10/10 NPS"],
-    stack: ["AWS", "Meta", "TypeScript", "Kubernetes", "Terraform"],
-    locked: true,
-  },
-  {
-    id: "wc-sweeps",
-    period: "2026 · Personal challenge",
-    title: "World Cup 2026 Sweepstakes Tracker",
-    role: "Solo build — design to production",
-    description:
-      "A production sweepstakes platform for the 2026 World Cup: live brackets, draw management and leaderboards that update as the tournament unfolds. Built end-to-end as a personal challenge and shipped for real players to use all summer.",
-    stack: ["Next.js", "TypeScript", "Render", "Neon", "Cloudflare R2", "Vibes"],
-    /* href: "https://sportssweepstakes.co.uk/" — offline for now. */
-    pending: true,
-  },
-  {
-    id: "mak99-interiors",
-    period: "2026 · Freelance client",
-    title: "MAK99 Interiors — Studio Site Rebuild",
-    role: "Freelance build — redesign to production",
-    description:
-      "A full Next.js rebuild of a Washington D.C. interior design studio's marketing site: filterable project galleries with lightbox carousels, client testimonials, an Instagram feed and SEO groundwork (JSON-LD, OG cards, sitemap). Delivered end-to-end as billed freelance client work, from redesign to production launch.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
-    href: "https://www.mak99interiors.co.uk/",
-  },
-];
 
 const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, index }) =>
 {

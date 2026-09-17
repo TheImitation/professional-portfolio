@@ -3,51 +3,8 @@
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import CarouselDots, { useCarouselIndex } from "./CarouselDots";
+import { REVIEWS as reviews } from "@/datasets/Content";
 import "../styles/components/Testimonials.css";
-
-interface Review
-{
-  quote: string;
-  name: string;
-  role: string;
-  initials: string;
-  linkedin?: string;
-}
-
-const reviews: Review[] = [
-  {
-    quote:
-      "His technical expertise, energy, and leadership have been central to the success… He has driven discussions about future opportunities and has been crucial to helping us design a realistic, yet comprehensive solution.",
-    name: "Mark Hughes-D'Aeth",
-    role: "Managing Consultant",
-    initials: "MH",
-    linkedin: "https://uk.linkedin.com/in/mark-hughes-d-aeth-2015b268",
-  },
-  {
-    quote:
-      "The pace at which you delivered features in the run-up to production was truly impressive — your contribution was critical to our success. Nic deep-dives into complex technical issues, not only resolving them but taking the time to coach and mentor.",
-    name: "Kaspars Strods",
-    role: "Managing Technical Consultant",
-    initials: "KS",
-    linkedin: "https://uk.linkedin.com/in/kaspars-s",
-  },
-  {
-    quote:
-      "His leadership as a dev is his standout quality… has not only developed the frontend but also mentored another dev along the way, allowing her to flourish and contribute strongly to the team.",
-    name: "James Skinner",
-    role: "Data Scientist",
-    initials: "JS",
-    linkedin: "https://uk.linkedin.com/in/james-skinner-26004a1a4",
-  },
-  {
-    quote:
-      "You have solid technical skills, and you take a lot of responsibility… the team clearly trusts and relies on you… you bring a bit of fun and energy to the day-to-day. It's a great mix that really adds to the team.",
-    name: "Nick Wright",
-    role: "Senior Managing Consultant",
-    initials: "NW",
-    linkedin: "https://uk.linkedin.com/in/nickwrightnz",
-  },
-];
 
 const Testimonials: React.FC = () =>
 {

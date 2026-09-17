@@ -1,0 +1,340 @@
+/* ==========================================================================
+   FLUID — prototype atmosphere
+   --------------------------------------------------------------------------
+   The gallery mechanics from the Cascading experiment, re-pointed at FAUX.
+
+   One idea carries the whole page: a single hue travels from `iris` (the
+   cold blues, graded like the eyes in the old headshot) out through violet
+   and magenta to `ember` (the warmth sampled from the sunset in the new
+   one) — and then back home to iris. Cold to warm to cold, across the
+   length of the scroll. Old photo to new photo.
+
+   PERFORMANCE IS LOAD-BEARING HERE, and every rule below is the second
+   draft. The first version derived every colour from the travelling hue
+   and the screen flashed on every frame. The constraints that fixed it:
+
+     1. ONE property reads the travelling variables — `.fluid-weather`'s
+        background. Everything above it is plain black/white alpha, so the
+        hue tints the page the way light tints a room. Nothing else needs
+        re-rasterising when the hue moves.
+     2. The travelling vars are `inherits: false`. Inherited on :root, each
+        frame forced a style-recalc walk of the whole tree (~2.2ms/frame
+        before a pixel was painted). Scoped, the same change costs 0.06ms.
+     3. Rooms animate `visibility`, not just `opacity`. A layer with an
+        animating opacity stays resident on the GPU even at 0 — nine rooms
+        held ~200MB of layer surface at once and the compositor evicted
+        tiles, which is what the flashing actually was.
+     4. No `backdrop-filter`, no animated blur radii, no keyframe that
+        touches a layout property.
+   ========================================================================== */
+
+@property --fh { syntax: "<number>";     inherits: false; initial-value: 232; }
+@property --fc { syntax: "<number>";     inherits: false; initial-value: .03; }
+@property --fl { syntax: "<percentage>"; inherits: false; initial-value: 5%;  }
+
+.fluid {
+  /* static light and ink — none of these ever invalidate */
+  --f-lume: rgb(234 251 255);
+  --f-glow: rgb(189 240 255);
+  --f-chalk: rgb(232 244 251);
+  --f-mist: rgb(157 184 201);
+  --f-ember: #ffb454;
+
+  --f-pad: clamp(1.35rem, 4.5vw, 5rem);
+  --f-slow: cubic-bezier(0.32, 0, 0.18, 1);
+
+  position: relative;
+  color: var(--f-chalk);
+}
+
+/* ── the one animated paint ───────────────────────────────────────────────
+   Fixed, so it is one screen of solid colour. On `body` this same fill sat
+   in the document-sized scrolling layer and invalidated its tiles every
+   frame. ------------------------------------------------------------------ */
+.fluid-weather {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: oklch(var(--fl) var(--fc) var(--fh));
+
+  animation-name: fluid-atmosphere;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: scroll(root block);
+}
+
+/* Hue numbers only ever increase then decrease — never crossing green,
+   which is what a naive 232 -> 62 interpolation would pass straight
+   through. Values above 360 wrap; `414` is ember, `330` is on the way home. */
+@keyframes fluid-atmosphere {
+  0%   { --fh: 232; --fc: .030; --fl: 5%;  }   /* iris — night */
+  13%  { --fh: 244; --fc: .055; --fl: 10%; }
+  27%  { --fh: 276; --fc: .065; --fl: 16%; }   /* violet drift */
+  41%  { --fh: 312; --fc: .070; --fl: 13%; }
+  54%  { --fh: 348; --fc: .065; --fl: 18%; }
+  66%  { --fh: 386; --fc: .075; --fl: 22%; }   /* = 26, ember arriving */
+  78%  { --fh: 414; --fc: .080; --fl: 26%; }   /* = 54, ember peak */
+  89%  { --fh: 330; --fc: .055; --fl: 14%; }   /* turning back */
+  100% { --fh: 232; --fc: .028; --fl: 5%;  }   /* iris — home */
+}
+
+/* the prototype takes over the whole viewport; the standing chrome would
+   only collide with it */
+body:has(.fluid) .faux-veil,
+body:has(.fluid) .side-panel,
+body:has(.fluid) .navbar { display: none; }
+body:has(.fluid) { overflow-x: clip; }
+
+/* ── type ─────────────────────────────────────────────────────────────── */
+.fluid-display {
+  font-family: var(--font-body), "Space Grotesk", sans-serif;
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.fluid-xl { font-size: min(clamp(2.6rem, 1rem + 8.5vw, 7.5rem), 19svh); }
+.fluid-l  { font-size: min(clamp(2rem, 1rem + 4.6vw, 4.4rem), 15svh); }
+.fluid-m  { font-size: min(clamp(1.5rem, 1rem + 2.4vw, 2.6rem), 11svh); }
+
+.fluid-over {
+  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  font-size: clamp(0.6rem, 0.57rem + 0.12vw, 0.72rem);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--f-mist);
+}
+
+.fluid-lede {
+  max-width: 42ch;
+  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.2rem);
+  line-height: 1.55;
+  color: var(--f-chalk);
+  opacity: 0.82;
+  text-wrap: pretty;
+}
+
+.fluid-mono {
+  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  font-size: clamp(0.68rem, 0.64rem + 0.16vw, 0.82rem);
+}
+
+/* ── wall label: gallery convention, portfolio content ──────────────────── */
+.fluid-label {
+  position: absolute;
+  z-index: 3;
+  inset-block-end: clamp(1.6rem, 5.5vh, 3.4rem);
+  inset-inline-start: var(--f-pad);
+  max-width: 26ch;
+  padding-inline-start: 0.9rem;
+  border-inline-start: 1px solid rgb(189 240 255 / 0.3);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  line-height: 1.8;
+  color: var(--f-mist);
+
+  /* a caption runs on a tighter range than the work it describes, so two
+     never stack at a join */
+  animation-name: fluid-caption;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 20% cover 80%;
+}
+@keyframes fluid-caption {
+  0%       { opacity: 0; translate: 0 0.5rem; }
+  22%, 78% { opacity: 0.85; translate: 0 0; }
+  100%     { opacity: 0; translate: 0 0.5rem; }
+}
+.fluid-label b { display: block; color: var(--f-glow); font-weight: 500; }
+
+/* ── the slow reveal — opacity + translate only, both composited ───────── */
+.fluid-in {
+  animation-name: fluid-reveal;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: view();
+  animation-range: entry 8% cover 46%;
+}
+@keyframes fluid-reveal {
+  from { opacity: 0; translate: 0 1.1rem; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+/* ── chrome ────────────────────────────────────────────────────────────── */
+.fluid-chrome {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1rem, 2.4vw, 1.9rem) var(--f-pad);
+  pointer-events: none;
+  font-family: var(--font-mono), monospace;
+}
+.fluid-chrome a { pointer-events: auto; color: inherit; text-decoration: none; }
+.fluid-mark { display: grid; gap: 0.3em; }
+.fluid-mark b {
+  font-family: var(--font-body), sans-serif;
+  font-weight: 500;
+  font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.2rem);
+  letter-spacing: -0.01em;
+  color: var(--f-chalk);
+}
+.fluid-mark span {
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--f-mist);
+  opacity: 0.75;
+}
+.fluid-where {
+  text-align: right;
+  display: grid;
+  gap: 0.4em;
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--f-mist);
+}
+.fluid-where b { font-size: 1.5em; color: var(--f-chalk); font-weight: 400; }
+
+/* chrome withdraws over the last stretch so it never sits on the contact
+   details */
+.fluid-chrome,
+.fluid-ticks,
+.fluid-rule {
+  animation-name: fluid-withdraw;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: scroll(root block);
+  animation-range: 90% 97%;
+}
+@keyframes fluid-withdraw { from { opacity: 1; } to { opacity: 0; } }
+.no-sdt .fluid-chrome,
+.no-sdt .fluid-ticks,
+.no-sdt .fluid-rule { animation-name: none; }
+
+.fluid-rule {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: 51;
+  height: 1px;
+  pointer-events: none;
+  background: rgb(189 240 255 / 0.12);
+}
+.fluid-rule i {
+  display: block;
+  height: 100%;
+  transform-origin: 0 50%;
+  background: var(--f-glow);
+  opacity: 0.55;
+  animation-name: fluid-progress;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: scroll(root block);
+}
+@keyframes fluid-progress { from { scale: 0 1; } to { scale: 1 1; } }
+.no-sdt .fluid-rule i { scale: var(--page, 0) 1; }
+
+.fluid-ticks {
+  position: fixed;
+  inset-inline-end: var(--f-pad);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  z-index: 52;
+  display: grid;
+  gap: clamp(0.5rem, 1.2vh, 0.9rem);
+  justify-items: end;
+}
+.fluid-ticks a {
+  position: relative;
+  display: block;
+  width: 13px;
+  height: 1px;
+  background: rgb(189 240 255 / 0.32);
+  transition: width 0.45s var(--f-slow), background 0.45s;
+}
+.fluid-ticks a::after { content: ""; position: absolute; inset: -7px -4px; }
+.fluid-ticks a em {
+  position: absolute;
+  inset-inline-end: 21px;
+  inset-block-start: 50%;
+  translate: 0.4rem -50%;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.56rem;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+  color: var(--f-mist);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s, translate 0.35s var(--f-slow);
+}
+.fluid-ticks a:hover em,
+.fluid-ticks a:focus-visible em { opacity: 1; translate: 0 -50%; }
+.fluid-ticks a:hover { width: 24px; }
+.fluid-ticks a.here { width: 28px; background: var(--f-glow); }
+
+/* ── shared bits ───────────────────────────────────────────────────────── */
+.fluid-btn {
+  display: inline-block;
+  padding: 0.85em 1.6em;
+  border: 1px solid rgb(189 240 255 / 0.34);
+  border-radius: 2px;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--f-chalk);
+  text-decoration: none;
+  background: rgb(255 255 255 / 0.04);
+  transition: background 0.35s, border-color 0.35s, color 0.35s, translate 0.35s var(--f-slow);
+  cursor: pointer;
+}
+.fluid-btn:hover,
+.fluid-btn:focus-visible {
+  background: rgb(255 255 255 / 0.1);
+  border-color: rgb(189 240 255 / 0.7);
+  translate: 0 -2px;
+}
+.fluid-btn.solid {
+  background: var(--f-ember);
+  border-color: var(--f-ember);
+  color: #221302;
+}
+.fluid-btn.solid:hover { background: #ffc776; border-color: #ffc776; }
+
+.fluid-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.fluid :focus-visible { outline: 1px solid var(--f-glow); outline-offset: 0.4rem; }
+
+@media (max-width: 760px) {
+  .fluid-ticks a { width: 9px; }
+  .fluid-ticks a.here { width: 18px; }
+  .fluid-label { font-size: 0.62rem; max-width: 20ch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fluid-in, .fluid-label { animation-name: none; opacity: 1; translate: none; }
+}

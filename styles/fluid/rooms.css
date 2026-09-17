@@ -1,0 +1,713 @@
+/* ==========================================================================
+   FLUID — the rooms
+   --------------------------------------------------------------------------
+   Seven rooms, one continuous atmosphere. Each room declares its own
+   timeline; its parts claim sub-ranges of it.
+
+   The join between rooms is exact rather than eyeballed. `entry` is a
+   room's top edge crossing the viewport and `exit` is its bottom edge
+   crossing — and adjacent rooms SHARE that edge, so room n's exit and
+   room n+1's entry are the identical stretch of scroll. Split the fade
+   across two nested elements (both plain `opacity`, both composited) and
+   the pair sums to exactly 1 the whole way across.
+   ========================================================================== */
+
+.fluid-room {
+  position: relative;
+  height: calc(var(--span, 220) * 1svh);
+  view-timeline: --room block;
+}
+
+.fluid-air {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  animation-name: fluid-arrive, fluid-present;
+  animation-duration: auto, auto;
+  animation-timing-function: linear, linear;
+  animation-fill-mode: both, both;
+  animation-timeline: --room, --room;
+  animation-range: entry 0% entry 100%, cover 0% cover 100%;
+}
+.fluid-air::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  animation-name: fluid-depart;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: exit 0% exit 100%;
+}
+@keyframes fluid-arrive { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fluid-depart { from { opacity: 1; } to { opacity: 0; } }
+
+/* Out of range a room is gone, not merely transparent. An animating
+   opacity keeps a layer resident on the GPU; `visibility` retires it. */
+@keyframes fluid-present {
+  0%, 100% { visibility: hidden; }
+  1%, 99%  { visibility: visible; }
+}
+
+/* FIXED, not sticky. A sticky stage hands over by splitting the screen —
+   bottom half of one room, top half of the next — and since each centres
+   its own content, neither room's work is on screen at the join. */
+.fluid-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: clip;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  padding: clamp(4.5rem, 12vh, 7.5rem) var(--f-pad);
+  animation-name: fluid-veil, fluid-present;
+  animation-duration: auto, auto;
+  animation-timing-function: linear, linear;
+  animation-fill-mode: both, both;
+  animation-timeline: --room, --room;
+  animation-range: cover 0% cover 100%, cover 0% cover 100%;
+}
+@keyframes fluid-veil {
+  0%       { opacity: 0; }
+  14%, 86% { opacity: 1; }
+  100%     { opacity: 0; }
+}
+.fluid-stage a,
+.fluid-stage button { pointer-events: auto; }
+.fluid-3d { perspective: 900px; perspective-origin: 50% 46%; }
+
+/* ── plates: one exhibit at a time, large enough to actually read ───────── */
+.fluid-plates {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  max-width: 62rem;
+}
+.fluid-plate {
+  grid-area: 1 / 1;
+  animation-name: fluid-plate;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: --room;
+}
+@keyframes fluid-plate {
+  0%       { opacity: 0; translate: 0 2.2rem; visibility: hidden; }
+  20%, 76% { opacity: 1; translate: 0 0;      visibility: visible; }
+  100%     { opacity: 0; translate: 0 -1.6rem; visibility: hidden; }
+}
+.plates-2 > .fluid-plate:nth-child(1) { animation-range: cover 14% cover 48%; }
+.plates-2 > .fluid-plate:nth-child(2) { animation-range: cover 45% cover 86%; }
+
+.plates-3 > .fluid-plate:nth-child(1) { animation-range: cover 14% cover 40%; }
+.plates-3 > .fluid-plate:nth-child(2) { animation-range: cover 37% cover 63%; }
+.plates-3 > .fluid-plate:nth-child(3) { animation-range: cover 60% cover 86%; }
+
+.plates-4 > .fluid-plate:nth-child(1) { animation-range: cover 14% cover 35%; }
+.plates-4 > .fluid-plate:nth-child(2) { animation-range: cover 32% cover 53%; }
+.plates-4 > .fluid-plate:nth-child(3) { animation-range: cover 50% cover 71%; }
+.plates-4 > .fluid-plate:nth-child(4) { animation-range: cover 68% cover 89%; }
+
+/* every room's ground: plain alpha, tinted by the weather underneath */
+.air-approach::before  { background: radial-gradient(120% 80% at 50% 62%, transparent 0%, rgb(0 0 0 / 0.58) 74%); }
+.air-ganzfeld::before  { background: radial-gradient(100% 70% at 50% 46%, rgb(255 255 255 / 0.13) 0%, transparent 68%); }
+.air-colonnade::before { background: radial-gradient(70% 60% at 50% 46%, transparent 0%, rgb(0 0 0 / 0.62) 78%); }
+.air-horizon::before   { background: rgb(0 0 0 / 0.48); }
+.air-volume::before    { background: radial-gradient(90% 70% at 60% 40%, rgb(255 255 255 / 0.15) 0%, transparent 58%, rgb(0 0 0 / 0.5) 92%); }
+.air-field::before     { background: radial-gradient(85% 65% at 50% 52%, transparent 0%, rgb(0 0 0 / 0.6) 80%); }
+.air-egress::before {
+  background:
+    radial-gradient(130% 85% at 50% 0%, rgb(255 255 255 / 0.11) 0%, transparent 62%),
+    linear-gradient(180deg, transparent 0%, rgb(0 0 0 / 0.55) 74%);
+}
+
+
+/* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  i · APPROACH — the hero, arriving out of an aperture of light       ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+.aperture {
+  position: absolute;
+  z-index: 0;
+  width: min(46vmin, 25rem);
+  aspect-ratio: 3 / 4;
+  background: radial-gradient(58% 48% at 50% 44%,
+    rgb(234 251 255 / 0.5) 0%, rgb(189 240 255 / 0.26) 52%, transparent 78%);
+  animation-name: fluid-aperture;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 6% cover 94%;
+}
+@keyframes fluid-aperture {
+  from { scale: 0.18; opacity: 0.35; }
+  to   { scale: 1.8;  opacity: 0.7; }
+}
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: clamp(0.8rem, 2.6vh, 1.8rem);
+  max-width: 52rem;
+  text-align: center;
+}
+.hero-name { padding-block: 0.06em 0.04em; }
+.hero-name b { font-weight: 500; color: var(--f-glow); }
+.hero-roles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4em 1.1em;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(0.62rem, 0.58rem + 0.16vw, 0.76rem);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--f-mist);
+}
+.hero-roles li { position: relative; }
+.hero-roles li + li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -0.62em;
+  inset-block-start: 50%;
+  width: 3px; height: 3px;
+  translate: 0 -50%;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+}
+.hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.7rem; }
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--f-glow);
+}
+.hero-chip i {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--f-ember);
+  box-shadow: 0 0 10px 2px rgb(255 180 84 / 0.6);
+}
+.scroll-cue {
+  position: absolute;
+  z-index: 2;
+  inset-block-end: clamp(1.6rem, 5vh, 3.4rem);
+  display: grid;
+  justify-items: center;
+  gap: 0.9em;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: var(--f-mist);
+  text-decoration: none;
+}
+.scroll-cue i {
+  width: 1px;
+  height: clamp(2.2rem, 6vh, 3.6rem);
+  background: linear-gradient(currentColor, transparent);
+  transform-origin: 50% 0;
+  animation: cue-pulse 4.2s var(--f-slow) infinite;
+}
+@keyframes cue-pulse {
+  0%, 100% { scale: 1 0.2; opacity: 0.25; }
+  50%      { scale: 1 1;   opacity: 0.9; }
+}
+
+
+/* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  ii · GANZFELD — about: the terminal, condensing out of the light    ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+.bloom {
+  position: absolute;
+  z-index: 0;
+  width: 185vmax;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  /* stops kept close together so the eye cannot find the edge */
+  background: radial-gradient(circle,
+    rgb(255 255 255 / 0.15) 0%,
+    rgb(255 255 255 / 0.115) 32%,
+    rgb(255 255 255 / 0.055) 60%,
+    transparent 82%);
+  animation-name: fluid-bloom;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 0% cover 100%;
+}
+@keyframes fluid-bloom { from { scale: 0.5; } to { scale: 1.3; } }
+
+.about-body {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.4rem, 4vh, 2.6rem);
+  width: 100%;
+  max-width: 60rem;
+}
+.about-log { display: grid; gap: clamp(0.7rem, 2vh, 1.3rem); }
+.about-log > div {
+  animation-name: fluid-reveal;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: --room;
+}
+/* information appears and STAYS — a portfolio is not a light installation */
+.about-log > div:nth-child(1) { animation-range: cover 19% cover 28%; }
+.about-log > div:nth-child(2) { animation-range: cover 23% cover 32%; }
+.about-log > div:nth-child(3) { animation-range: cover 27% cover 36%; }
+.about-log > div:nth-child(4) { animation-range: cover 31% cover 40%; }
+.about-log .prompt {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--f-glow);
+  opacity: 0.85;
+}
+.about-log .prompt span { color: var(--f-ember); }
+.about-log .output {
+  max-width: 62ch;
+  font-size: clamp(0.92rem, 0.88rem + 0.3vw, 1.08rem);
+  line-height: 1.5;
+  color: var(--f-chalk);
+  opacity: 0.8;
+  text-wrap: pretty;
+}
+.about-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.2rem, 5vw, 3.4rem);
+  padding-block-start: clamp(1rem, 3vh, 2rem);
+  border-block-start: 1px solid rgb(189 240 255 / 0.14);
+}
+.about-stats > div { max-width: 20ch; }
+.about-stats b {
+  display: block;
+  font-family: var(--font-body), sans-serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 1rem + 3.2vw, 3.6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--f-glow);
+}
+.about-stats b span {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.32em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--f-mist);
+  white-space: nowrap;      /* "self-taught" must not break at its hyphen */
+}
+.about-stats p {
+  padding-block-start: 0.4em;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--f-mist);
+}
+
+
+/* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  iii · COLONNADE — skills: you travel through the stack             ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+.corridor {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation-name: fluid-dolly;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 0% cover 100%;
+}
+/* travel (8500) exceeds the spread of the arches (6820), so eleven of the
+   twelve pass the camera — you are never at the end of the corridor */
+@keyframes fluid-dolly {
+  from { transform: translateZ(-1000px); }
+  to   { transform: translateZ(7500px); }
+}
+.arch {
+  position: absolute;
+  inset-block: 11%;
+  inset-inline: 17%;
+  transform: translateZ(calc(var(--i) * -620px));
+  border: 1px solid rgb(189 240 255 / 0.4);
+  box-shadow:
+    0 0 70px rgb(189 240 255 / 0.13),
+    inset 0 0 100px rgb(189 240 255 / 0.06);
+}
+/* atmospheric perspective — distance dissolves instead of being clipped */
+.fog {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.5;
+  background: radial-gradient(48% 48% at 50% 46%,
+    rgb(255 255 255 / 0.09) 0%, rgb(255 255 255 / 0.05) 34%,
+    rgb(255 255 255 / 0.02) 58%, transparent 76%);
+}
+.fog.soft { opacity: 0.34; }
+
+.skill-plate {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: clamp(0.5rem, 1.6vh, 1rem);
+  justify-items: start;
+  text-align: left;
+}
+.skill-plate,
+.work-plate,
+.quote-plate { text-shadow: 0 1px 26px rgb(0 0 0 / 0.8); }
+
+.skill-plate ul {
+  display: grid;
+  gap: 0.35em;
+  list-style: none;
+  margin: 0;
+  padding-block-start: 0.5rem;
+}
+.skill-plate li {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(0.72rem, 0.68rem + 0.2vw, 0.88rem);
+  color: var(--f-chalk);
+  opacity: 0.78;
+}
+.skill-plate li::before { content: "— "; color: var(--f-glow); opacity: 0.7; }
+
+
+/* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  iv · HORIZON — the threshold before the work                        ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+.skyspace {
+  position: absolute;
+  inset: -20% 0;
+  z-index: 0;
+  animation-name: fluid-sky;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 0% cover 100%;
+}
+@keyframes fluid-sky {
+  from { translate: 0 14svh; }
+  to   { translate: 0 -10svh; }
+}
+.skyspace .sky {
+  position: absolute;
+  inset-block: 0 50%;
+  inset-inline: 0;
+  background: linear-gradient(180deg,
+    rgb(0 0 0 / 0.5) 0%, transparent 44%,
+    rgb(255 255 255 / 0.12) 84%, rgb(255 180 84 / 0.22) 100%);
+}
+.skyspace .ground {
+  position: absolute;
+  inset-block: 50% 0;
+  inset-inline: 0;
+  background: linear-gradient(180deg, rgb(0 0 0 / 0.32) 0%, rgb(0 0 0 / 0.62) 58%);
+}
+.skyspace .line {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--f-lume);
+  box-shadow: 0 0 44px 7px rgb(255 180 84 / 0.4);
+  animation-name: fluid-line;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 8% cover 62%;
+}
+@keyframes fluid-line {
+  from { scale: 0.16 1; opacity: 0.2; }
+  to   { scale: 1 1;    opacity: 1; }
+}
+.horizon-copy { position: relative; z-index: 2; text-align: center; max-width: 30ch; }
+
+
+/* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  v · VOLUME — projects, against the platform's reincarnations        ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+.glass {
+  position: absolute;
+  z-index: 0;
+  inset-inline-end: -3%;
+  width: min(46vmin, 25rem);
+  opacity: 0.8;
+  aspect-ratio: 3 / 4;
+  transform-style: preserve-3d;
+  animation-name: fluid-tilt;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 0% cover 100%;
+}
+@keyframes fluid-tilt {
+  from { transform: rotateX(22deg) rotateZ(-7deg) scale(0.68); }
+  to   { transform: rotateX(-14deg) rotateZ(6deg) scale(1.08); }
+}
+.glass-turn {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: glass-spin 56s linear infinite;
+}
+@keyframes glass-spin { to { transform: rotateY(360deg); } }
+/* seven panes, no backdrop-filter: the frosted read comes from accumulated
+   translucency, which costs nothing and honestly looks better */
+.glass-turn i {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(calc(var(--i) * 33px));
+  border: 1px solid rgb(189 240 255 / 0.3);
+  background: linear-gradient(148deg,
+    rgb(255 255 255 / 0.15) 0%, rgb(255 255 255 / 0.04) 38%, rgb(255 180 84 / 0.1) 100%);
+  box-shadow: 0 0 44px rgb(189 240 255 / 0.08), inset 0 0 34px rgb(255 255 255 / 0.05);
+}
+
+/* the pane stack lives on the right, so the prose is pinned left and
+   given a hard ceiling — text over glass was unreadable at the margin */
+#volume .fluid-stage { place-items: center start; }
+/* prose is pinned left in this room, so the caption moves out of its way */
+#volume .fluid-label {
+  inset-inline-start: auto;
+  inset-inline-end: var(--f-pad);
+  text-align: right;
+  border-inline-start: 0;
+  border-inline-end: 1px solid rgb(189 240 255 / 0.3);
+  padding-inline: 0 0.9rem;
+}
+#volume .fluid-plates { max-width: min(42rem, 62%); }
+.work-plate {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: clamp(0.5rem, 1.5vh, 0.9rem);
+  justify-items: start;
+  text-align: left;
+}
+.work-period {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--f-ember);
+}
+.work-role {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  color: var(--f-mist);
+}
+.work-desc {
+  max-width: 52ch;
+  font-size: clamp(0.9rem, 0.86rem + 0.3vw, 1.05rem);
+  line-height: 1.55;
+  color: var(--f-chalk);
+  opacity: 0.8;
+  text-wrap: pretty;
+}
+.work-outcomes,
+.work-stack { display: flex; flex-wrap: wrap; gap: 0.4rem 0.5rem; list-style: none; margin: 0; padding: 0; }
+.work-outcomes li {
+  padding: 0.3em 0.7em;
+  border: 1px solid rgb(255 180 84 / 0.4);
+  border-radius: 999px;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.62rem;
+  color: var(--f-ember);
+}
+.work-stack li {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.62rem;
+  color: var(--f-mist);
+  opacity: 0.85;
+}
+.work-stack li + li::before { content: "· "; opacity: 0.6; }
+.work-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--f-mist);
+}
+
+
+/* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  vi · FIELD — testimonials in the mote field                         ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+.motes {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation-name: fluid-motes;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 0% cover 100%;
+}
+@keyframes fluid-motes {
+  from { transform: translateZ(-2100px) rotate(-2.2deg); }
+  to   { transform: translateZ(850px)   rotate(2.2deg); }
+}
+.motes i {
+  position: absolute;
+  inset: -34%;
+  transform: translateZ(calc(var(--i) * -315px));
+  opacity: calc(0.9 - var(--i) * 0.07);
+  background-size: 21vmin 21vmin;
+  background-image:
+    radial-gradient(2.1px 2.1px at 14% 22%, rgb(234 251 255 / 0.9), transparent 100%),
+    radial-gradient(1.5px 1.5px at 62% 11%, rgb(234 251 255 / 0.9), transparent 100%),
+    radial-gradient(2.4px 2.4px at 38% 64%, rgb(234 251 255 / 0.9), transparent 100%),
+    radial-gradient(1.3px 1.3px at 86% 48%, rgb(234 251 255 / 0.9), transparent 100%),
+    radial-gradient(1.8px 1.8px at 24% 88%, rgb(234 251 255 / 0.9), transparent 100%),
+    radial-gradient(1.4px 1.4px at 72% 78%, rgb(234 251 255 / 0.9), transparent 100%);
+}
+.quote-plate {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: clamp(0.9rem, 3vh, 1.8rem);
+  justify-items: center;
+  max-width: 46rem;
+  text-align: center;
+}
+.quote-plate blockquote {
+  margin: 0;
+  font-size: clamp(1.05rem, 1rem + 1.1vw, 1.9rem);
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  color: var(--f-chalk);
+  text-wrap: balance;
+}
+.quote-who {
+  display: grid;
+  gap: 0.2em;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  color: var(--f-mist);
+}
+.quote-who b { color: var(--f-glow); font-weight: 400; letter-spacing: 0.08em; }
+.quote-who a { color: inherit; text-decoration: none; border-block-end: 1px solid currentColor; }
+
+
+/* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  vii · EGRESS — contact, as wall text                                ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+.fluid-room.egress { height: auto; min-height: calc(var(--span, 150) * 1svh); }
+.egress-body {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 6vh, 4rem);
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: clamp(5rem, 15vh, 9rem) var(--f-pad) clamp(3.5rem, 10vh, 6rem);
+}
+.egress-head { display: grid; gap: 1rem; max-width: 34ch; }
+.egress-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: clamp(1.6rem, 4vw, 3.2rem);
+  padding-block-start: clamp(1rem, 3.5vh, 2.2rem);
+  border-block-start: 1px solid rgb(189 240 255 / 0.14);
+}
+.egress-cols h3 {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.64rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--f-mist);
+  margin-block-end: 1.1em;
+}
+.egress-cols p { color: var(--f-chalk); opacity: 0.76; padding-block: 0.4em; max-width: 34ch; }
+.egress-list { list-style: none; margin: 0; padding: 0; }
+.egress-list li {
+  padding-block: 0.5em;
+  border-block-end: 1px solid rgb(232 244 251 / 0.08);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  color: var(--f-mist);
+}
+.egress-list a { color: var(--f-chalk); text-decoration: none; }
+.egress-list a:hover { color: var(--f-glow); }
+.egress-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.egress-foot {
+  max-width: 46ch;
+  font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.2rem);
+  line-height: 1.45;
+  color: var(--f-chalk);
+  opacity: 0.72;
+}
+.egress-foot span { display: block; padding-block-start: 0.5em; font-size: 0.76em; opacity: 0.65; }
+
+
+/* ── fallback: no scroll-driven animation support ───────────────────────── */
+.no-sdt .fluid-air,
+.no-sdt .fluid-air::before,
+.no-sdt .fluid-stage,
+.no-sdt .fluid-plate,
+.no-sdt .about-log > div,
+.no-sdt .about-stats,
+.no-sdt .fluid-label { animation-name: none; opacity: 1; visibility: visible; translate: none; }
+.no-sdt .fluid-plate:not(:first-child) { display: none; }
+.no-sdt .corridor { transform: translateZ(calc(-1000px + var(--p, 0) * 8500px)); }
+.no-sdt .motes    { transform: translateZ(calc(-2100px + var(--p, 0) * 2950px)); }
+.no-sdt .bloom    { scale: calc(0.5 + var(--p, 0) * 0.8); }
+.no-sdt .aperture { scale: calc(0.18 + var(--p, 0) * 1.62); opacity: 0.55; }
+.no-sdt .skyspace { translate: 0 calc(14svh - var(--p, 0) * 24svh); }
+
+
+@media (max-width: 760px) {
+  .fluid-3d { perspective: 620px; }
+  .arch { inset-block: 16%; inset-inline: 9%; }
+  .glass { inset-inline-end: -12%; width: 60vmin; opacity: 0.5; }
+  .work-plate, .skill-plate { max-width: none; }
+}
+
+/* ── reduced motion: the camera stops, the atmosphere still travels with
+   the reader's own scrolling, and every room settles into one still view ── */
+@media (prefers-reduced-motion: reduce) {
+  .glass-turn, .scroll-cue i { animation: none; }
+  .glass-turn { transform: rotateY(-24deg); }
+  .corridor, .motes, .glass, .bloom, .aperture, .skyspace, .skyspace .line {
+    animation-name: none;
+  }
+  .corridor { transform: translateZ(-150px); }
+  .motes    { transform: translateZ(-500px) rotate(-1deg); }
+  .glass    { transform: rotateX(6deg) scale(0.95); }
+  .bloom    { scale: 1.05; }
+  .aperture { scale: 1.2; opacity: 0.55; }
+  .skyspace { translate: 0 0; }
+  .skyspace .line { scale: 1 1; opacity: 1; }
+}

@@ -3,14 +3,8 @@
 import React from "react";
 import "../styles/pages/Home.css";
 import SpriteQuest from "./SpriteQuest";
+import { JOB_ROLES as jobRoles } from "@/datasets/Content";
 import { CV_PATH, PERSON } from "@/datasets/Site";
-
-const jobRoles = [
-  "Senior Software Engineer",
-  "Technical Strategist",
-  "AI Platform Architect",
-  "Self-Taught & Proud Of It",
-];
 
 export default function Hero({ cvAvailable = false }: { cvAvailable?: boolean })
 {

@@ -34,3 +34,91 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## `/fluid` — scroll-driven prototype (branch: `prototype/fluid-gallery`)
+
+An alternative presentation of the same content, at **`/fluid`**. The live site
+at `/` is untouched — both routes build and render independently, so they can
+be compared side by side.
+
+Seven rooms, one continuous atmosphere:
+
+| | Room | Content |
+|---|---|---|
+| i | Approach | hero — name, brand, roles, the *faux* wordplay |
+| ii | Ganzfeld | about — the terminal log, then the numbers |
+| iii | Colonnade | skills — a 3D corridor you travel through |
+| iv | Horizon | threshold — "built, torn down, rebuilt" |
+| v | Volume | projects — seven glass panes, one per reincarnation |
+| vi | Field | testimonials — quotes in a mote field |
+| vii | Egress | contact — as gallery wall text |
+
+### The one idea
+
+A single hue travels from `iris` (the cold blues, graded like the eyes in the
+old headshot) out through violet and magenta to `ember` (the warmth sampled
+from the sunset in the new one) — and back home to iris. Cold to warm to cold,
+across the length of the scroll. Old photo to new photo. Every surface takes
+its colour from that one travelling value.
+
+### The joins are exact, not eyeballed
+
+`entry` is a room's top edge crossing the viewport; `exit` is its bottom edge
+crossing. Adjacent rooms **share that edge**, so room *n*'s exit and room
+*n+1*'s entry are the identical stretch of scroll:
+
+```css
+animation-range: entry 0% entry 100%, exit 0% exit 100%;
+```
+
+Split across two nested elements (both plain `opacity`, both composited) the
+pair sums to exactly `1` the whole way across — at any room height, with no
+tuning.
+
+### Performance constraints are load-bearing
+
+This CSS is a second draft. The first version derived every colour from the
+travelling hue and the screen flashed on every frame. Four rules came out of
+fixing it, and they are why the prototype holds ~10 composited layers / ~13 MB
+of layer surface instead of 59 / 200 MB:
+
+1. **One property reads the travelling variables** — `.fluid-weather`'s
+   background. Everything above is plain black/white alpha.
+2. **Those variables are `inherits: false`.** Inherited on `:root`, each
+   frame forced a style-recalc walk of the whole tree (~2.2 ms/frame before a
+   pixel was painted). Scoped, the same change costs ~0.06 ms.
+3. **Rooms animate `visibility`, not just `opacity`.** A layer with an
+   animating opacity stays resident on the GPU even at 0; tile eviction is
+   what the flashing actually was.
+4. **No `backdrop-filter`, no animated blur radii, no keyframe touching a
+   layout property** (`letter-spacing` in a keyframe reflows text every frame).
+
+### Known trade-offs
+
+- **Content paces with the scroll.** Rooms with several items (skills,
+  projects, testimonials) show one "plate" at a time, fading as you pass. It
+  is reversible — scroll back and it returns — but it is slower to skim than
+  the live site's dense layout. Worth deciding deliberately before this
+  becomes `/`.
+- **Requires scroll-driven animation support** for the full effect. Without
+  it, `FluidChrome` interpolates the same atmosphere table by hand and each
+  room shows its first plate, so the page still reads — just without the
+  choreography.
+- **`SpriteQuest` is not carried over.** The pixel-creature easter egg is
+  bound to the hero photograph and the main site's layout.
+
+### Content is shared, not copied
+
+`datasets/Content.ts` is the single source for stats, the terminal log, skill
+domains, projects, reviews and the role ticker. The live section components
+and `/fluid` both read from it, so the two presentations cannot drift. Skills
+keeps its own SVG strokes in `components/Skills.tsx`, keyed by domain id —
+illustration stays with its component, copy does not.
+
+### To promote it to the homepage
+
+Swap the section imports in `app/page.tsx` for the `/fluid` room markup, or
+simply make `app/fluid/page.tsx` the default export of `app/page.tsx`. Remove
+the `robots: { index: false }` in its metadata, and drop the
+`body:has(.fluid)` chrome-suppression rules in favour of deleting `Navbar` /
+`SidePanel` from the root layout.
