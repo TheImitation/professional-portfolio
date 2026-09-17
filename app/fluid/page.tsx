@@ -48,31 +48,54 @@ export default function FluidPage()
           <div className="fluid-air air-approach" aria-hidden="true" />
           <div className="fluid-stage">
             <div className="aperture" aria-hidden="true" />
-            <div className="hero-copy">
-              <p className="hero-chip">
-                <i aria-hidden="true" />
-                {PERSON.availability.toLowerCase()}
-              </p>
-              <h2 className="fluid-display fluid-xl hero-name">
-                Nic Defaux <b>TheImitation</b>
-              </h2>
-              <ul className="hero-roles">
-                {JOB_ROLES.map((role) => <li key={role}>{role}</li>)}
-              </ul>
-              <p className="fluid-lede">
-                <em>Defaux</em> is French — <em>faux</em>, as in false. And what is faux,
-                if not an imitation? The code, however, is all true.
-              </p>
-              <div className="hero-actions">
-                <a className="fluid-btn solid" href="#egress">Open a channel</a>
-                <a className="fluid-btn" href="#colonnade">Inspect the stack</a>
-                {cvAvailable && <a className="fluid-btn" href={CV_PATH} download>Grab the CV</a>}
+            <div className="approach-grid">
+              <div className="hero-copy">
+                <p className="hero-chip">
+                  <i aria-hidden="true" />
+                  {PERSON.availability.toLowerCase()}
+                </p>
+                <h2 className="fluid-display fluid-xl hero-name">
+                  Nic Defaux <b className="fluid-shimmer">TheImitation</b>
+                </h2>
+                {/* the vertical ticker from the live hero — the first role is
+                    repeated at the end so the glide loops seamlessly */}
+                <div className="role-ticker" role="text" aria-label={JOB_ROLES.join(", ")}>
+                  <ul aria-hidden="true">
+                    {[...JOB_ROLES, JOB_ROLES[0]].map((role, index) => (
+                      <li key={`${role}-${index}`}>{role}</li>
+                    ))}
+                  </ul>
+                </div>
+                <p className="fluid-lede">
+                  <em>Defaux</em> is French — <em>faux</em>, as in false. And what is faux,
+                  if not an imitation? The code, however, is all true.
+                </p>
+                <div className="hero-actions">
+                  <a className="fluid-btn solid" href="#egress">Open a channel</a>
+                  <a className="fluid-btn" href="#colonnade">Inspect the stack</a>
+                  {cvAvailable && <a className="fluid-btn" href={CV_PATH} download>Grab the CV</a>}
+                </div>
               </div>
+
+              <figure className="portrait">
+                <img
+                  src="/headshot.jpg"
+                  width={760}
+                  height={950}
+                  alt="Headshot of Nic Defaux — Senior Software Engineer and Technical Strategist — backlit by a golden sunset that lends this site its warm accent colour"
+                />
+                <figcaption>headshot.jpg — backlit</figcaption>
+              </figure>
             </div>
             <a className="scroll-cue" href="#ganzfeld" aria-label="Enter the exhibition">
               <span>enter</span>
               <i aria-hidden="true" />
             </a>
+            <div className="fluid-label">
+              <span>Room i</span>
+              <b>Nic Defaux, backlit</b>
+              <span>the sunset here is where this site&rsquo;s ember accent was sampled</span>
+            </div>
           </div>
         </section>
 

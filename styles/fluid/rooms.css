@@ -132,6 +132,9 @@
 .aperture {
   position: absolute;
   z-index: 0;
+  inset-block-start: 50%;
+  inset-inline-start: 68%;
+  translate: -50% -50%;
   width: min(46vmin, 25rem);
   aspect-ratio: 3 / 4;
   background: radial-gradient(58% 48% at 50% 44%,
@@ -147,44 +150,113 @@
   from { scale: 0.18; opacity: 0.35; }
   to   { scale: 1.8;  opacity: 0.7; }
 }
-.hero-copy {
+/* the portrait is the first exhibit in the room, and the sunset behind it
+   is literally where this site's ember accent was sampled from — so the
+   aperture of light sits on its side of the composition */
+.approach-grid {
   position: relative;
   z-index: 2;
   display: grid;
+  grid-template-columns: minmax(0, 1.1fr) auto;
+  align-items: center;
+  gap: clamp(1.4rem, 5vw, 4rem);
+  width: 100%;
+  max-width: 64rem;
+}
+.hero-copy {
+  display: grid;
   grid-template-columns: minmax(0, 1fr);
-  justify-items: center;
-  gap: clamp(0.8rem, 2.6vh, 1.8rem);
-  max-width: 52rem;
-  text-align: center;
+  justify-items: start;
+  gap: clamp(0.7rem, 2.2vh, 1.5rem);
+  text-align: left;
+}
+
+.portrait {
+  position: relative;
+  margin: 0;
+  width: min(32vmin, 19rem);
+  aspect-ratio: 4 / 5;
+  animation-name: portrait-hang;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 6% cover 94%;
+}
+/* hung in space rather than pasted on: perspective() is inline so the
+   portrait does not depend on an ancestor establishing it */
+@keyframes portrait-hang {
+  from { transform: perspective(1200px) rotateY(15deg) rotateX(4deg) translateZ(-70px) scale(0.86); }
+  to   { transform: perspective(1200px) rotateY(-6deg) rotateX(-2deg) translateZ(40px) scale(1.04); }
+}
+.portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+  filter: saturate(0.94) contrast(1.04);
+}
+.portrait::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid rgb(189 240 255 / 0.5);
+  border-radius: 2px;
+  pointer-events: none;
+  box-shadow:
+    0 30px 80px -22px rgb(0 0 0 / 0.85),
+    0 0 80px rgb(255 180 84 / 0.2);
+}
+.portrait figcaption {
+  position: absolute;
+  inset-block-start: calc(100% + 0.7rem);
+  inset-inline-start: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--f-mist);
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+/* the role ticker, restored from the live hero */
+.role-ticker {
+  --row: clamp(1.8rem, 1.5rem + 1vw, 2.4rem);
+  height: var(--row);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.role-ticker::after {
+  content: "";
+  width: 3px;
+  height: calc(var(--row) * 0.72);
+  margin-block-start: calc(var(--row) * 0.14);
+  background: var(--f-glow);
+  animation: fluid-blink 1.1s steps(1) infinite;
+}
+.role-ticker ul { list-style: none; margin: 0; padding: 0; animation: ticker-glide 16s var(--f-slow) infinite; }
+.role-ticker li {
+  height: var(--row);
+  display: flex;
+  align-items: center;
+  font-size: clamp(0.98rem, 0.92rem + 0.55vw, 1.28rem);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--f-chalk);
+}
+@keyframes ticker-glide {
+  0%, 21%   { transform: translateY(0); }
+  25%, 46%  { transform: translateY(calc(var(--row) * -1)); }
+  50%, 71%  { transform: translateY(calc(var(--row) * -2)); }
+  75%, 96%  { transform: translateY(calc(var(--row) * -3)); }
+  100%      { transform: translateY(calc(var(--row) * -4)); }
 }
 .hero-name { padding-block: 0.06em 0.04em; }
 .hero-name b { font-weight: 500; color: var(--f-glow); }
-.hero-roles {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.4em 1.1em;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-mono), monospace;
-  font-size: clamp(0.62rem, 0.58rem + 0.16vw, 0.76rem);
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--f-mist);
-}
-.hero-roles li { position: relative; }
-.hero-roles li + li::before {
-  content: "";
-  position: absolute;
-  inset-inline-start: -0.62em;
-  inset-block-start: 50%;
-  width: 3px; height: 3px;
-  translate: 0 -50%;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0.6;
-}
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.7rem; }
 .hero-chip {
   display: inline-flex;
@@ -685,8 +757,32 @@
 .no-sdt .motes    { transform: translateZ(calc(-2100px + var(--p, 0) * 2950px)); }
 .no-sdt .bloom    { scale: calc(0.5 + var(--p, 0) * 0.8); }
 .no-sdt .aperture { scale: calc(0.18 + var(--p, 0) * 1.62); opacity: 0.55; }
+.no-sdt .portrait { animation-name: none; transform: perspective(1200px) rotateY(-3deg) scale(1); }
 .no-sdt .skyspace { translate: 0 calc(14svh - var(--p, 0) * 24svh); }
 
+
+@media (max-width: 860px) {
+  .approach-grid {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: clamp(0.8rem, 2.6vh, 1.5rem);
+  }
+  .hero-copy { justify-items: center; text-align: center; gap: clamp(0.6rem, 1.8vh, 1.1rem); }
+  .portrait { width: min(26vmin, 8.5rem); order: -1; }
+  .portrait figcaption { display: none; }
+  .aperture { inset-inline-start: 50%; }
+  .role-ticker { justify-content: center; }
+
+  /* the hero is the densest room; at this width three full-width buttons
+     stacked pushed straight through the wall label and the scroll cue */
+  #approach .hero-name { font-size: min(clamp(2.2rem, 1rem + 8vw, 7.5rem), 13svh); }
+  #approach .fluid-lede { font-size: 0.95rem; max-width: 34ch; }
+  .hero-actions { gap: 0.45rem; }
+  .hero-actions .fluid-btn { padding: 0.7em 1.05em; font-size: 0.62rem; letter-spacing: 0.12em; }
+  #approach .fluid-label { display: none; }
+  #approach .scroll-cue { inset-block-end: clamp(0.8rem, 2.5vh, 1.6rem); }
+  #approach .scroll-cue i { height: clamp(1.4rem, 3.5vh, 2.2rem); }
+}
 
 @media (max-width: 760px) {
   .fluid-3d { perspective: 620px; }
@@ -698,7 +794,8 @@
 /* ── reduced motion: the camera stops, the atmosphere still travels with
    the reader's own scrolling, and every room settles into one still view ── */
 @media (prefers-reduced-motion: reduce) {
-  .glass-turn, .scroll-cue i { animation: none; }
+  .glass-turn, .scroll-cue i, .role-ticker ul, .role-ticker::after { animation: none; }
+  .portrait { animation-name: none; transform: perspective(1200px) rotateY(-3deg) scale(1); }
   .glass-turn { transform: rotateY(-24deg); }
   .corridor, .motes, .glass, .bloom, .aperture, .skyspace, .skyspace .line {
     animation-name: none;

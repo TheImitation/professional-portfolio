@@ -104,8 +104,25 @@ of layer surface instead of 59 / 200 MB:
   it, `FluidChrome` interpolates the same atmosphere table by hand and each
   room shows its first plate, so the page still reads — just without the
   choreography.
-- **`SpriteQuest` is not carried over.** The pixel-creature easter egg is
-  bound to the hero photograph and the main site's layout.
+- **`SpriteQuest` is not carried over.** The pixel creature that hides behind
+  the headshot is bound to the live hero's layout and its own pointer
+  handling. The photograph is here; the creature behind it is not, yet.
+
+### Carried over from the live site
+
+Three details were kept deliberately rather than reinvented:
+
+- **The portrait.** `headshot.jpg` is hung in the first room with a scroll-driven
+  3D tilt, the aperture of light on its side of the composition. Its alt text
+  already noted the golden sunset backlighting it — and that sunset is where
+  FAUX's `ember` was sampled from, which is exactly where the hue journey ends.
+  The room's wall label says so.
+- **The nav name-swap.** Hovering `{TheImitation_}` declassifies it to
+  `{Defaux_}` in ember italic — 12ch to 6ch, which only lands exactly because
+  the face is monospaced. Ported from `styles/components/Navbar.css` so the two
+  stay recognisably the same thing.
+- **The vertical role ticker and the shimmering brand mark**, both lifted from
+  the live hero.
 
 ### Content is shared, not copied
 

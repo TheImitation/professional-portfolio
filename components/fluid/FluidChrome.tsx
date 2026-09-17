@@ -131,9 +131,22 @@ export default function FluidChrome({ rooms }: { rooms: RoomRef[] })
   return (
     <>
       <header className="fluid-chrome">
-        <a className="fluid-mark" href="#approach">
-          <b>Nic Defaux</b>
-          <span>TheImitation — fluid prototype</span>
+        {/* hovering the handle declassifies the surname it translates */}
+        <a
+          className="fluid-logo"
+          href="#approach"
+          aria-label="TheImitation — Nic Defaux — back to top"
+        >
+          <span className="fluid-logo-row">
+            <span className="lb">{"{"}</span>
+            <span className="lw" aria-hidden="true">
+              <span className="wh">TheImitation</span>
+              <span className="wn">Defaux</span>
+            </span>
+            <span className="lc">_</span>
+            <span className="lb">{"}"}</span>
+          </span>
+          <span className="fluid-logo-sub">fluid prototype</span>
         </a>
         <p className="fluid-where">
           <b data-room-numeral>i</b>
