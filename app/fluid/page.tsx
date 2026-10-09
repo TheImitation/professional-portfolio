@@ -31,6 +31,36 @@ const ROOMS: RoomRef[] = [
 /* `--i` drives each plane's depth in the 3D rooms. */
 const depth = (i: number) => ({ ["--i" as string]: i }) as React.CSSProperties;
 
+/* ── the pacing grid ────────────────────────────────────────────────────
+   Every exhibit — a plate, or a room that is a single view — holds for
+   one BEAT of scroll. Adjacent plates crossfade over XFADE. Room joins
+   are the one-viewport `entry`/`exit` ranges, handled in CSS.
+
+   Transitions used to be percentages of each room's length, so the same
+   fade ran 2.5x longer in the work room than at the horizon. Measured in
+   svh from the room's cover start instead, every fade is the same length
+   wherever it falls, and a room's span follows from what it holds.
+
+   If BEAT or XFADE change, `@keyframes fluid-plate` in rooms.css holds the
+   fade fraction XFADE / (BEAT + XFADE) and must follow. */
+const ENTRY = 100;  /* svh — one viewport: a room's own entry range */
+const BEAT = 85;    /* svh each exhibit holds at full visibility */
+const XFADE = 30;   /* svh over which neighbouring plates crossfade */
+
+const room = (exhibits: number) =>
+  ({ ["--span" as string]: ENTRY + exhibits * BEAT }) as React.CSSProperties;
+
+/* plate k: one beat, widened by half a crossfade either side, so plate k's
+   fade-out and plate k+1's fade-in are the identical stretch of scroll */
+const plate = (k: number) => ({
+  animationRange: `cover ${ENTRY + k * BEAT - XFADE / 2}svh cover ${ENTRY + (k + 1) * BEAT + XFADE / 2}svh`,
+}) as React.CSSProperties;
+
+/* the terminal lines arrive in turn inside the first plate's hold */
+const logLine = (i: number) => ({
+  animationRange: `cover ${ENTRY + i * 14}svh cover ${ENTRY + 28 + i * 14}svh`,
+}) as React.CSSProperties;
+
 export default function FluidPage()
 {
   const cvAvailable = fs.existsSync(path.join(process.cwd(), "public", CV_PATH));
@@ -48,7 +78,7 @@ export default function FluidPage()
         </h1>
 
         {/* ─── i · APPROACH ─────────────────────────────────────────── */}
-        <section className="fluid-room" id="approach" style={{ ["--span" as string]: 190 } as React.CSSProperties}>
+        <section className="fluid-room" id="approach" style={room(1)}>
           <div className="fluid-air air-approach" aria-hidden="true" />
           <div className="fluid-stage">
             <div className="aperture" aria-hidden="true" />
@@ -103,22 +133,22 @@ export default function FluidPage()
         </section>
 
         {/* ─── ii · GANZFELD — about ────────────────────────────────── */}
-        <section className="fluid-room" id="ganzfeld" style={{ ["--span" as string]: 340 } as React.CSSProperties}>
+        <section className="fluid-room" id="ganzfeld" style={room(3)}>
           <div className="fluid-air air-ganzfeld" aria-hidden="true" />
           <div className="fluid-stage">
             <div className="bloom" aria-hidden="true" />
             {/* two plates: the log arrives line by line, then the numbers.
                 One screen could not hold both legibly. */}
-            <div className="fluid-plates plates-3 about-body">
-              <div className="fluid-plate about-log">
-                {LOG_LINES.map((line) => (
-                  <div key={line.prompt}>
+            <div className="fluid-plates about-body">
+              <div className="fluid-plate about-log" style={plate(0)}>
+                {LOG_LINES.map((line, index) => (
+                  <div key={line.prompt} style={logLine(index)}>
                     <p className="prompt"><span>❯</span> {line.prompt}</p>
                     <p className="output">{line.output}</p>
                   </div>
                 ))}
               </div>
-              <div className="fluid-plate about-stats">
+              <div className="fluid-plate about-stats" style={plate(1)}>
                 {STATS.map((stat) => (
                   <div key={stat.label}>
                     <b>{stat.value} <span>{stat.unit}</span></b>
@@ -126,7 +156,7 @@ export default function FluidPage()
                   </div>
                 ))}
               </div>
-              <div className="fluid-plate about-edu" data-era="bsc apprentice msc">
+              <div className="fluid-plate about-edu" data-era="bsc apprentice msc" style={plate(2)}>
                 <p className="fluid-over">the route here</p>
                 <ul>
                   {EDUCATION.map((credential) => (
@@ -151,7 +181,7 @@ export default function FluidPage()
         </section>
 
         {/* ─── iii · COLONNADE — skills ─────────────────────────────── */}
-        <section className="fluid-room" id="colonnade" style={{ ["--span" as string]: 360 } as React.CSSProperties}>
+        <section className="fluid-room" id="colonnade" style={room(3)}>
           <div className="fluid-air air-colonnade" aria-hidden="true" />
           <div className="fluid-stage fluid-3d">
             <div className="corridor" aria-hidden="true">
@@ -160,9 +190,9 @@ export default function FluidPage()
               ))}
             </div>
             <div className="fog" aria-hidden="true" />
-            <div className="fluid-plates plates-3">
+            <div className="fluid-plates">
               {SKILL_DOMAINS.map((domain, index) => (
-                <article className="fluid-plate skill-plate" key={domain.id}>
+                <article className="fluid-plate skill-plate" key={domain.id} style={plate(index)}>
                   <p className="fluid-over">0{index + 1} / {domain.caption}</p>
                   <h2 className="fluid-display fluid-l">{domain.title}</h2>
                   <ul>
@@ -180,7 +210,7 @@ export default function FluidPage()
         </section>
 
         {/* ─── iv · HORIZON ─────────────────────────────────────────── */}
-        <section className="fluid-room" id="horizon" style={{ ["--span" as string]: 150 } as React.CSSProperties}>
+        <section className="fluid-room" id="horizon" style={room(1)}>
           <div className="fluid-air air-horizon" aria-hidden="true" />
           <div className="fluid-stage">
             <div className="skyspace" aria-hidden="true">
@@ -203,7 +233,7 @@ export default function FluidPage()
             zooming to the foot of the page with the content on top. */}
         <div className="tail">
         {/* ─── v · VOLUME — projects ────────────────────────────────── */}
-        <section className="fluid-room" id="volume" style={{ ["--span" as string]: 520 } as React.CSSProperties}>
+        <section className="fluid-room" id="volume" style={room(5)}>
           <div className="fluid-air air-volume" aria-hidden="true" />
           <div className="fluid-stage fluid-3d">
             {/* seven panes — the platform's architectural reincarnations */}
@@ -212,9 +242,9 @@ export default function FluidPage()
                 {[-3, -2, -1, 0, 1, 2, 3].map((i) => <i key={i} style={depth(i)} />)}
               </div>
             </div>
-            <div className="fluid-plates plates-5">
-              {PROJECTS.map((project) => (
-                <article className="fluid-plate work-plate" key={project.id} data-era={project.id}>
+            <div className="fluid-plates">
+              {PROJECTS.map((project, index) => (
+                <article className="fluid-plate work-plate" key={project.id} data-era={project.id} style={plate(index)}>
                   <p className="work-period">{project.period}</p>
                   <h2 className="fluid-display fluid-m">{project.title}</h2>
                   <p className="work-role">{project.role}</p>
@@ -246,13 +276,13 @@ export default function FluidPage()
         </section>
 
         {/* ─── vi · FIELD — testimonials ────────────────────────────── */}
-        <section className="fluid-room" id="field" style={{ ["--span" as string]: 360 } as React.CSSProperties}>
+        <section className="fluid-room" id="field" style={room(4)}>
           <div className="fluid-air air-field" aria-hidden="true" />
           <div className="fluid-stage">
             <div className="fog soft" aria-hidden="true" />
-            <div className="fluid-plates plates-4">
-              {REVIEWS.map((review) => (
-                <figure className="fluid-plate quote-plate" key={review.name}>
+            <div className="fluid-plates">
+              {REVIEWS.map((review, index) => (
+                <figure className="fluid-plate quote-plate" key={review.name} style={plate(index)}>
                   <blockquote>{review.quote}</blockquote>
                   <figcaption className="quote-who">
                     <b>

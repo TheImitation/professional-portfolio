@@ -71,10 +71,20 @@
   animation-timeline: --room, --room;
   animation-range: cover 0% cover 100%, cover 0% cover 100%;
 }
+/* Keyframe selectors pinned to the named `entry` and `exit` ranges, not
+   to percentages of the room. Both ranges are exactly one viewport for
+   any room taller than the viewport, so every room's work fades in and
+   out over the same distance — and over the SAME stretch of scroll as the
+   atmosphere crossfade above. Weather and work now change on one clock.
+
+   (As percentages of `cover`, a 14% fade was 269px in the shortest room
+   and 667px in the longest: 2.5x apart, and matching neither each other
+   nor the 1-viewport atmosphere join.) */
 @keyframes fluid-veil {
-  0%       { opacity: 0; }
-  14%, 86% { opacity: 1; }
-  100%     { opacity: 0; }
+  entry 0%   { opacity: 0; }
+  entry 100% { opacity: 1; }
+  exit 0%    { opacity: 1; }
+  exit 100%  { opacity: 0; }
 }
 .fluid-stage a,
 .fluid-stage button { pointer-events: auto; }
@@ -95,29 +105,15 @@
   animation-fill-mode: both;
   animation-timeline: --room;
 }
+/* Every plate window is the same length (BEAT + XFADE in app/fluid/page.tsx:
+   85 + 30 = 115svh), so one fade fraction means one fade duration in every
+   room. 26% = XFADE / (BEAT + XFADE). Change either constant there and this
+   fraction must follow. */
 @keyframes fluid-plate {
   0%       { opacity: 0; translate: 0 2.2rem; visibility: hidden; }
-  20%, 76% { opacity: 1; translate: 0 0;      visibility: visible; }
+  26%, 74% { opacity: 1; translate: 0 0;      visibility: visible; }
   100%     { opacity: 0; translate: 0 -1.6rem; visibility: hidden; }
 }
-.plates-2 > .fluid-plate:nth-child(1) { animation-range: cover 14% cover 48%; }
-.plates-2 > .fluid-plate:nth-child(2) { animation-range: cover 45% cover 86%; }
-
-.plates-3 > .fluid-plate:nth-child(1) { animation-range: cover 14% cover 40%; }
-.plates-3 > .fluid-plate:nth-child(2) { animation-range: cover 37% cover 63%; }
-.plates-3 > .fluid-plate:nth-child(3) { animation-range: cover 60% cover 86%; }
-
-.plates-4 > .fluid-plate:nth-child(1) { animation-range: cover 14% cover 35%; }
-.plates-4 > .fluid-plate:nth-child(2) { animation-range: cover 32% cover 53%; }
-.plates-4 > .fluid-plate:nth-child(3) { animation-range: cover 50% cover 71%; }
-.plates-4 > .fluid-plate:nth-child(4) { animation-range: cover 68% cover 89%; }
-
-.plates-5 > .fluid-plate:nth-child(1) { animation-range: cover 14% cover 32%; }
-.plates-5 > .fluid-plate:nth-child(2) { animation-range: cover 29% cover 47%; }
-.plates-5 > .fluid-plate:nth-child(3) { animation-range: cover 44% cover 62%; }
-.plates-5 > .fluid-plate:nth-child(4) { animation-range: cover 59% cover 77%; }
-.plates-5 > .fluid-plate:nth-child(5) { animation-range: cover 74% cover 92%; }
-
 /* every room's ground: plain alpha, tinted by the weather underneath */
 .air-approach::before  { background: radial-gradient(120% 80% at 50% 62%, transparent 0%, rgb(0 0 0 / 0.58) 74%); }
 .air-ganzfeld::before  { background: radial-gradient(100% 70% at 50% 46%, rgb(255 255 255 / 0.13) 0%, transparent 68%); }
@@ -354,11 +350,8 @@
   animation-fill-mode: both;
   animation-timeline: --room;
 }
-/* information appears and STAYS — a portfolio is not a light installation */
-.about-log > div:nth-child(1) { animation-range: cover 19% cover 28%; }
-.about-log > div:nth-child(2) { animation-range: cover 23% cover 32%; }
-.about-log > div:nth-child(3) { animation-range: cover 27% cover 36%; }
-.about-log > div:nth-child(4) { animation-range: cover 31% cover 40%; }
+/* information appears and STAYS — a portfolio is not a light installation.
+   Each line's window is set inline from the pacing grid. */
 .about-log .prompt {
   font-family: var(--font-mono), monospace;
   font-size: 0.72rem;
@@ -676,11 +669,14 @@
   animation-timeline: --tail;
   animation-range: cover 0% cover 100%;
 }
-/* quiet behind the work, full by the time the testimonials arrive */
+/* Paced to the zoom below: it is already up to a third of its opacity
+   while still right against the lens, so what you first see is a handful
+   of huge soft blooms, not a distant pinprick field. */
 @keyframes starfield-in {
   0%        { opacity: 0; }
-  22%       { opacity: 0.34; }
-  48%, 100% { opacity: 1; }
+  14%       { opacity: 0.38; }
+  34%       { opacity: 0.82; }
+  52%, 100% { opacity: 1; }
 }
 
 .starfield-depth {
@@ -694,9 +690,20 @@
   animation-timeline: --tail;
   animation-range: cover 0% contain 100%;
 }
+/* Opens right up against the lens and falls back into depth as it
+   brightens, then resumes the long travel forward.
+
+   With perspective: 900px, a plane at +660px renders about 3.7x, which
+   stretches each star's radial-gradient along with it — so the field
+   arrives as soft bokeh and sharpens as it recedes. That defocus is a
+   side effect of the magnification, not a filter: animating a blur
+   radius would re-run the filter every frame, which is exactly the cost
+   this stylesheet is built to avoid. */
 @keyframes starfield-zoom {
-  from { transform: translateZ(-3200px) rotate(-3.5deg); }
-  to   { transform: translateZ(1150px)  rotate(3.5deg); }
+  0%, 12% { transform: translateZ(660px)   rotate(-9deg); }
+  34%     { transform: translateZ(-1400px) rotate(-5deg); }
+  52%     { transform: translateZ(-2100px) rotate(-2.5deg); }
+  100%    { transform: translateZ(1150px)  rotate(3.5deg); }
 }
 .starfield-depth i {
   position: absolute;
@@ -805,7 +812,7 @@
 .no-sdt .fluid-plate:not(:first-child) { display: none; }
 .no-sdt .corridor { transform: translateZ(calc(-1000px + var(--p, 0) * 8500px)); }
 .no-sdt .starfield { opacity: 1; animation-name: none; }
-.no-sdt .starfield-depth { transform: translateZ(calc(-3200px + var(--page, 0) * 4350px)); }
+.no-sdt .starfield-depth { transform: translateZ(calc(-2100px + var(--page, 0) * 3250px)); }
 .no-sdt .bloom    { scale: calc(0.5 + var(--p, 0) * 0.8); }
 .no-sdt .aperture { scale: calc(0.18 + var(--p, 0) * 1.62); opacity: 0.55; }
 .no-sdt .portrait { animation-name: none; transform: perspective(1200px) rotateY(-3deg) scale(1); }

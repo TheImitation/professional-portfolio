@@ -135,19 +135,22 @@ body:has(.fluid) { overflow-x: clip; }
   line-height: 1.8;
   color: var(--f-mist);
 
-  /* a caption runs on a tighter range than the work it describes, so two
-     never stack at a join */
+  /* A caption must never stack with its neighbour at a join. Pinned to
+     the named ranges, the outgoing one is gone by the MIDPOINT of the join
+     (exit 50%) and the incoming one only starts there (entry 50%) — half a
+     viewport each way, identical in every room. */
   animation-name: fluid-caption;
   animation-duration: auto;
   animation-timing-function: var(--f-slow);
   animation-fill-mode: both;
   animation-timeline: --room;
-  animation-range: cover 20% cover 80%;
+  animation-range: cover 0% cover 100%;
 }
 @keyframes fluid-caption {
-  0%       { opacity: 0; translate: 0 0.5rem; }
-  22%, 78% { opacity: 0.85; translate: 0 0; }
-  100%     { opacity: 0; translate: 0 0.5rem; }
+  entry 50%  { opacity: 0;    translate: 0 0.5rem; }
+  entry 100% { opacity: 0.85; translate: 0 0; }
+  exit 0%    { opacity: 0.85; translate: 0 0; }
+  exit 50%   { opacity: 0;    translate: 0 0.5rem; }
 }
 .fluid-label b { display: block; color: var(--f-glow); font-weight: 500; }
 
