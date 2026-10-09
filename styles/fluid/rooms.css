@@ -859,3 +859,15 @@
   .skyspace { translate: 0 0; }
   .skyspace .line { scale: 1 1; opacity: 1; }
 }
+
+
+/* ── the career rail's lane ──────────────────────────────────────────────
+   Lives here rather than in atmosphere.css: `.fluid-stage` sets `padding`
+   as a shorthand in this file, and this file is imported second, so a
+   `padding-inline-start` over there loses the cascade. Rooms that pin
+   their content left (the work room) would otherwise run straight through
+   the timeline's labels. ------------------------------------------------ */
+@media (min-width: 1025px) {
+  .fluid-stage { padding-inline-start: max(var(--f-pad), 10.5rem); }
+  .egress-body { padding-inline-start: max(var(--f-pad), 10.5rem); }
+}

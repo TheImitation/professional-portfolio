@@ -231,6 +231,46 @@ export const CONTRACTING = {
   working: "London · Remote · Hybrid",
 };
 
+/* ──────────────────────────────────────────────────────────────────────
+   The career, on a time axis.
+
+   Dates are taken from the CV. Two IBM engagements (the GenAI Lighthouse
+   and the Plagiarism Detection Tool) carry no dates there, so they are
+   deliberately absent rather than guessed at — a project plate with no
+   era simply leaves the timeline unhighlighted.
+
+   `id` matches a PROJECTS id wherever the two describe the same work, so
+   a plate can light its own span.
+   ────────────────────────────────────────────────────────────────────── */
+
+export type EraKind = "study" | "role" | "build";
+
+export interface Era
+{
+  id: string;
+  kind: EraKind;
+  label: string;
+  from: number;
+  /** null = still running */
+  to: number | null;
+}
+
+export const CAREER_FROM = 2016;
+export const CAREER_TO = 2026;
+
+export const CAREER: Era[] = [
+  { id: "bsc",             kind: "study", label: "BSc Biology, York",              from: 2016, to: 2019 },
+  { id: "apprentice",      kind: "study", label: "SWE Apprenticeship, L5",         from: 2021, to: 2023 },
+  { id: "cih",             kind: "role",  label: "Citizen Interaction R&D",      from: 2022, to: 2022 },
+  { id: "nino",            kind: "role",  label: "NINO citizen service",           from: 2022, to: 2023 },
+  { id: "msc",             kind: "study", label: "MSc Digital Technology",       from: 2024, to: 2026 },
+  { id: "ai-platform",     kind: "role",  label: "GAIL — GenAI platform",        from: 2024, to: 2026 },
+  { id: "lead",            kind: "role",  label: "Lead Engineer, agentic",       from: 2024, to: null },
+  { id: "mak99-interiors", kind: "build", label: "MAK99 Interiors",                from: 2026, to: 2026 },
+  { id: "wc-sweeps",       kind: "build", label: "World Cup sweepstakes",          from: 2026, to: 2026 },
+  { id: "seqflow",         kind: "build", label: "seqflow",                        from: 2026, to: null },
+];
+
 /* The hero's vertical role ticker. */
 export const JOB_ROLES = [
   "Senior Software Engineer",

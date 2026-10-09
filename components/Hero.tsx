@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import "../styles/pages/Home.css";
 import SpriteQuest from "./SpriteQuest";
 import { JOB_ROLES as jobRoles } from "@/datasets/Content";
@@ -49,6 +50,12 @@ export default function Hero({ cvAvailable = false }: { cvAvailable?: boolean })
               </a>
             )}
           </div>
+          {/* the same material, walked through as an exhibition */}
+          <Link className="gallery-door faux-mono" href="/fluid">
+            <span className="door-dot" aria-hidden="true" />
+            Walk it as a gallery
+            <span className="door-arrow" aria-hidden="true">↗</span>
+          </Link>
         </div>
         <SpriteQuest />
       </div>

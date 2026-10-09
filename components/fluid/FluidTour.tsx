@@ -16,7 +16,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 type Mode = "idle" | "touring" | "paused" | "done";
 
-const SPEED = 75;          /* px per second — ~3.8 min end to end, ~9s a plate */
+const SPEED = 110;         /* px per second — ~2.6 min end to end, ~6s a plate */
 const RESUME_AFTER = 2200; /* ms of quiet before the tour resumes */
 
 export default function FluidTour()

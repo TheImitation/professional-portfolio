@@ -258,7 +258,8 @@ body:has(.fluid) { overflow-x: clip; }
    details */
 .fluid-chrome,
 .fluid-ticks,
-.fluid-rule {
+.fluid-rule,
+.fluid-timeline {
   animation-name: fluid-withdraw;
   animation-duration: auto;
   animation-timing-function: var(--f-slow);
@@ -269,7 +270,8 @@ body:has(.fluid) { overflow-x: clip; }
 @keyframes fluid-withdraw { from { opacity: 1; } to { opacity: 0; } }
 .no-sdt .fluid-chrome,
 .no-sdt .fluid-ticks,
-.no-sdt .fluid-rule { animation-name: none; }
+.no-sdt .fluid-rule,
+.no-sdt .fluid-timeline { animation-name: none; }
 
 .fluid-rule {
   position: fixed;
@@ -402,6 +404,108 @@ body:has(.fluid) { overflow-x: clip; }
 @media (max-width: 560px) {
   .fluid-tour-btn { max-width: calc(100vw - 2 * var(--f-pad)); }
   .fluid-tour-label { white-space: normal; text-align: center; line-height: 1.5; }
+}
+
+/* ── career timeline ────────────────────────────────────────────────────
+   A single rail carrying two readings at once: it FILLS with how far
+   through the page you are, and LIGHTS the years the content in front of
+   you belongs to. Left edge, opposite the room ticks. ------------------- */
+.fluid-timeline {
+  position: fixed;
+  inset-inline-start: clamp(0.7rem, 1.6vw, 1.5rem);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  z-index: 52;
+  height: min(46vh, 26rem);
+  pointer-events: none;
+  font-family: var(--font-mono), monospace;
+  --tl-progress: 0;
+}
+.tl-year {
+  position: absolute;
+  inset-inline-start: 0;
+  font-size: 0.5rem;
+  letter-spacing: 0.16em;
+  color: var(--f-mist);
+  opacity: 0.4;
+}
+.tl-year-top { inset-block-start: -1.2rem; }
+.tl-year-end { inset-block-end: -1.2rem; }
+
+.tl-rail {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 2px;
+  width: 1px;
+  background: rgb(189 240 255 / 0.16);
+}
+/* the flow reading */
+.tl-fill {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  height: calc(var(--tl-progress) * 100%);
+  background: linear-gradient(var(--f-glow), var(--f-ember));
+  opacity: 0.75;
+}
+.tl-notch {
+  position: absolute;
+  inset-block-start: var(--y);
+  inset-inline-start: -2px;
+  width: 5px;
+  height: 1px;
+  background: rgb(189 240 255 / 0.3);
+}
+
+/* the career reading */
+.tl-eras { position: absolute; inset: 0; }
+.tl-era {
+  position: absolute;
+  inset-block-start: var(--from);
+  height: max(3px, calc(var(--to) - var(--from)));
+  inset-inline-start: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  color: var(--f-mist);
+  opacity: 0.45;
+  transition: opacity 0.5s var(--f-slow), width 0.5s var(--f-slow), color 0.5s;
+}
+.tl-era.is-study { color: var(--f-glow); }
+.tl-era.is-build { color: var(--f-ember); }
+
+.tl-era b,
+.tl-era em {
+  position: absolute;
+  inset-inline-start: 9px;
+  white-space: nowrap;
+  font-style: normal;
+  font-weight: 400;
+  opacity: 0;
+  translate: -0.3rem 0;
+  transition: opacity 0.45s var(--f-slow), translate 0.45s var(--f-slow);
+}
+.tl-era b {
+  inset-block-start: -0.15em;
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  color: var(--f-chalk);
+}
+.tl-era em { inset-block-start: 0.95em; font-size: 0.48rem; letter-spacing: 0.14em; color: var(--f-mist); }
+
+.tl-era.is-now { opacity: 1; width: 3px; }
+.tl-era.is-now b,
+.tl-era.is-now em { opacity: 1; translate: 0 0; }
+
+/* when nothing on screen is dated, the whole rail recedes */
+.fluid-timeline:not(.has-era) .tl-era { opacity: 0.3; }
+
+@media (max-width: 1024px) { .fluid-timeline { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .tl-era, .tl-era b, .tl-era em { transition: none; }
 }
 
 /* ── shared bits ───────────────────────────────────────────────────────── */

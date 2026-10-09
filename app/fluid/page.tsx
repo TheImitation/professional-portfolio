@@ -7,6 +7,7 @@ import { CONTRACTING, EDUCATION, JOB_ROLES, LOG_LINES, PROJECTS, REVIEWS, SKILL_
 import FluidChrome, { type RoomRef } from "@/components/fluid/FluidChrome";
 import FluidChannels from "@/components/fluid/FluidChannels";
 import FluidTour from "@/components/fluid/FluidTour";
+import FluidTimeline from "@/components/fluid/FluidTimeline";
 import "@/styles/fluid/atmosphere.css";
 import "@/styles/fluid/rooms.css";
 
@@ -39,6 +40,7 @@ export default function FluidPage()
       <div className="fluid-weather" aria-hidden="true" />
       <FluidChrome rooms={ROOMS} />
       <FluidTour />
+      <FluidTimeline />
 
       <main>
         <h1 className="fluid-sr">
@@ -124,7 +126,7 @@ export default function FluidPage()
                   </div>
                 ))}
               </div>
-              <div className="fluid-plate about-edu">
+              <div className="fluid-plate about-edu" data-era="bsc apprentice msc">
                 <p className="fluid-over">the route here</p>
                 <ul>
                   {EDUCATION.map((credential) => (
@@ -212,7 +214,7 @@ export default function FluidPage()
             </div>
             <div className="fluid-plates plates-5">
               {PROJECTS.map((project) => (
-                <article className="fluid-plate work-plate" key={project.id}>
+                <article className="fluid-plate work-plate" key={project.id} data-era={project.id}>
                   <p className="work-period">{project.period}</p>
                   <h2 className="fluid-display fluid-m">{project.title}</h2>
                   <p className="work-role">{project.role}</p>
