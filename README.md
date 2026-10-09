@@ -75,6 +75,23 @@ Split across two nested elements (both plain `opacity`, both composited) the
 pair sums to exactly `1` the whole way across — at any room height, with no
 tuning.
 
+### Pacing is counted, not guessed
+
+`components/fluid/pacing.ts` lays every room out from its content. There are two rules:
+
+- **Transitions are fixed.** Every plate fades in and out over the same
+  `XFADE` (30svh), and rooms join over one viewport, whatever their length.
+- **Holds are earned by words.** Each plate holds for
+  `BASE + PER_WORD × words` (clamped to `FLOOR`…`CEIL`), counted from
+  `datasets/Content.ts` at build time. Chips such as stacks and outcomes count
+  at half weight. A room's height follows from its holds. Edit a project
+  description and its plate re-paces at the next build.
+
+Because holds differ, each window length gets its own generated keyframes, so
+a fade stays exactly `XFADE` long. The hero is the exception: it is already
+read at rest before the tour starts, so it holds for a fixed `OPENING`. To
+make the whole page more or less leisurely, change `PER_WORD`.
+
 ### Performance constraints are load-bearing
 
 This CSS is a second draft. The first version derived every colour from the

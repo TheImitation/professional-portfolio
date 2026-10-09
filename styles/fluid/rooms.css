@@ -99,16 +99,16 @@
 }
 .fluid-plate {
   grid-area: 1 / 1;
-  animation-name: fluid-plate;
+  /* Each plate's window and keyframes come from components/fluid/pacing.ts:
+     holds vary with the words on the plate, so the fade FRACTION varies too,
+     and a keyframe percentage is generated per window length to keep every
+     fade exactly XFADE long. The fallback name is the old even pacing. */
+  animation-name: var(--plate-kf, fluid-plate);
   animation-duration: auto;
   animation-timing-function: var(--f-slow);
   animation-fill-mode: both;
   animation-timeline: --room;
 }
-/* Every plate window is the same length (BEAT + XFADE in app/fluid/page.tsx:
-   85 + 30 = 115svh), so one fade fraction means one fade duration in every
-   room. 26% = XFADE / (BEAT + XFADE). Change either constant there and this
-   fraction must follow. */
 @keyframes fluid-plate {
   0%       { opacity: 0; translate: 0 2.2rem; visibility: hidden; }
   26%, 74% { opacity: 1; translate: 0 0;      visibility: visible; }
@@ -351,7 +351,8 @@
   animation-timeline: --room;
 }
 /* information appears and STAYS — a portfolio is not a light installation.
-   Each line's window is set inline from the pacing grid. */
+   Each line arrives on its own window from components/fluid/pacing.ts,
+   spaced by the words in the line before it. */
 .about-log .prompt {
   font-family: var(--font-mono), monospace;
   font-size: 0.72rem;
@@ -809,7 +810,7 @@
 .no-sdt .about-log > div,
 .no-sdt .about-stats,
 .no-sdt .fluid-label { animation-name: none; opacity: 1; visibility: visible; translate: none; }
-.no-sdt .fluid-plate:not(:first-child) { display: none; }
+.no-sdt .fluid-plates > .fluid-plate:not(:first-child) { display: none; }
 .no-sdt .corridor { transform: translateZ(calc(-1000px + var(--p, 0) * 8500px)); }
 .no-sdt .starfield { opacity: 1; animation-name: none; }
 .no-sdt .starfield-depth { transform: translateZ(calc(-2100px + var(--page, 0) * 3250px)); }
