@@ -148,7 +148,7 @@ body:has(.fluid) { overflow-x: clip; }
 }
 @keyframes fluid-caption {
   entry 50%  { opacity: 0;    translate: 0 0.5rem; }
-  entry 100% { opacity: 0.85; translate: 0 0; }
+  entry 100.0% { opacity: 0.85; translate: 0 0; }   /* 100.0%, not 100%: see fluid-veil in rooms.css */
   exit 0%    { opacity: 0.85; translate: 0 0; }
   exit 50%   { opacity: 0;    translate: 0 0.5rem; }
 }
