@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { CAREER, CAREER_FROM, CAREER_TO } from "@/datasets/Content";
+import { CAREER, CAREER_FROM, CAREER_TO, eraSpan } from "@/datasets/Content";
 
 /* ==========================================================================
    FluidTimeline — one rail, two readings.
@@ -90,7 +90,7 @@ export default function FluidTimeline()
             } as React.CSSProperties}
           >
             <b>{era.label}</b>
-            <em>{era.from}{era.to === era.from ? "" : ` – ${era.to ?? "now"}`}</em>
+            <em>{eraSpan(era)}</em>
           </span>
         ))}
       </div>

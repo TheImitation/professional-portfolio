@@ -3,8 +3,8 @@
 import React from "react";
 import "../styles/pages/Home.css";
 import SpriteQuest from "./SpriteQuest";
-import { JOB_ROLES as jobRoles } from "@/datasets/Content";
-import { CV_PATH, PERSON } from "@/datasets/Site";
+import { CV_PATH, JOB_ROLES as jobRoles, PERSON } from "@/datasets/Site";
+import { CLASSIC_HERO, CTA } from "@/datasets/Copy";
 
 export default function Hero({ cvAvailable = false }: { cvAvailable?: boolean })
 {
@@ -20,13 +20,13 @@ export default function Hero({ cvAvailable = false }: { cvAvailable?: boolean })
             {PERSON.availability.toLowerCase()}
           </p>
           <p className="hero-kicker faux-mono" data-sprite-target>
-            {"// hello, world — transmission from"}
+            {CLASSIC_HERO.greeting}
           </p>
           <h1 data-sprite-target>
-            Nic Defaux <span className="brand-mark faux-shimmer">TheImitation</span>
+            {PERSON.name} <span className="brand-mark faux-shimmer">{PERSON.brand}</span>
           </h1>
           <p className="brand-gloss faux-mono" data-sprite-target>
-            {"// Defaux is French for 'of false' — the handle is just my surname, translated"}
+            {CLASSIC_HERO.gloss}
           </p>
           <div className="role-ticker" role="text" aria-label={jobRoles.join(", ")}>
             <ul aria-hidden="true">
@@ -36,30 +36,28 @@ export default function Hero({ cvAvailable = false }: { cvAvailable?: boolean })
             </ul>
           </div>
           <p className="hero-blurb" data-sprite-target>
-            I fuse creativity and precision at the cutting edge — building
-            AI platforms, architecting clouds, and occasionally hiding
-            pixel creatures behind my own photograph.
+            {CLASSIC_HERO.blurb}
           </p>
           <div className="hero-actions">
-            <a className="faux-btn faux-solid" href="#contact">Open a channel</a>
-            <a className="faux-btn faux-ghost" href="#skills">Inspect my stack</a>
+            <a className="faux-btn faux-solid" href="#contact">{CTA.contact}</a>
+            <a className="faux-btn faux-ghost" href="#skills">{CTA.stack}</a>
             {cvAvailable && (
               <a className="faux-btn faux-ghost" href={CV_PATH} download>
-                Grab my CV
+                {CTA.cv}
               </a>
             )}
           </div>
           {/* the same material, walked through as an exhibition */}
           <a className="gallery-door faux-mono" href="/">
             <span className="door-dot" aria-hidden="true" />
-            Back to the gallery
+            {CTA.gallery}
             <span className="door-arrow" aria-hidden="true">↗</span>
           </a>
         </div>
         <SpriteQuest />
       </div>
-      <a className="scroll-cue faux-mono" href="#about" aria-label="Scroll to about section">
-        <span>scroll</span>
+      <a className="scroll-cue faux-mono" href="#about" aria-label={CLASSIC_HERO.scrollAria}>
+        <span>{CLASSIC_HERO.scroll}</span>
         <span className="cue-arrow">▾</span>
       </a>
     </section>

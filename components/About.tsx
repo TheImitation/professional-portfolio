@@ -3,6 +3,8 @@
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import { STATS as stats, LOG_LINES as logLines } from "@/datasets/Content";
+import { ABOUT, NAME_PUN, SECTIONS } from "@/datasets/Copy";
+import Rich from "./Rich";
 import "../styles/components/About.css";
 
 const About: React.FC = () =>
@@ -11,20 +13,19 @@ const About: React.FC = () =>
 
   return (
     <section id="about" ref={ref} className={`about${inView ? " in-view" : ""}`}>
-      <p className="faux-kicker">01 / the human behind the handle</p>
+      <p className="faux-kicker">{SECTIONS.about.kicker}</p>
       <h2 className="faux-heading" data-sprite-target>
-        <span className="faux-hash">#</span>About <span className="faux-shimmer">TheImitation</span>
+        <span className="faux-hash">#</span>{SECTIONS.about.heading} <span className="faux-shimmer">{SECTIONS.about.accent}</span>
       </h2>
       <p className="about-pun" data-sprite-target>
-        <em>Defaux</em> is French — <em>faux</em>, as in false.
-        And what is faux, if not an imitation? The code, however, is all true.
+        <Rich text={NAME_PUN} />
       </p>
 
       <div className="about-grid">
-        <div className="terminal faux-pane" role="img" aria-label="Terminal-styled biography of Nic Defaux">
+        <div className="terminal faux-pane" role="img" aria-label={ABOUT.terminalAria}>
           <div className="terminal-bar">
             <i /><i /><i />
-            <span className="faux-mono">nic@theimitation: ~/about</span>
+            <span className="faux-mono">{ABOUT.terminal}</span>
           </div>
           <div className="terminal-body faux-mono">
             {logLines.map((line, index) => (

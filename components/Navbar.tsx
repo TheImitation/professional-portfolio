@@ -1,21 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { PERSON } from "@/datasets/Site";
+import { LOGO_ARIA, MENU, NAV } from "@/datasets/Copy";
 import "../styles/components/Navbar.css";
 
-type MenuItem = {
-  name: string;
-  anchor: string;
-};
-
-const navOptions: MenuItem[] = [
-  { name: "Home", anchor: "home" },
-  { name: "About", anchor: "about" },
-  { name: "Skills", anchor: "skills" },
-  { name: "Projects", anchor: "projects" },
-  { name: "Reviews", anchor: "reviews" },
-  { name: "Contact", anchor: "contact" },
-];
 
 const Navbar = () =>
 {
@@ -24,7 +13,7 @@ const Navbar = () =>
 
   useEffect(() =>
   {
-    const sections = navOptions
+    const sections = NAV
       .map((item) => document.getElementById(item.anchor))
       .filter((el): el is HTMLElement => el !== null);
 
@@ -58,12 +47,12 @@ const Navbar = () =>
   return (
     <nav className={`navbar${menuOpen ? " menu-open" : ""}`}>
       <div className="nav-wrapper">
-        <a className="logo faux-mono" href="#home" aria-label="TheImitation — Nic Defaux — back to top" onClick={() => setMenuOpen(false)}>
+        <a className="logo faux-mono" href="#home" aria-label={LOGO_ARIA} onClick={() => setMenuOpen(false)}>
           <span className="logo-bracket">{"{"}</span>
           {/* Hovering the handle declassifies the surname it translates. */}
           <span className="logo-word" aria-hidden="true">
-            <span className="word-handle">TheImitation</span>
-            <span className="word-name">Defaux</span>
+            <span className="word-handle">{PERSON.brand}</span>
+            <span className="word-name">{PERSON.surname}</span>
           </span>
           <span className="logo-caret">_</span>
           <span className="logo-bracket">{"}"}</span>
@@ -71,7 +60,7 @@ const Navbar = () =>
         <button
           type="button"
           className="menu-toggle"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-label={menuOpen ? MENU.close : MENU.open}
           aria-expanded={menuOpen}
           aria-controls="site-nav"
           onClick={() => setMenuOpen((open) => !open)}
@@ -79,7 +68,7 @@ const Navbar = () =>
           <span /><span /><span />
         </button>
         <ul className="nav-list" id="site-nav">
-          {navOptions.map((item) => (
+          {NAV.map((item) => (
             <li key={item.anchor}
               className={`nav-item${activeSection === item.anchor ? " selected" : ""}`}
             >

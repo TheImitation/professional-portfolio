@@ -2,6 +2,9 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { HEADSHOT } from "@/datasets/Site";
+import { SPRITE } from "@/datasets/Copy";
+import Rich from "./Rich";
 import "../styles/components/SpriteQuest.css";
 
 /* ==========================================================================
@@ -259,10 +262,7 @@ const SpriteQuest: React.FC = () =>
         onTouchMove={handleTouchMove}
         onClick={handlePicClick}
       >
-        <img
-          src="/headshot.jpg"
-          alt="Headshot of Nic Defaux — Senior Software Engineer and Technical Strategist — backlit by a golden sunset that lends this site its warm accent colour"
-        />
+        <img src={HEADSHOT.src} alt={HEADSHOT.alt} />
         <div className="reveal-layer" aria-hidden="true">
           <PixelPal />
         </div>
@@ -270,17 +270,11 @@ const SpriteQuest: React.FC = () =>
       </figure>
 
       <p className="sprite-hint faux-mono" aria-live="polite">
-        {roaming ? (
-          isCoarse
-            ? <>he&apos;s loose! steer with the d-pad — <kbd>✕</kbd> tucks him back in</>
-            : <>he&apos;s loose! <kbd>esc</kbd> tucks him back in</>
-        ) : isCoarse ? (
-          <>psst… something hides behind this photo.
-            <br />tap it to set him loose</>
-        ) : (
-          <>psst… something hides behind this photo.
-            <br />use the <kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> arrow keys</>
-        )}
+        <Rich
+          text={roaming
+            ? (isCoarse ? SPRITE.looseTouch : SPRITE.looseKeys)
+            : `${SPRITE.idle}\n${isCoarse ? SPRITE.idleTouch : SPRITE.idleKeys}`}
+        />
       </p>
 
       {mounted && roaming &&
@@ -290,7 +284,7 @@ const SpriteQuest: React.FC = () =>
               <PixelPal />
             </div>
             {isCoarse && (
-              <div className="dpad" role="group" aria-label="Sprite controls">
+              <div className="dpad" role="group" aria-label={SPRITE.controls}>
                 {[
                   { key: "ArrowUp", className: "dpad-up", glyph: "▲" },
                   { key: "ArrowLeft", className: "dpad-left", glyph: "◀" },
@@ -301,7 +295,7 @@ const SpriteQuest: React.FC = () =>
                     key={btn.key}
                     type="button"
                     className={`dpad-btn ${btn.className}`}
-                    aria-label={btn.key}
+                    aria-label={SPRITE.pad[btn.key]}
                     onPointerDown={dpadPress(btn.key)}
                     onPointerUp={dpadLift(btn.key)}
                     onPointerLeave={dpadLift(btn.key)}
@@ -314,7 +308,7 @@ const SpriteQuest: React.FC = () =>
                 <button
                   type="button"
                   className="dpad-btn dpad-dismiss"
-                  aria-label="Tuck the sprite away"
+                  aria-label={SPRITE.dismiss}
                   onClick={tuckSprite}
                 >
                   ✕
