@@ -5,7 +5,8 @@ import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import SidePanel from "@/components/SidePanel";
 import ConsoleEgg from "@/components/ConsoleEgg";
-import { PERSON, SITE_URL, SOCIALS } from "@/datasets/Site";
+import { EMPLOYER, HEADSHOT, JOB_ROLES, PERSON, SEO_KEYWORDS, SITE_NAME, SITE_TITLE, SITE_URL, SOCIAL, SOCIALS } from "@/datasets/Site";
+import { SKILL_DOMAINS } from "@/datasets/Content";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -26,36 +27,23 @@ export const metadata: Metadata = {
     template: `%s | ${PERSON.brand}`,
   },
   description: `${PERSON.name} (${PERSON.brand}) — ${PERSON.title}. ${PERSON.tagline} ${PERSON.availability}.`,
-  keywords: [
-    "Nic Defaux",
-    "TheImitation",
-    "Senior Software Engineer",
-    "Technical Strategist",
-    "AI Platform",
-    "Generative AI",
-    "Solution Architect",
-    "IBM",
-    "Public Sector",
-    "TypeScript",
-    "Next.js",
-    "AWS",
-  ],
-  authors: [{ name: PERSON.name, url: SOCIALS[0].url }],
+  keywords: [PERSON.name, PERSON.brand, ...JOB_ROLES, EMPLOYER.name, ...SEO_KEYWORDS],
+  authors: [{ name: PERSON.name, url: SOCIAL.linkedin.url }],
   creator: PERSON.brand,
   publisher: PERSON.brand,
-  applicationName: `${PERSON.brand} Portfolio`,
+  applicationName: SITE_NAME,
   alternates: { canonical: "/" },
   // og:image / twitter:image come from app/opengraph-image.tsx (file convention)
   openGraph: {
     type: "profile",
     url: SITE_URL,
-    title: `${PERSON.name} — ${PERSON.title}`,
+    title: SITE_TITLE,
     description: PERSON.tagline,
-    siteName: `${PERSON.brand} Portfolio`,
+    siteName: SITE_NAME,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${PERSON.name} — ${PERSON.title}`,
+    title: SITE_TITLE,
     description: PERSON.tagline,
   },
   robots: {
@@ -74,15 +62,9 @@ const personJsonLd = {
   jobTitle: PERSON.title,
   description: PERSON.tagline,
   url: SITE_URL,
-  image: `${SITE_URL}/headshot.jpg`,
-  worksFor: { "@type": "Organization", name: "IBM" },
-  knowsAbout: [
-    "Artificial Intelligence",
-    "Software Architecture",
-    "Cloud Computing",
-    "User Experience Design",
-    "Technical Strategy",
-  ],
+  image: `${SITE_URL}${HEADSHOT.src}`,
+  worksFor: { "@type": "Organization", name: EMPLOYER.name },
+  knowsAbout: SKILL_DOMAINS.map((domain) => domain.title),
   sameAs: SOCIALS.map((s) => s.url),
 };
 

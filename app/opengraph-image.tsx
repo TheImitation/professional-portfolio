@@ -1,9 +1,9 @@
 import React from "react";
 import { ImageResponse } from "next/server";
-import { PERSON, SITE_URL } from "@/datasets/Site";
+import { PERSON, SITE_TITLE, SITE_URL } from "@/datasets/Site";
 
 export const runtime = "edge";
-export const alt = `${PERSON.name} — ${PERSON.title}`;
+export const alt = SITE_TITLE;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -41,7 +41,7 @@ export default function OpenGraphImage()
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", fontSize: 30, color: "#00bfff" }}>
-            {"{TheImitation_}"}
+            {PERSON.logo}
           </div>
           <div
             style={{

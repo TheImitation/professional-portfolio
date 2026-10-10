@@ -2,7 +2,9 @@
 
 import React, { useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { EMAIL_B64, WHATSAPP_B64, PERSON } from "@/datasets/Site";
+import { openEmail, openWhatsApp } from "@/datasets/Site";
+import { AVAILABILITY_LINE, CHANNELS, CONTACT, SECTIONS } from "@/datasets/Copy";
+import Rich from "./Rich";
 import "../styles/components/Contact.css";
 
 /* ==========================================================================
@@ -17,61 +19,48 @@ const Contact: React.FC = () =>
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
 
-  const openEmail = () =>
-  {
-    const params = new URLSearchParams();
-    if (subject) params.set("subject", subject);
-    if (message) params.set("body", message);
-    const query = params.toString();
-    window.location.href = `mailto:${atob(EMAIL_B64)}${query ? `?${query}` : ""}`;
-  };
-
-  const openWhatsApp = () =>
-  {
-    const text = message ? `?text=${encodeURIComponent(message)}` : "";
-    window.open(`https://wa.me/${atob(WHATSAPP_B64)}${text}`, "_blank", "noopener,noreferrer");
-  };
+  const sendEmail = () => openEmail(subject, message);
+  const sendWhatsApp = () => openWhatsApp(message);
 
   return (
     <section id="contact" ref={ref} className={`contact${inView ? " in-view" : ""}`}>
-      <p className="faux-kicker">05 / open a channel</p>
+      <p className="faux-kicker">{SECTIONS.contact.kicker}</p>
       <h2 className="faux-heading" data-sprite-target>
-        <span className="faux-hash">#</span>Contact <span className="faux-shimmer">/dev/nic</span>
+        <span className="faux-hash">#</span>{SECTIONS.contact.heading} <span className="faux-shimmer">{SECTIONS.contact.accent}</span>
       </h2>
       <p className="contact-note" data-sprite-target>
-        Currently <strong>open to contract work</strong> — {PERSON.services}.
+        <Rich text={AVAILABILITY_LINE} />
       </p>
       <p className="contact-note contact-note-sub" data-sprite-target>
-        No address harvesting here: both channels decode client-side, only
-        when you knock. Geek out, propose an engagement, or just say hi.
+        {CONTACT.privacy}
       </p>
 
       <div className="contact-grid">
         <form
           className="contact-form faux-pane"
-          onSubmit={(event) => { event.preventDefault(); openEmail(); }}
+          onSubmit={(event) => { event.preventDefault(); sendEmail(); }}
         >
-          <label className="faux-mono" htmlFor="contact-subject">subject:</label>
+          <label className="faux-mono" htmlFor="contact-subject">{CONTACT.subject}</label>
           <input
             id="contact-subject"
             type="text"
-            placeholder="Let's build something"
+            placeholder={CONTACT.prompt}
             value={subject}
             onChange={(event) => setSubject(event.target.value)}
           />
-          <label className="faux-mono" htmlFor="contact-message">payload:</label>
+          <label className="faux-mono" htmlFor="contact-message">{CONTACT.message}</label>
           <textarea
             id="contact-message"
-            placeholder="Your message — drafted here, sent from your own app. I never see a byte until you hit send."
+            placeholder={CONTACT.messagePlaceholder}
             rows={5}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
           />
-          <p className="form-hint faux-mono">message routes through the proxy of your choosing →</p>
+          <p className="form-hint faux-mono">{CONTACT.hint}</p>
         </form>
 
         <div className="channel-stack">
-          <button type="button" className="channel-card faux-pane" onClick={openEmail}>
+          <button type="button" className="channel-card faux-pane" onClick={sendEmail}>
             <span className="channel-glyph" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
@@ -79,13 +68,13 @@ const Contact: React.FC = () =>
               </svg>
             </span>
             <span className="channel-meta">
-              <span className="channel-name">EMAIL_PROXY</span>
-              <span className="channel-desc faux-mono">mailto decodes on click · base64 at rest</span>
+              <span className="channel-name">{CHANNELS.email.proxy}</span>
+              <span className="channel-desc faux-mono">{CHANNELS.email.note}</span>
             </span>
             <span className="channel-arrow" aria-hidden="true">→</span>
           </button>
 
-          <button type="button" className="channel-card faux-pane" onClick={openWhatsApp}>
+          <button type="button" className="channel-card faux-pane" onClick={sendWhatsApp}>
             <span className="channel-glyph" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" />
@@ -93,20 +82,20 @@ const Contact: React.FC = () =>
               </svg>
             </span>
             <span className="channel-meta">
-              <span className="channel-name">WHATSAPP_PROXY</span>
-              <span className="channel-desc faux-mono">wa.me relay · number stays encoded</span>
+              <span className="channel-name">{CHANNELS.whatsapp.proxy}</span>
+              <span className="channel-desc faux-mono">{CHANNELS.whatsapp.note}</span>
             </span>
             <span className="channel-arrow" aria-hidden="true">→</span>
           </button>
 
           <p className="channel-footnote faux-mono">
-            {"// heart on sleeve, inbox always open"}
+            {CONTACT.footnote}
           </p>
         </div>
       </div>
 
       <footer className="site-footer faux-mono">
-        <p>© {new Date().getFullYear()} TheImitation — designed & built by Nic Defaux, fuelled by curiosity.</p>
+        <p>{CONTACT.footer(new Date().getFullYear())}</p>
       </footer>
     </section>
   );

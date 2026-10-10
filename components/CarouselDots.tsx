@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { CAROUSEL } from "@/datasets/Copy";
 import "../styles/components/CarouselDots.css";
 
 const AUTO_ROTATE_MS = 12000;
@@ -95,7 +96,7 @@ const CarouselDots: React.FC<CarouselDotsProps> = ({ count, activeIndex, onSelec
         key={index}
         type="button"
         className={`carousel-dot${index === activeIndex ? " active" : ""}`}
-        aria-label={`Go to slide ${index + 1} of ${count}`}
+        aria-label={CAROUSEL.slide(index + 1, count)}
         aria-current={index === activeIndex}
         onClick={() => onSelect(index)}
       />

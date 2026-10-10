@@ -145,11 +145,22 @@ Three details were kept deliberately rather than reinvented:
 
 ### Content is shared, not copied
 
-`datasets/Content.ts` is the single source for stats, the terminal log, skill
-domains, projects, reviews and the role ticker. The live section components
-and the gallery both read from it, so the two presentations cannot drift. Skills
-keeps its own SVG strokes in `components/Skills.tsx`, keyed by domain id —
-illustration stays with its component, copy does not.
+Components carry markup only. Every word on the site comes from `datasets/`,
+written once and derived wherever it is repeated:
+
+- `datasets/Site.ts`: identity, SEO, links and the contact channels. It imports
+  nothing, so the name, brand, employer and headline claim live here alone.
+- `datasets/Content.ts`: the career itself (skills, projects, reviews,
+  education, contracting). The stats, the terminal log and the timeline are
+  built from these facts, never retyped.
+- `datasets/Copy.ts`: interface copy for both views (section headings, calls
+  to action, hints, labels, the gallery's rooms). Where the two views say the
+  same thing, they read the same string.
+
+Copy that needs emphasis uses a light markup (`*em*`, `**strong**`, `` `kbd` ``,
+newlines) rendered by `components/Rich.tsx`. Skills keeps its own SVG strokes in
+`components/Skills.tsx`, keyed by domain id: illustration stays with its
+component, words do not.
 
 ### How the two views share the site
 

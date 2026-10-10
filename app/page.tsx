@@ -1,13 +1,14 @@
 import React from "react";
-import fs from "fs";
-import path from "path";
-import { CV_PATH, PERSON, SOCIALS } from "@/datasets/Site";
-import { CONTRACTING, EDUCATION, JOB_ROLES, LOG_LINES, PROJECTS, REVIEWS, SKILL_DOMAINS, STATS } from "@/datasets/Content";
-import FluidChrome, { type RoomRef } from "@/components/fluid/FluidChrome";
+import { CV_PATH, HEADSHOT, JOB_ROLES, PERSON, SOCIALS } from "@/datasets/Site";
+import { CONTRACTING, EDUCATION, LOG_LINES, PROJECTS, REVIEWS, SKILL_DOMAINS, STATS, credentialLine, projectPeriod } from "@/datasets/Content";
+import { AVAILABILITY_LINE, CONTACT, CTA, GALLERY, NAME_PUN, PLANES, PROJECT_UI, ROOMS, room } from "@/datasets/Copy";
+import { cvAvailable as hasCv } from "@/lib/cv";
+import FluidChrome from "@/components/fluid/FluidChrome";
 import FluidChannels from "@/components/fluid/FluidChannels";
 import FluidTour from "@/components/fluid/FluidTour";
 import FluidTimeline from "@/components/fluid/FluidTimeline";
 import ProjectSnapshot from "@/components/ProjectSnapshot";
+import Rich from "@/components/Rich";
 import { OPENING, arrivals, holdFor, pace, plateKeyframes, words } from "@/components/fluid/pacing";
 import "@/styles/fluid/atmosphere.css";
 import "@/styles/fluid/rooms.css";
@@ -16,18 +17,23 @@ import "@/styles/fluid/rooms.css";
    from the root layout's defaults; the classic one-page view lives at
    /classic (app/classic/page.tsx), linked from the chrome on every room. */
 
-const ROOMS: RoomRef[] = [
-  { id: "approach", numeral: "i", name: "approach" },
-  { id: "ganzfeld", numeral: "ii", name: "about" },
-  { id: "colonnade", numeral: "iii", name: "stack" },
-  { id: "horizon", numeral: "iv", name: "horizon" },
-  { id: "volume", numeral: "v", name: "work" },
-  { id: "field", numeral: "vi", name: "words" },
-  { id: "egress", numeral: "vii", name: "contact" },
-];
+function RoomLabel({ id }: { id: string })
+{
+  const { numeral, label } = room(id);
+  if (!label) return null;
+  return (
+    <div className="fluid-label">
+      <span>{GALLERY.roomWord} {numeral}</span>
+      <b>{label.title}</b>
+      <span>{label.note}</span>
+    </div>
+  );
+}
 
 /* `--i` drives each plane's depth in the 3D rooms. */
 const depth = (i: number) => ({ ["--i" as string]: i }) as React.CSSProperties;
+/* n planes centred on zero: 7 → -3 … 3 */
+const centred = (n: number) => Array.from({ length: n }, (_, i) => i - (n - 1) / 2);
 
 /* ── pacing: holds counted from the words each exhibit carries ─────────
    (the grid itself, and why, lives in components/fluid/pacing.ts) */
@@ -37,22 +43,22 @@ const LOG_WORDS = LOG_LINES.map((line) => words([line.prompt, line.output]));
 const ABOUT = pace([
   holdFor(LOG_WORDS.reduce((a, b) => a + b, 0)),
   holdFor(words(STATS.flatMap((s) => [s.value, s.unit, s.label]))),
-  holdFor(words(["the route here", ...EDUCATION.flatMap((c) => [c.qualification, c.institution, c.grade, c.years])])),
+  holdFor(words([GALLERY.route, ...EDUCATION.flatMap((c) => [c.qualification, credentialLine(c)])])),
 ]);
 const LOG = arrivals(ABOUT, 0, LOG_WORDS);
 
 const STACK = pace(SKILL_DOMAINS.map((d) => holdFor(words([d.caption, d.title, ...d.skills]))));
 
-const HORIZON = pace([holdFor(words(["iv / the work", "Built, torn down, rebuilt."]))]);
+const HORIZON = pace([holdFor(words([GALLERY.horizon.over, GALLERY.horizon.line]))]);
 
 const WORK = pace(PROJECTS.map((p) =>
-  holdFor(words([p.period, p.title, p.role, p.description], [...(p.outcomes ?? []), ...p.stack]))));
+  holdFor(words([projectPeriod(p), p.title, p.role, p.description], [...(p.outcomes ?? []), ...p.stack]))));
 
 const WORDS = pace(REVIEWS.map((r) => holdFor(words([r.quote, r.name, r.role]))));
 
 export default function FluidPage()
 {
-  const cvAvailable = fs.existsSync(path.join(process.cwd(), "public", CV_PATH));
+  const cvAvailable = hasCv();
 
   return (
     <div className="fluid">
@@ -65,7 +71,7 @@ export default function FluidPage()
 
       <main>
         <h1 className="fluid-sr">
-          {PERSON.name} — {PERSON.title}. A scroll-driven gallery in seven rooms.
+          {GALLERY.summary}
         </h1>
 
         {/* ─── i · APPROACH ─────────────────────────────────────────── */}
@@ -83,7 +89,7 @@ export default function FluidPage()
                   <span className="hero-chip quiet">{CONTRACTING.clearance}</span>
                 </p>
                 <h2 className="fluid-display fluid-xl hero-name">
-                  Nic Defaux <b className="fluid-shimmer">TheImitation</b>
+                  {PERSON.name} <b className="fluid-shimmer">{PERSON.brand}</b>
                 </h2>
                 {/* the vertical ticker from the live hero — the first role is
                     repeated at the end so the glide loops seamlessly */}
@@ -95,31 +101,21 @@ export default function FluidPage()
                   </ul>
                 </div>
                 <p className="fluid-lede">
-                  <em>Defaux</em> is French — <em>faux</em>, as in false. And what is faux,
-                  if not an imitation? The code, however, is all true.
+                  <Rich text={NAME_PUN} />
                 </p>
                 <div className="hero-actions">
-                  <a className="fluid-btn solid" href="#egress">Open a channel</a>
-                  <a className="fluid-btn" href="#colonnade">Inspect the stack</a>
-                  {cvAvailable && <a className="fluid-btn" href={CV_PATH} download>Grab the CV</a>}
+                  <a className="fluid-btn solid" href="#egress">{CTA.contact}</a>
+                  <a className="fluid-btn" href="#colonnade">{CTA.stack}</a>
+                  {cvAvailable && <a className="fluid-btn" href={CV_PATH} download>{CTA.cv}</a>}
                 </div>
               </div>
 
               <figure className="portrait">
-                <img
-                  src="/headshot.jpg"
-                  width={760}
-                  height={950}
-                  alt="Headshot of Nic Defaux — Senior Software Engineer and Technical Strategist — backlit by a golden sunset that lends this site its warm accent colour"
-                />
-                <figcaption>headshot.jpg — backlit</figcaption>
+                <img src={HEADSHOT.src} width={HEADSHOT.width} height={HEADSHOT.height} alt={HEADSHOT.alt} />
+                <figcaption>{GALLERY.portraitCaption}</figcaption>
               </figure>
             </div>
-            <div className="fluid-label">
-              <span>Room i</span>
-              <b>Nic Defaux, backlit</b>
-              <span>the sunset here is where this site&rsquo;s ember accent was sampled</span>
-            </div>
+            <RoomLabel id="approach" />
           </div>
         </section>
 
@@ -147,27 +143,19 @@ export default function FluidPage()
                   </div>
                 ))}
               </div>
-              <div className="fluid-plate about-edu" data-era="bsc apprentice msc" style={ABOUT.plates[2]}>
-                <p className="fluid-over">the route here</p>
+              <div className="fluid-plate about-edu" data-era={EDUCATION.map((c) => c.id).join(" ")} style={ABOUT.plates[2]}>
+                <p className="fluid-over">{GALLERY.route}</p>
                 <ul>
                   {EDUCATION.map((credential) => (
                     <li key={credential.qualification}>
                       <b>{credential.qualification}</b>
-                      <span>
-                        {[credential.institution, credential.grade, credential.years]
-                          .filter(Boolean)
-                          .join("  ·  ")}
-                      </span>
+                      <span>{credentialLine(credential)}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
-            <div className="fluid-label">
-              <span>Room ii</span>
-              <b>The human behind the handle</b>
-              <span>radial-gradient, oklch(), scroll-linked hue</span>
-            </div>
+            <RoomLabel id="ganzfeld" />
           </div>
         </section>
 
@@ -176,7 +164,7 @@ export default function FluidPage()
           <div className="fluid-air air-colonnade" aria-hidden="true" />
           <div className="fluid-stage fluid-3d">
             <div className="corridor" aria-hidden="true">
-              {Array.from({ length: 12 }, (_, i) => (
+              {Array.from({ length: PLANES.arches }, (_, i) => (
                 <i className="arch" key={i} style={depth(i)} />
               ))}
             </div>
@@ -192,11 +180,7 @@ export default function FluidPage()
                 </article>
               ))}
             </div>
-            <div className="fluid-label">
-              <span>Room iii</span>
-              <b>Travelling through the stack</b>
-              <span>perspective, preserve-3d, twelve planes</span>
-            </div>
+            <RoomLabel id="colonnade" />
           </div>
         </section>
 
@@ -210,9 +194,9 @@ export default function FluidPage()
               <div className="ground" />
             </div>
             <div className="fluid-plate horizon-copy" style={HORIZON.plates[0]}>
-              <p className="fluid-over">iv / the work</p>
+              <p className="fluid-over">{GALLERY.horizon.over}</p>
               <p className="fluid-display fluid-m" style={{ paddingBlockStart: "0.6em" }}>
-                Built, torn down, rebuilt.
+                {GALLERY.horizon.line}
               </p>
             </div>
           </div>
@@ -222,10 +206,10 @@ export default function FluidPage()
         <section className="fluid-room" id="volume" style={WORK.room}>
           <div className="fluid-air air-volume" aria-hidden="true" />
           <div className="fluid-stage fluid-3d">
-            {/* seven panes — the platform's architectural reincarnations */}
+            {/* the panes: the platform's architectural reincarnations */}
             <div className="glass" aria-hidden="true">
               <div className="glass-turn">
-                {[-3, -2, -1, 0, 1, 2, 3].map((i) => <i key={i} style={depth(i)} />)}
+                {centred(PLANES.panes).map((i) => <i key={i} style={depth(i)} />)}
               </div>
             </div>
             <div className="fluid-plates">
@@ -236,7 +220,7 @@ export default function FluidPage()
                   data-era={project.id}
                   style={WORK.plates[index]}
                 >
-                  <p className="work-period">{project.period}</p>
+                  <p className="work-period">{projectPeriod(project)}</p>
                   <h2 className="fluid-display fluid-m">{project.title}</h2>
                   <p className="work-role">{project.role}</p>
                   <p className="work-desc">{project.description}</p>
@@ -250,21 +234,17 @@ export default function FluidPage()
                   </ul>
                   {project.href && (
                     <a className="fluid-btn" href={project.href} target="_blank" rel="noopener noreferrer">
-                      Visit the site
+                      {CTA.visit}
                     </a>
                   )}
-                  {project.locked && <p className="work-flag">◆ client work — details under wraps</p>}
-                  {project.pending && <p className="work-flag">◆ coming back soon</p>}
+                  {project.locked && <p className="work-flag">◆ {PROJECT_UI.locked}</p>}
+                  {project.pending && <p className="work-flag">◆ {PROJECT_UI.pending}</p>}
                   {/* hangs in front of the glass on wide screens, inline below */}
                   <ProjectSnapshot project={project} className="work-snapshot" theme="fluid" />
                 </article>
               ))}
             </div>
-            <div className="fluid-label">
-              <span>Room v</span>
-              <b>Volume (Seven Panes)</b>
-              <span>rotateY, seven translucent planes</span>
-            </div>
+            <RoomLabel id="volume" />
           </div>
         </section>
 
@@ -294,11 +274,7 @@ export default function FluidPage()
                 </figure>
               ))}
             </div>
-            <div className="fluid-label">
-              <span>Room vi</span>
-              <b>Field — what colleagues said</b>
-              <span>eight point-planes in depth, zooming to the end of the page</span>
-            </div>
+            <RoomLabel id="field" />
           </div>
         </section>
 
@@ -307,24 +283,21 @@ export default function FluidPage()
           <div className="fluid-air air-egress" aria-hidden="true" />
           <div className="egress-body">
             <div className="egress-head">
-              <p className="fluid-over fluid-in">vii / open a channel</p>
-              <h2 className="fluid-display fluid-l fluid-in">Let&rsquo;s build something</h2>
+              <p className="fluid-over fluid-in">{GALLERY.egress.over}</p>
+              <h2 className="fluid-display fluid-l fluid-in">{CONTACT.prompt}</h2>
             </div>
 
             <div className="egress-cols">
               <div className="fluid-in">
-                <h3>Available for</h3>
-                <p>Currently <strong>{PERSON.availability.toLowerCase()}</strong> — {PERSON.services}.</p>
+                <h3>{GALLERY.egress.available}</h3>
+                <p><Rich text={AVAILABILITY_LINE} /></p>
                 <ul className="egress-list">
-                  <li>{CONTRACTING.clearance}</li>
-                  <li>{CONTRACTING.dayRate}</li>
-                  <li>{CONTRACTING.notice}</li>
-                  <li>{CONTRACTING.working}</li>
+                  {Object.values(CONTRACTING).map((term) => <li key={term}>{term}</li>)}
                 </ul>
               </div>
 
               <div className="fluid-in">
-                <h3>Elsewhere</h3>
+                <h3>{GALLERY.egress.elsewhere}</h3>
                 <ul className="egress-list">
                   {SOCIALS.map((social) => (
                     <li key={social.label}>
@@ -334,29 +307,23 @@ export default function FluidPage()
                     </li>
                   ))}
                   {cvAvailable && (
-                    <li><a href={CV_PATH} download>Curriculum vitae ↓</a></li>
+                    <li><a href={CV_PATH} download>{CTA.cv} ↓</a></li>
                   )}
-                  <li><a href="/classic">The classic view →</a></li>
+                  <li><a href="/classic">{CTA.classic} →</a></li>
                 </ul>
               </div>
 
               <div className="fluid-in">
-                <h3>This page</h3>
+                <h3>{GALLERY.egress.thisPage}</h3>
                 <ul className="egress-list">
-                  <li>animation-timeline: scroll() / view()</li>
-                  <li>view-timeline &amp; animation-range</li>
-                  <li>@property interpolation</li>
-                  <li>perspective, preserve-3d</li>
-                  <li>oklch() — one travelling hue</li>
-                  <li>No images. No canvas. No WebGL.</li>
+                  {GALLERY.egress.techniques.map((technique) => <li key={technique}>{technique}</li>)}
                 </ul>
               </div>
             </div>
 
             <p className="egress-foot fluid-in">
-              One hue travels from iris to ember and back across the whole page —
-              cold to warm to cold, old headshot to new.
-              <span>Seven rooms. No prescribed route.</span>
+              {GALLERY.egress.foot}
+              <span>{GALLERY.egress.route}</span>
             </p>
 
             <div className="fluid-in"><FluidChannels /></div>
@@ -365,7 +332,7 @@ export default function FluidPage()
 
         <div className="starfield" aria-hidden="true">
           <div className="starfield-depth">
-            {Array.from({ length: 8 }, (_, i) => <i key={i} style={depth(i)} />)}
+            {Array.from({ length: PLANES.stars }, (_, i) => <i key={i} style={depth(i)} />)}
           </div>
         </div>
         </div>

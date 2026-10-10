@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { TOUR } from "@/datasets/Copy";
 
 /* ==========================================================================
    FluidTour — the gallery walks you through itself.
@@ -192,12 +193,7 @@ export default function FluidTour()
     };
   }, []);
 
-  const copy: Record<Mode, { label: string; action: string }> = {
-    idle:    { label: "scroll once, or press ⏎ — then let go", action: "Begin the tour" },
-    touring: { label: "touring — hands off. scroll to take over, esc to stop", action: "Stop the tour" },
-    paused:  { label: "you have the wheel — resuming in a moment", action: "Stop the tour" },
-    done:    { label: "that was the tour — press ⏎ to walk it again", action: "Walk it again" },
-  };
+  const copy: Record<Mode, { label: string; action: string }> = TOUR;
 
   return (
     <div className={`fluid-tour is-${mode}`}>

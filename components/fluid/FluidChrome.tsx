@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { PERSON } from "@/datasets/Site";
+import { CTA, GALLERY, LOGO_ARIA, type Room } from "@/datasets/Copy";
 
 /* ==========================================================================
    FluidChrome — enhancement only.
@@ -11,12 +13,6 @@ import React, { useEffect } from "react";
      2. carry the atmosphere in browsers without scroll timelines
    ========================================================================== */
 
-export interface RoomRef
-{
-  id: string;
-  numeral: string;
-  name: string;
-}
 
 /* the same stop table as @keyframes fluid-atmosphere, for the fallback */
 const STOPS: [number, number, number, number][] = [
@@ -31,7 +27,7 @@ const STOPS: [number, number, number, number][] = [
   [1.00, 232, 0.028, 5],
 ];
 
-export default function FluidChrome({ rooms }: { rooms: RoomRef[] })
+export default function FluidChrome({ rooms }: { rooms: Room[] })
 {
   useEffect(() =>
   {
@@ -145,35 +141,35 @@ export default function FluidChrome({ rooms }: { rooms: RoomRef[] })
         <a
           className="fluid-logo"
           href="#approach"
-          aria-label="TheImitation — Nic Defaux — back to top"
+          aria-label={LOGO_ARIA}
         >
           <span className="fluid-logo-row">
             <span className="lb">{"{"}</span>
             <span className="lw" aria-hidden="true">
-              <span className="wh">TheImitation</span>
-              <span className="wn">Defaux</span>
+              <span className="wh">{PERSON.brand}</span>
+              <span className="wn">{PERSON.surname}</span>
             </span>
             <span className="lc">_</span>
             <span className="lb">{"}"}</span>
           </span>
-          <span className="fluid-logo-sub">the gallery</span>
+          <span className="fluid-logo-sub">{GALLERY.name}</span>
         </a>
         <div className="fluid-chrome-end">
           {/* a plain link, not next/link: a full load leaves the gallery's
               scroll timelines and tour behind cleanly */}
           <a className="fluid-classic" href="/classic">
-            <span className="fluid-classic-hint">Prefer one page?</span>
-            Classic view
+            <span className="fluid-classic-hint">{CTA.classicHint}</span>
+            {CTA.classic}
             <span className="fluid-classic-arrow" aria-hidden="true">→</span>
           </a>
           <p className="fluid-where">
-            <b data-room-numeral>i</b>
-            <span data-room-label>approach</span>
+            <b data-room-numeral>{rooms[0].numeral}</b>
+            <span data-room-label>{rooms[0].name}</span>
           </p>
         </div>
       </header>
 
-      <nav className="fluid-ticks" aria-label="Rooms">
+      <nav className="fluid-ticks" aria-label={GALLERY.roomsAria}>
         {rooms.map((room) => (
           <a key={room.id} href={`#${room.id}`} data-tick={room.id}>
             <em>{room.name}</em>

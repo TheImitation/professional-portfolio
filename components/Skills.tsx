@@ -3,6 +3,7 @@
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import { SKILL_DOMAINS, type SkillDomain } from "@/datasets/Content";
+import { SECTIONS, SKILLS_UI } from "@/datasets/Copy";
 import "../styles/components/Skills.css";
 
 /* ==========================================================================
@@ -94,7 +95,7 @@ const DrawnIcon: React.FC<{ card: SkillCard; active: boolean }> = ({ card, activ
       viewBox="0 0 140 140"
       className={`drawn-icon${active ? " active" : ""}`}
       role="img"
-      aria-label={`Hand-drawn ${card.title} illustration`}
+      aria-label={SKILLS_UI.art(card.title)}
     >
       {card.strokes.map((stroke, index) =>
       {
@@ -147,13 +148,11 @@ const SkillPanel: React.FC<{ card: SkillCard; index: number }> = ({ card, index 
 
 const Skills: React.FC = () => (
   <section id="skills">
-    <p className="faux-kicker">02 / what i bring to the table</p>
+    <p className="faux-kicker">{SECTIONS.skills.kicker}</p>
     <h2 className="faux-heading" data-sprite-target>
-      <span className="faux-hash">#</span>Skills, <span className="faux-shimmer">drawn from memory</span>
+      <span className="faux-hash">#</span>{SECTIONS.skills.heading}, <span className="faux-shimmer">{SECTIONS.skills.accent}</span>
     </h2>
-    <p className="skills-note">
-      Each illustration sketches itself in a single unbroken line — pencil down, no lifting.
-    </p>
+    <p className="skills-note">{SECTIONS.skills.note}</p>
     <div className="skills-grid">
       {skillCards.map((card, index) => (
         <SkillPanel card={card} index={index} key={card.id} />

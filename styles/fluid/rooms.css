@@ -592,6 +592,9 @@
   z-index: 3;
   display: grid;
   gap: clamp(0.5rem, 1.5vh, 0.9rem);
+  /* the plates share one grid cell, sized by the tallest; a shorter plate
+     centres its rows instead of stretching them (and its button) to fit */
+  align-content: center;
   justify-items: start;
   text-align: left;
 }

@@ -3,7 +3,8 @@
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import CarouselDots, { useCarouselIndex } from "./CarouselDots";
-import { REVIEWS as reviews } from "@/datasets/Content";
+import { REVIEWS as reviews, initialsOf } from "@/datasets/Content";
+import { REVIEW_UI, SECTIONS } from "@/datasets/Copy";
 import "../styles/components/Testimonials.css";
 
 const Testimonials: React.FC = () =>
@@ -13,13 +14,11 @@ const Testimonials: React.FC = () =>
 
   return (
     <section id="reviews" ref={ref} className={`reviews${inView ? " in-view" : ""}`}>
-      <p className="faux-kicker">04 / peer review</p>
+      <p className="faux-kicker">{SECTIONS.reviews.kicker}</p>
       <h2 className="faux-heading" data-sprite-target>
-        <span className="faux-hash">#</span>Colleagues, <span className="faux-shimmer">on the record</span>
+        <span className="faux-hash">#</span>{SECTIONS.reviews.heading}, <span className="faux-shimmer">{SECTIONS.reviews.accent}</span>
       </h2>
-      <p className="reviews-note">
-        Pulled straight from recommendations — merged without edits, zero conflicts.
-      </p>
+      <p className="reviews-note">{SECTIONS.reviews.note}</p>
 
       <div className="reviews-grid" ref={containerRef}>
         {reviews.map((review, index) => (
@@ -29,7 +28,7 @@ const Testimonials: React.FC = () =>
             key={review.name}
           >
             <div className="review-head">
-              <span className="review-avatar faux-mono" aria-hidden="true">{review.initials}</span>
+              <span className="review-avatar faux-mono" aria-hidden="true">{initialsOf(review.name)}</span>
               <figcaption>
                 {review.linkedin ? (
                   <a
@@ -46,14 +45,14 @@ const Testimonials: React.FC = () =>
                 )}
                 <span className="review-role">{review.role}</span>
               </figcaption>
-              <span className="review-approved faux-mono">✓ approved</span>
+              <span className="review-approved faux-mono">{REVIEW_UI.approved}</span>
             </div>
             <blockquote>{review.quote}</blockquote>
           </figure>
         ))}
       </div>
 
-      <CarouselDots count={reviews.length} activeIndex={activeIndex} onSelect={scrollToIndex} label="Review slides" />
+      <CarouselDots count={reviews.length} activeIndex={activeIndex} onSelect={scrollToIndex} label={REVIEW_UI.slides} />
     </section>
   );
 };

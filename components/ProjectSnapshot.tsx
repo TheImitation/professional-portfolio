@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useId, useRef } from "react";
-import type { Project } from "@/datasets/Content";
+import { projectPeriod, type Project } from "@/datasets/Content";
+import { CTA, PROJECT_UI } from "@/datasets/Copy";
 import "../styles/components/ProjectSnapshot.css";
 
 /* "www.mak99interiors.co.uk/" → "mak99interiors.co.uk", keeping any path. */
@@ -58,7 +59,7 @@ const ProjectSnapshot: React.FC<{ project: Project; className?: string; theme?: 
   if (!overview)
   {
     return (
-      <a className={classes} href={href} target="_blank" rel="noopener noreferrer" aria-label={`${title}: open the live site (new tab)`}>
+      <a className={classes} href={href} target="_blank" rel="noopener noreferrer" aria-label={PROJECT_UI.openSite(title)}>
         {bar("↗")}
         {shot}
       </a>
@@ -73,7 +74,7 @@ const ProjectSnapshot: React.FC<{ project: Project; className?: string; theme?: 
         type="button"
         className={classes}
         aria-haspopup="dialog"
-        aria-label={`${title}: open the overview`}
+        aria-label={PROJECT_UI.openOverview(title)}
         onClick={() => sheetRef.current?.showModal()}
       >
         {bar("⤢")}
@@ -88,7 +89,7 @@ const ProjectSnapshot: React.FC<{ project: Project; className?: string; theme?: 
         onClick={(event) => { if (event.target === sheetRef.current) close(); }}
       >
         <div className="sheet-body">
-          <button type="button" className="sheet-close" onClick={close} aria-label="Close the overview">
+          <button type="button" className="sheet-close" onClick={close} aria-label={PROJECT_UI.closeOverview}>
             ×
           </button>
 
@@ -101,23 +102,23 @@ const ProjectSnapshot: React.FC<{ project: Project; className?: string; theme?: 
           </figure>
 
           <div className="sheet-copy">
-            <p className="sheet-kicker">{project.period}</p>
+            <p className="sheet-kicker">{projectPeriod(project)}</p>
             <h2 className="sheet-title" id={headingId}>{title}</h2>
             <p className="sheet-role">{project.role}</p>
             <p className="sheet-lede">{overview.lede}</p>
 
-            <h3 className="sheet-label">What I built</h3>
+            <h3 className="sheet-label">{PROJECT_UI.built}</h3>
             <ul className="sheet-built">
               {overview.built.map((item) => <li key={item}>{item}</li>)}
             </ul>
 
-            <ul className="sheet-stack" aria-label="Technologies used">
+            <ul className="sheet-stack" aria-label={PROJECT_UI.stack}>
               {project.stack.map((tech) => <li key={tech}>{tech}</li>)}
             </ul>
 
             <div className="sheet-links">
               <a className="sheet-link is-primary" href={href} target="_blank" rel="noopener noreferrer">
-                Visit the live site ↗
+                {CTA.visit} ↗
               </a>
               {overview.links?.map((link) => (
                 <a className="sheet-link" key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
