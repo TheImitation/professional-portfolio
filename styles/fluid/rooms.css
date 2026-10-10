@@ -79,12 +79,19 @@
 
    (As percentages of `cover`, a 14% fade was 269px in the shortest room
    and 667px in the longest: 2.5x apart, and matching neither each other
-   nor the 1-viewport atmosphere join.) */
+   nor the 1-viewport atmosphere join.)
+
+   WRITE "100.0%", NEVER "100%", AFTER A RANGE NAME. The production CSS
+   minifier (Next's cssnano) rewrites `100%` in keyframe selectors to `to`,
+   which is only valid on its own: `entry to` is thrown away by the
+   browser. Every room then sat part-faded on the live site (0.65 opacity
+   at the top of the page) while dev, which is not minified, looked right.
+   `100.0%` is the same percentage and survives minification. */
 @keyframes fluid-veil {
-  entry 0%   { opacity: 0; }
-  entry 100% { opacity: 1; }
-  exit 0%    { opacity: 1; }
-  exit 100%  { opacity: 0; }
+  entry 0%     { opacity: 0; }
+  entry 100.0% { opacity: 1; }
+  exit 0%      { opacity: 1; }
+  exit 100.0%  { opacity: 0; }
 }
 .fluid-stage a,
 .fluid-stage button { pointer-events: auto; }
@@ -756,9 +763,9 @@
    arrival, so what you first see is a handful of huge soft blooms right
    against the lens (below), not a distant pinprick field. */
 @keyframes starfield-in {
-  entry 0%, entry 40%       { opacity: 0; }
-  entry 100%                { opacity: 0.82; }
-  contain 10%, contain 100% { opacity: 1; }
+  entry 0%, entry 40%         { opacity: 0; }
+  entry 100.0%                { opacity: 0.82; }
+  contain 10%, contain 100.0% { opacity: 1; }   /* 100.0%: see fluid-veil */
 }
 
 .starfield-depth {
@@ -784,7 +791,7 @@
 @keyframes starfield-zoom {
   entry 0%, entry 60% { transform: translateZ(700px)   rotate(-9deg); }
   contain 25%         { transform: translateZ(-1500px) rotate(-4deg); }
-  contain 100%        { transform: translateZ(1150px)  rotate(3.5deg); }
+  contain 100.0%      { transform: translateZ(1150px)  rotate(3.5deg); }   /* 100.0%: see fluid-veil */
 }
 /* Each plane overhangs the viewport so its edge never shows — but only by
    18%. At -34% the eight planes, rasterised at the zoom's magnification,
