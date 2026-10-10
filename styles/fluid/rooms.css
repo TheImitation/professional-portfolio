@@ -636,24 +636,107 @@
   color: var(--f-mist);
 }
 
+/* live builds carry a window onto the site (components/ProjectSnapshot.tsx),
+   re-themed as one more pane of glass. It fades with its plate, being a
+   child of it. Inline it is a letterbox strip so the plate still fits one
+   screen; on wide screens it hangs in the open air in front of the panes. */
+.snapshot.work-snapshot {
+  --snap-radius: 3px;
+  --snap-frame: rgb(6 14 22 / 0.72);
+  --snap-line: rgb(189 240 255 / 0.3);
+  --snap-line-hover: rgb(189 240 255 / 0.7);
+  --snap-address: var(--f-mist);
+  --snap-accent: var(--f-ember);
+  --snap-glow: rgb(255 180 84 / 0.3);
+  width: min(100%, 22rem);
+  margin-block-start: 0.3rem;
+  text-shadow: none;
+  box-shadow: 0 0 44px rgb(189 240 255 / 0.08), 0 30px 60px -30px rgb(0 0 0 / 0.9);
+}
+.snapshot.work-snapshot .snapshot-view { aspect-ratio: 16 / 7; }
+
+@media (min-width: 1200px) {
+  .snapshot.work-snapshot {
+    position: absolute;
+    inset-inline-start: calc(100% + clamp(2rem, 5vw, 5rem));
+    inset-block-start: 50%;
+    width: clamp(17rem, 26vw, 27rem);
+    margin: 0;
+    translate: 0 -50%;
+    transform: perspective(1200px) rotateY(-12deg);
+  }
+  .snapshot.work-snapshot:hover,
+  .snapshot.work-snapshot:focus-visible { transform: perspective(1200px) rotateY(-4deg) translateY(-4px); }
+  .snapshot.work-snapshot .snapshot-view { aspect-ratio: 16 / 10; }
+}
+
+/* the overview sheet, in gallery dress: hard corners, chalk on deep glass,
+   ember for the one call to action */
+.snapshot-sheet.is-fluid {
+  --sheet-bg: rgb(8 12 20 / 0.94);
+  --sheet-line: rgb(189 240 255 / 0.26);
+  --sheet-radius: 3px;
+  --sheet-title: var(--f-lume);
+  --sheet-text: var(--f-mist);
+  --sheet-kicker: var(--f-ember);
+  --sheet-accent: var(--f-ember);
+  --sheet-chip: var(--f-mist);
+  --sheet-chip-bg: transparent;
+  text-shadow: none;
+}
+.snapshot-sheet.is-fluid::backdrop { background: rgb(2 4 8 / 0.7); }
+.snapshot-sheet.is-fluid .sheet-kicker { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.22em; }
+.snapshot-sheet.is-fluid .sheet-title {
+  font-family: var(--font-body), "Space Grotesk", sans-serif;
+  font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.3rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.snapshot-sheet.is-fluid .sheet-label { font-size: 0.62rem; letter-spacing: 0.22em; }
+.snapshot-sheet.is-fluid .sheet-built li::before { content: "— "; position: static; }
+.snapshot-sheet.is-fluid .sheet-built li { padding-left: 0; }
+.snapshot-sheet.is-fluid .sheet-stack li { border: 0; padding: 0; font-size: 0.62rem; }
+.snapshot-sheet.is-fluid .sheet-stack li + li::before { content: "· "; opacity: 0.6; }
+.snapshot-sheet.is-fluid .sheet-close,
+.snapshot-sheet.is-fluid .sheet-link { border-radius: 2px; }
+.snapshot-sheet.is-fluid .sheet-link {
+  font-size: 0.68rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.snapshot-sheet.is-fluid .sheet-link.is-primary { background: var(--f-ember); border-color: var(--f-ember); color: #221302; }
+.snapshot-sheet.is-fluid .sheet-link.is-primary:hover { background: #ffc776; }
+
+/* a phone has no screen to spare under a long description: the window
+   folds down to its address bar and stands in for the visit button (the
+   overview it opens carries the live link) */
+@media (max-width: 760px) {
+  .work-plate.has-snapshot > .fluid-btn { display: none; }
+  .snapshot.work-snapshot .snapshot-view { display: none; }
+  .snapshot.work-snapshot .snapshot-bar { padding: 0.7rem 0.75rem; border-bottom: 0; }
+}
+
 
 /* ╔══════════════════════════════════════════════════════════════════════╗
-   ║  v · VOLUME + vi · FIELD + vii · EGRESS — one starfield across all   ║
+   ║  vi · FIELD + vii · EGRESS — one starfield across both               ║
    ║                                                                      ║
-   ║  The starfield is deliberately NOT confined to a room. Its wrapper   ║
-   ║  spans the last THREE, which lets it:                                ║
+   ║  The starfield is not confined to a room: its wrapper spans the last ║
+   ║  TWO, so it can hold through the testimonials and keep zooming all   ║
+   ║  the way to the foot of the document, content riding on top.         ║
    ║                                                                      ║
-   ║    - ghost in at a third opacity while you are still reading the     ║
-   ║      work, so the scenes dissolve into each other over thousands of  ║
-   ║      pixels instead of cutting over one viewport                      ║
-   ║    - hold at full through the testimonials and the closing notes     ║
-   ║    - keep zooming all the way to the foot of the document, with the  ║
-   ║      content riding on top of it the whole way                       ║
+   ║  It used to start a room earlier, ghosting in behind the work. That  ║
+   ║  room already carries the glass panes and the project snapshots, and ║
+   ║  the three together were too much — to look at, and for the GPU.     ║
    ║                                                                      ║
-   ║  `cover 0%` is the wrapper's top edge at the viewport bottom, one    ║
-   ║  viewport before the work. `contain 100%` is its bottom edge at the  ║
-   ║  viewport bottom — which IS the end of the page. Both exact, so      ║
-   ║  neither drifts when a room's height changes.                        ║
+   ║  Keyframes are pinned to the wrapper's named ranges, not to          ║
+   ║  percentages, so they hold however long the testimonials run:        ║
+   ║    entry   — the one-viewport join from the work, the same stretch   ║
+   ║              over which the rooms themselves crossfade               ║
+   ║    contain — from the testimonials filling the screen to the very    ║
+   ║              end of the page (the wrapper's bottom edge IS the end)  ║
    ╚══════════════════════════════════════════════════════════════════════╝ */
 .tail { view-timeline: --tail block; }
 
@@ -668,16 +751,14 @@
   animation-timing-function: linear;
   animation-fill-mode: both;
   animation-timeline: --tail;
-  animation-range: cover 0% cover 100%;
 }
-/* Paced to the zoom below: it is already up to a third of its opacity
-   while still right against the lens, so what you first see is a handful
-   of huge soft blooms, not a distant pinprick field. */
+/* Nothing until the work is half gone, then in step with the room's own
+   arrival, so what you first see is a handful of huge soft blooms right
+   against the lens (below), not a distant pinprick field. */
 @keyframes starfield-in {
-  0%        { opacity: 0; }
-  14%       { opacity: 0.38; }
-  34%       { opacity: 0.82; }
-  52%, 100% { opacity: 1; }
+  entry 0%, entry 40%       { opacity: 0; }
+  entry 100%                { opacity: 0.82; }
+  contain 10%, contain 100% { opacity: 1; }
 }
 
 .starfield-depth {
@@ -689,26 +770,33 @@
   animation-timing-function: linear;
   animation-fill-mode: both;
   animation-timeline: --tail;
-  animation-range: cover 0% contain 100%;
 }
-/* Opens right up against the lens and falls back into depth as it
-   brightens, then resumes the long travel forward.
+/* Opens right up against the lens, falls back into depth behind the first
+   testimonial, then makes the long travel forward to the end of the page.
 
-   With perspective: 900px, a plane at +660px renders about 3.7x, which
-   stretches each star's radial-gradient along with it — so the field
-   arrives as soft bokeh and sharpens as it recedes. That defocus is a
-   side effect of the magnification, not a filter: animating a blur
-   radius would re-run the filter every frame, which is exactly the cost
-   this stylesheet is built to avoid. */
+   With perspective: 900px, a plane at +700px renders 4.5x (a touch closer
+   than the +660px / 3.7x it once opened at), which stretches each star's
+   radial-gradient along with it — so the field arrives as soft bokeh and
+   sharpens as it recedes. That defocus is a side effect of the
+   magnification, not a filter: animating a blur radius would re-run the
+   filter every frame, which is exactly the cost this stylesheet is built
+   to avoid. */
 @keyframes starfield-zoom {
-  0%, 12% { transform: translateZ(660px)   rotate(-9deg); }
-  34%     { transform: translateZ(-1400px) rotate(-5deg); }
-  52%     { transform: translateZ(-2100px) rotate(-2.5deg); }
-  100%    { transform: translateZ(1150px)  rotate(3.5deg); }
+  entry 0%, entry 60% { transform: translateZ(700px)   rotate(-9deg); }
+  contain 25%         { transform: translateZ(-1500px) rotate(-4deg); }
+  contain 100%        { transform: translateZ(1150px)  rotate(3.5deg); }
 }
+/* Each plane overhangs the viewport so its edge never shows — but only by
+   18%. At -34% the eight planes, rasterised at the zoom's magnification,
+   overran Chrome's GPU tile budget on a full-screen retina display, and
+   Chrome dropped the tiles of whatever else was on screen: work plates
+   vanished or flickered mid-tour (a 1024px window never hit the limit).
+   -18% still covers the frame at every point of the zoom, with a third
+   less area per plane. Measured on a 14" MacBook Pro, full screen: every
+   plate drawn on 4 of 4 loads, against 1 of 5 at -34%. */
 .starfield-depth i {
   position: absolute;
-  inset: -34%;
+  inset: -18%;
   transform: translateZ(calc(var(--i) * -330px));
   opacity: calc(0.92 - var(--i) * 0.06);
   background-size: 21vmin 21vmin;
@@ -812,7 +900,7 @@
 .no-sdt .fluid-label { animation-name: none; opacity: 1; visibility: visible; translate: none; }
 .no-sdt .fluid-plates > .fluid-plate:not(:first-child) { display: none; }
 .no-sdt .corridor { transform: translateZ(calc(-1000px + var(--p, 0) * 8500px)); }
-.no-sdt .starfield { opacity: 1; animation-name: none; }
+.no-sdt .starfield { opacity: var(--tail-in, 0); animation-name: none; }
 .no-sdt .starfield-depth { transform: translateZ(calc(-2100px + var(--page, 0) * 3250px)); }
 .no-sdt .bloom    { scale: calc(0.5 + var(--p, 0) * 0.8); }
 .no-sdt .aperture { scale: calc(0.18 + var(--p, 0) * 1.62); opacity: 0.55; }

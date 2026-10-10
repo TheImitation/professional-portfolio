@@ -78,6 +78,7 @@ export default function FluidChrome({ rooms }: { rooms: RoomRef[] })
        interpolated by hand, keeps the hue travelling. */
     let queued = false;
     const weather = document.querySelector<HTMLElement>(".fluid-weather");
+    const tail = document.querySelector<HTMLElement>(".tail");
 
     const measure = () =>
     {
@@ -97,6 +98,15 @@ export default function FluidChrome({ rooms }: { rooms: RoomRef[] })
         weather.style.setProperty("--fh", mix(1).toFixed(2));
         weather.style.setProperty("--fc", mix(2).toFixed(4));
         weather.style.setProperty("--fl", `${mix(3).toFixed(2)}%`);
+      }
+
+      /* how far the starfield's wrapper (testimonials onward) has come in
+         over its one-viewport join, so the fallback starfield stays out of
+         the work room too */
+      if (tail)
+      {
+        const arrived = (window.innerHeight - tail.getBoundingClientRect().top) / window.innerHeight;
+        root.style.setProperty("--tail-in", Math.min(1, Math.max(0, arrived)).toFixed(4));
       }
 
       for (const node of nodes)
@@ -146,12 +156,21 @@ export default function FluidChrome({ rooms }: { rooms: RoomRef[] })
             <span className="lc">_</span>
             <span className="lb">{"}"}</span>
           </span>
-          <span className="fluid-logo-sub">fluid prototype</span>
+          <span className="fluid-logo-sub">the gallery</span>
         </a>
-        <p className="fluid-where">
-          <b data-room-numeral>i</b>
-          <span data-room-label>approach</span>
-        </p>
+        <div className="fluid-chrome-end">
+          {/* a plain link, not next/link: a full load leaves the gallery's
+              scroll timelines and tour behind cleanly */}
+          <a className="fluid-classic" href="/classic">
+            <span className="fluid-classic-hint">Prefer one page?</span>
+            Classic view
+            <span className="fluid-classic-arrow" aria-hidden="true">→</span>
+          </a>
+          <p className="fluid-where">
+            <b data-room-numeral>i</b>
+            <span data-room-label>approach</span>
+          </p>
+        </div>
       </header>
 
       <nav className="fluid-ticks" aria-label="Rooms">

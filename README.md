@@ -35,11 +35,13 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-## `/fluid` — scroll-driven prototype (branch: `prototype/fluid-gallery`)
+## The gallery — the home page
 
-An alternative presentation of the same content, at **`/fluid`**. The live site
-at `/` is untouched — both routes build and render independently, so they can
-be compared side by side.
+The site's front door, at **`/`** (`app/page.tsx`): a scroll-driven gallery of
+the same content. The original one-page site is kept as the **classic view** at
+**`/classic`** (`app/classic/page.tsx`), linked from the gallery's header in
+every room and from its contact list; the classic hero links back. The gallery
+was trialled at `/fluid`, which now redirects to `/` (`next.config.js`).
 
 Seven rooms, one continuous atmosphere:
 
@@ -145,14 +147,15 @@ Three details were kept deliberately rather than reinvented:
 
 `datasets/Content.ts` is the single source for stats, the terminal log, skill
 domains, projects, reviews and the role ticker. The live section components
-and `/fluid` both read from it, so the two presentations cannot drift. Skills
+and the gallery both read from it, so the two presentations cannot drift. Skills
 keeps its own SVG strokes in `components/Skills.tsx`, keyed by domain id —
 illustration stays with its component, copy does not.
 
-### To promote it to the homepage
+### How the two views share the site
 
-Swap the section imports in `app/page.tsx` for the `/fluid` room markup, or
-simply make `app/fluid/page.tsx` the default export of `app/page.tsx`. Remove
-the `robots: { index: false }` in its metadata, and drop the
-`body:has(.fluid)` chrome-suppression rules in favour of deleting `Navbar` /
-`SidePanel` from the root layout.
+Both views render inside the root layout. The classic `Navbar`, `SidePanel` and
+veil are hidden on the gallery by the `body:has(.fluid)` rules in
+`styles/fluid/atmosphere.css`, and the gallery takes its title, description and
+canonical from the layout's defaults; `/classic` sets its own title and
+canonical. The two link to each other with plain `<a>` tags, not `next/link`,
+so the gallery's scroll timelines and tour always start from a clean load.

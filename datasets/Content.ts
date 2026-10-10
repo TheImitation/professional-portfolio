@@ -2,7 +2,7 @@
  * Shared editorial content.
  *
  * Lifted out of the individual section components so that the live site and
- * the /fluid prototype render the same words from one place. Illustration
+ * the gallery render the same words from one place. Illustration
  * stays with its component (Skills keeps its own SVG strokes, keyed by id) —
  * only the copy lives here.
  */
@@ -93,6 +93,16 @@ export interface Project
   locked?: boolean;
   /* Site is temporarily down — show a badge instead of a dead `href`. */
   pending?: boolean;
+  /* A still of the live landing page, framed as a browser window. Lives in
+     public/projects/ — recapture when the site changes. */
+  snapshot?: { src: string; width: number; height: number; alt: string };
+  /* The fuller story behind a snapshot, opened in place over the page when
+     the snapshot is clicked. Without one, the snapshot links to `href`. */
+  overview?: {
+    lede: string;
+    built: string[];
+    links?: { label: string; href: string }[];
+  };
 }
 
 export const PROJECTS: Project[] = [
@@ -138,6 +148,23 @@ export const PROJECTS: Project[] = [
       "A full Next.js rebuild of a Washington D.C. interior design studio's marketing site: filterable project galleries with lightbox carousels, client testimonials, an Instagram feed and SEO groundwork (JSON-LD, OG cards, sitemap). Delivered end-to-end as billed freelance client work, from redesign to production launch.",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
     href: "https://www.mak99interiors.co.uk/",
+    snapshot: {
+      src: "/projects/mak99-interiors.jpg",
+      width: 1200,
+      height: 750,
+      alt: "MAK99 Interiors landing page: \"Beautifully tailored interiors.\" set in italic serif over a sunlit living room",
+    },
+    overview: {
+      lede:
+        "A ground-up Next.js 14 rebuild of the studio's marketing site, taken from redesign to production launch as billed freelance work. The projects lead: each gets its own page, gallery and colour theme, across work in Washington, D.C. and London.",
+      built: [
+        "Project pages with per-project colour themes, filterable galleries, blur-up placeholders and a lightbox carousel",
+        "A featured video tour and a 27-image professional photoset for the Observatory Circle project",
+        "Search groundwork: JSON-LD structured data, canonical URLs, OG share cards, sitemap and robots, and service pages written for local search",
+        "An Instagram feed, client testimonials, and Vercel Analytics with Speed Insights",
+        "30 test files on Vitest and Testing Library behind 80% coverage thresholds, with Husky hooks gating every commit and push",
+      ],
+    },
   },
   {
     id: "seqflow",
@@ -147,6 +174,25 @@ export const PROJECTS: Project[] = [
     description:
       "A DSL-driven single source of truth for sequence diagrams, architecture inference, interface definitions and schema management — built to live alongside the code from the first commit rather than rot in a wiki. Hybrid text and visual canvas, message-contract modelling, and exports straight to OpenAPI and AsyncAPI.",
     stack: ["TypeScript", "DSL design", "OpenAPI", "AsyncAPI"],
+    href: "https://theimitation.github.io/seqflow/",
+    snapshot: {
+      src: "/projects/seqflow.jpg",
+      width: 1200,
+      height: 750,
+      alt: "seqflow editor: the DSL source, the sequence diagram and the inferred AWS architecture side by side",
+    },
+    overview: {
+      lede:
+        "One text document is the source of truth; everything else is derived from it — a hand-editable sequence diagram, a live architecture diagram, and the contract on every arrow. Free to use in the browser, no install and no account.",
+      built: [
+        "A DSL that is a superset of Mermaid's sequenceDiagram, so existing Mermaid files import unchanged",
+        "Three panes over one document: the text, a custom SVG sequence editor where steps are drawn, reordered and retargeted by dragging, and an architecture view inferred on every change",
+        "49 participant kinds, with AWS managed services as real participants in the flow rather than decoration",
+        "Reusable request/response contracts attached by name, with unhappy paths generated as real alt/opt blocks and flagged across both diagrams",
+        "Everything you can type, you can build by clicking and dragging; projects live in the browser with autosave and JSON import/export",
+      ],
+      links: [{ label: "Source on GitHub", href: "https://github.com/TheImitation/seqflow" }],
+    },
   },
 ];
 

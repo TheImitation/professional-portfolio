@@ -210,6 +210,39 @@
   transform: none;
 }
 
+/* --- Live builds carry a window onto the site itself -------------------------
+   Title runs the full width; the prose and chips share the row with the
+   snapshot, which arrives a beat after the card. */
+
+.project-card.has-snapshot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 290px);
+  column-gap: 26px;
+  align-items: start;
+}
+
+.project-card.has-snapshot h3 {
+  grid-column: 1 / -1;
+}
+
+.snapshot.project-snapshot {
+  margin-top: 14px;
+  opacity: 0;
+  transform: translateY(14px) rotate(1.2deg);
+  transition: opacity 0.9s var(--drift) 0.35s, transform 0.9s var(--drift) 0.35s,
+    border-color 0.5s var(--drift), box-shadow 0.6s var(--drift);
+}
+
+.project-row.in-view .project-snapshot {
+  opacity: 1;
+  transform: none;
+}
+
+.project-row.in-view .project-snapshot:hover,
+.project-row.in-view .project-snapshot:focus-visible {
+  transform: translateY(-3px);
+}
+
 /* --- The vault: where the NDA'd work lives ----------------------------------- */
 
 .project-vault {
@@ -332,6 +365,17 @@
 
   .project-card h3 {
     line-height: 1.5;
+  }
+
+  /* One column on a phone: the window sits under the title as the card's
+     picture, before the prose. */
+  .project-card.has-snapshot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .snapshot.project-snapshot {
+    grid-row: 2;
+    margin: 14px 0 4px;
   }
 
   /* Chips drop out of the title flow onto their own line — but often just

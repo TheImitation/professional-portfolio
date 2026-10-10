@@ -4,6 +4,7 @@ import React from "react";
 import { useInView } from "react-intersection-observer";
 import { SOCIALS } from "@/datasets/Site";
 import CarouselDots, { useCarouselIndex } from "./CarouselDots";
+import ProjectSnapshot from "./ProjectSnapshot";
 import { PROJECTS as projects, type Project } from "@/datasets/Content";
 import "../styles/components/Projects.css";
 
@@ -20,7 +21,7 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
         <p className="project-period">{project.period}</p>
         <p className="project-role">{project.role}</p>
       </div>
-      <div className="project-card faux-pane">
+      <div className={`project-card faux-pane${project.snapshot ? " has-snapshot" : ""}`}>
         <h3 data-sprite-target>
           <span className="faux-mono project-index">0{index + 1}.</span> {project.title}
           {project.href && (
@@ -49,23 +50,26 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
             </a>
           )}
         </h3>
-        <p className="project-description">{project.description}</p>
-        {project.outcomes && (
-          <ul className="project-outcomes" aria-label="Measured outcomes">
-            {project.outcomes.map((outcome, outcomeIndex) => (
-              <li className="faux-mono" style={{ transitionDelay: `${0.3 + outcomeIndex * 0.12}s` }} key={outcome}>
-                {outcome}
+        <div className="project-body">
+          <p className="project-description">{project.description}</p>
+          {project.outcomes && (
+            <ul className="project-outcomes" aria-label="Measured outcomes">
+              {project.outcomes.map((outcome, outcomeIndex) => (
+                <li className="faux-mono" style={{ transitionDelay: `${0.3 + outcomeIndex * 0.12}s` }} key={outcome}>
+                  {outcome}
+                </li>
+              ))}
+            </ul>
+          )}
+          <ul className="project-stack" aria-label="Technologies used">
+            {project.stack.map((tech, techIndex) => (
+              <li className="faux-mono" style={{ transitionDelay: `${0.35 + techIndex * 0.12}s` }} key={tech}>
+                {tech}
               </li>
             ))}
           </ul>
-        )}
-        <ul className="project-stack" aria-label="Technologies used">
-          {project.stack.map((tech, techIndex) => (
-            <li className="faux-mono" style={{ transitionDelay: `${0.35 + techIndex * 0.12}s` }} key={tech}>
-              {tech}
-            </li>
-          ))}
-        </ul>
+        </div>
+        <ProjectSnapshot project={project} className="project-snapshot" />
       </div>
     </article>
   );

@@ -1,23 +1,20 @@
 import React from "react";
 import fs from "fs";
 import path from "path";
-import type { Metadata } from "next";
 import { CV_PATH, PERSON, SOCIALS } from "@/datasets/Site";
 import { CONTRACTING, EDUCATION, JOB_ROLES, LOG_LINES, PROJECTS, REVIEWS, SKILL_DOMAINS, STATS } from "@/datasets/Content";
 import FluidChrome, { type RoomRef } from "@/components/fluid/FluidChrome";
 import FluidChannels from "@/components/fluid/FluidChannels";
 import FluidTour from "@/components/fluid/FluidTour";
 import FluidTimeline from "@/components/fluid/FluidTimeline";
+import ProjectSnapshot from "@/components/ProjectSnapshot";
 import { OPENING, arrivals, holdFor, pace, plateKeyframes, words } from "@/components/fluid/pacing";
 import "@/styles/fluid/atmosphere.css";
 import "@/styles/fluid/rooms.css";
 
-export const metadata: Metadata = {
-  title: "Fluid — prototype",
-  description:
-    "A scroll-driven prototype of theimitation.dev: seven rooms, one travelling atmosphere, drawn entirely in CSS.",
-  robots: { index: false, follow: false },
-};
+/* The home page. Title, description, canonical and the OG card all come
+   from the root layout's defaults; the classic one-page view lives at
+   /classic (app/classic/page.tsx), linked from the chrome on every room. */
 
 const ROOMS: RoomRef[] = [
   { id: "approach", numeral: "i", name: "approach" },
@@ -68,7 +65,7 @@ export default function FluidPage()
 
       <main>
         <h1 className="fluid-sr">
-          {PERSON.name} — {PERSON.title}. A scroll-driven prototype in seven rooms.
+          {PERSON.name} — {PERSON.title}. A scroll-driven gallery in seven rooms.
         </h1>
 
         {/* ─── i · APPROACH ─────────────────────────────────────────── */}
@@ -221,11 +218,6 @@ export default function FluidPage()
           </div>
         </section>
 
-        {/* ─── v · VOLUME + vi · FIELD + vii · EGRESS ────────────────
-            Wrapped together so one starfield spans all three: it ghosts in
-            behind the work, reaches full by the testimonials, and keeps
-            zooming to the foot of the page with the content on top. */}
-        <div className="tail">
         {/* ─── v · VOLUME — projects ────────────────────────────────── */}
         <section className="fluid-room" id="volume" style={WORK.room}>
           <div className="fluid-air air-volume" aria-hidden="true" />
@@ -238,7 +230,12 @@ export default function FluidPage()
             </div>
             <div className="fluid-plates">
               {PROJECTS.map((project, index) => (
-                <article className="fluid-plate work-plate" key={project.id} data-era={project.id} style={WORK.plates[index]}>
+                <article
+                  className={`fluid-plate work-plate${project.snapshot ? " has-snapshot" : ""}`}
+                  key={project.id}
+                  data-era={project.id}
+                  style={WORK.plates[index]}
+                >
                   <p className="work-period">{project.period}</p>
                   <h2 className="fluid-display fluid-m">{project.title}</h2>
                   <p className="work-role">{project.role}</p>
@@ -258,6 +255,8 @@ export default function FluidPage()
                   )}
                   {project.locked && <p className="work-flag">◆ client work — details under wraps</p>}
                   {project.pending && <p className="work-flag">◆ coming back soon</p>}
+                  {/* hangs in front of the glass on wide screens, inline below */}
+                  <ProjectSnapshot project={project} className="work-snapshot" theme="fluid" />
                 </article>
               ))}
             </div>
@@ -269,6 +268,12 @@ export default function FluidPage()
           </div>
         </section>
 
+        {/* ─── vi · FIELD + vii · EGRESS ─────────────────────────────
+            Wrapped together so one starfield spans both: it opens against
+            the lens as the testimonials arrive and keeps zooming to the foot
+            of the page with the content on top. It stays out of the work
+            room, which already carries the glass and the snapshots. */}
+        <div className="tail">
         {/* ─── vi · FIELD — testimonials ────────────────────────────── */}
         <section className="fluid-room" id="field" style={WORDS.room}>
           <div className="fluid-air air-field" aria-hidden="true" />
@@ -331,11 +336,12 @@ export default function FluidPage()
                   {cvAvailable && (
                     <li><a href={CV_PATH} download>Curriculum vitae ↓</a></li>
                   )}
+                  <li><a href="/classic">The classic view →</a></li>
                 </ul>
               </div>
 
               <div className="fluid-in">
-                <h3>This prototype</h3>
+                <h3>This page</h3>
                 <ul className="egress-list">
                   <li>animation-timeline: scroll() / view()</li>
                   <li>view-timeline &amp; animation-range</li>

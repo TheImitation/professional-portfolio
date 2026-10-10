@@ -20,7 +20,7 @@ type Art = { strokes: Stroke[]; dots?: Dot[] };
 type SkillCard = SkillDomain & Art;
 
 /* Illustration only — the copy for these lives in datasets/Content.ts,
-   so the live site and the /fluid prototype cannot drift apart. */
+   so the gallery and the classic view cannot drift apart. */
 const ART: Record<string, Art> = {
   design: {
     strokes: [
