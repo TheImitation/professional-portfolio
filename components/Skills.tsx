@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useInView } from "react-intersection-observer";
+import { SKILL_DOMAINS, type SkillDomain } from "@/datasets/Content";
 import "../styles/components/Skills.css";
 
 /* ==========================================================================
@@ -15,28 +16,13 @@ import "../styles/components/Skills.css";
 type Stroke = { d: string; dur: number };
 type Dot = { cx: number; cy: number };
 
-interface SkillCard
-{
-  id: string;
-  title: string;
-  caption: string;
-  skills: string[];
-  strokes: Stroke[];
-  dots?: Dot[];
-}
+type Art = { strokes: Stroke[]; dots?: Dot[] };
+type SkillCard = SkillDomain & Art;
 
-const skillCards: SkillCard[] = [
-  {
-    id: "design",
-    title: "User Design",
-    caption: "Interfaces people actually enjoy",
-    skills: [
-      "UI / UX engineering",
-      "Design systems & component libraries",
-      "Heavy-duty CSS & motion design",
-      "Accessibility (WCAG)",
-      "Rapid prototyping",
-    ],
+/* Illustration only — the copy for these lives in datasets/Content.ts,
+   so the gallery and the classic view cannot drift apart. */
+const ART: Record<string, Art> = {
+  design: {
     strokes: [
       // Pencil body (slanted), drawn as one closed sweep
       { d: "M50 80 L94 36 L108 50 L64 94 Z", dur: 1.2 },
@@ -50,17 +36,7 @@ const skillCards: SkillCard[] = [
       { d: "M40 104 C 26 118, 52 124, 68 116 S 98 110, 114 122", dur: 1.1 },
     ],
   },
-  {
-    id: "architecture",
-    title: "Architecture & Technology",
-    caption: "Systems sketched on napkins, shipped to clouds",
-    skills: [
-      "Cloud architecture (AWS)",
-      "TypeScript / Next.js / Python",
-      "Distributed systems & APIs",
-      "Technical strategy & consulting",
-      "DevOps & infrastructure as code",
-    ],
+  architecture: {
     strokes: [
       // Client box with title bar
       { d: "M14 20 h42 v28 h-42 Z", dur: 0.9 },
@@ -80,17 +56,7 @@ const skillCards: SkillCard[] = [
       { d: "M22 100 a11 11 0 0 1 20 -8 a9 9 0 0 1 16 6 a8 8 0 0 1 -5 14 h-26 a9 9 0 0 1 -5 -12", dur: 1.0 },
     ],
   },
-  {
-    id: "ai",
-    title: "Artificial Intelligence",
-    caption: "Built & rebuilt AI platforms — incl. the public sector's first",
-    skills: [
-      "Generative AI platform engineering",
-      "LLM integration, RAG & agents",
-      "AI strategy for the public sector",
-      "MLOps & evaluation pipelines",
-      "Responsible & explainable AI",
-    ],
+  ai: {
     strokes: [
       // Left hemisphere outline (organic)
       { d: "M70 18 C 48 10, 28 22, 27 40 C 12 46, 12 66, 22 74 C 16 90, 28 106, 44 104 C 50 118, 66 122, 70 110", dur: 1.5 },
@@ -112,7 +78,12 @@ const skillCards: SkillCard[] = [
       { cx: 104, cy: 80 },
     ],
   },
-];
+};
+
+const skillCards: SkillCard[] = SKILL_DOMAINS.map((domain) => ({
+  ...domain,
+  ...ART[domain.id],
+}));
 
 const DrawnIcon: React.FC<{ card: SkillCard; active: boolean }> = ({ card, active }) =>
 {

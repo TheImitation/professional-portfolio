@@ -2,20 +2,8 @@
 
 import React from "react";
 import { useInView } from "react-intersection-observer";
+import { STATS as stats, LOG_LINES as logLines } from "@/datasets/Content";
 import "../styles/components/About.css";
-
-const stats = [
-  { value: "5", unit: "years", label: "engineering at IBM" },
-  { value: "1st", unit: "of its kind", label: "successful AI platform for public sector clients" },
-  { value: "100%", unit: "self-taught", label: "engineer, consultant & architect" },
-];
-
-const logLines = [
-  { prompt: "whoami", output: "Nic Defaux — Senior Software Engineer & Technical Strategist" },
-  { prompt: "cat origin_story.txt", output: "No degree pipeline, no bootcamp script. Self-taught from first principles — engineer, then consultant, then architect." },
-  { prompt: "history | grep IBM", output: "Five years building and rebuilding AI platforms; delivered the first successful AI platform for public sector clients, a Generative AI centre of excellence." },
-  { prompt: "echo $PERSONALITY", output: "Laid-back, nerdy, heart firmly on sleeve. Will absolutely talk your ear off about elegant architectures." },
-];
 
 const About: React.FC = () =>
 {

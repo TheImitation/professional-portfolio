@@ -13,7 +13,7 @@ export const PERSON = {
   brand: "TheImitation",
   title: "Senior Software Engineer & Technical Strategist",
   tagline:
-    "Self-taught engineer, consultant and architect. Five years at IBM. Builder of the first successful AI platform for public sector clients.",
+    "Engineer, consultant and architect. Five years building and rebuilding generative AI platforms at IBM. Builder of the first successful GenAI platform delivered for a public sector client.",
   availability: "Open to contract work",
   services:
     "taking contracts for AI platform builds, GenAI strategy sprints, and rescue-and-rebuild missions on systems that matter",

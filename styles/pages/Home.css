@@ -196,3 +196,54 @@
     justify-content: center;
   }
 }
+
+
+/* --- gallery door: a quieter, separate invitation sitting under the main
+   actions, so it reads as "another way through" rather than a fourth CTA --- */
+
+.gallery-door {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  margin-top: 1.1rem;
+  padding: 0.55em 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--mist);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink-line);
+  width: fit-content;
+  transition: color 0.5s var(--drift), letter-spacing 0.5s var(--drift),
+              border-color 0.5s var(--drift);
+}
+
+.gallery-door:hover,
+.gallery-door:focus-visible {
+  color: var(--iris-pale);
+  letter-spacing: 0.22em;
+  border-bottom-color: var(--iris-core);
+}
+
+.door-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ember);
+  box-shadow: 0 0 10px 2px rgba(255, 180, 84, 0.55);
+  flex: none;
+}
+
+.door-arrow {
+  transition: translate 0.5s var(--spring);
+}
+
+.gallery-door:hover .door-arrow,
+.gallery-door:focus-visible .door-arrow {
+  translate: 2px -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-door,
+  .door-arrow { transition: none; }
+}

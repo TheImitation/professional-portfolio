@@ -3,14 +3,8 @@
 import React from "react";
 import "../styles/pages/Home.css";
 import SpriteQuest from "./SpriteQuest";
+import { JOB_ROLES as jobRoles } from "@/datasets/Content";
 import { CV_PATH, PERSON } from "@/datasets/Site";
-
-const jobRoles = [
-  "Senior Software Engineer",
-  "Technical Strategist",
-  "AI Platform Architect",
-  "Self-Taught & Proud Of It",
-];
 
 export default function Hero({ cvAvailable = false }: { cvAvailable?: boolean })
 {
@@ -55,6 +49,12 @@ export default function Hero({ cvAvailable = false }: { cvAvailable?: boolean })
               </a>
             )}
           </div>
+          {/* the same material, walked through as an exhibition */}
+          <a className="gallery-door faux-mono" href="/">
+            <span className="door-dot" aria-hidden="true" />
+            Back to the gallery
+            <span className="door-arrow" aria-hidden="true">↗</span>
+          </a>
         </div>
         <SpriteQuest />
       </div>

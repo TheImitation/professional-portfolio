@@ -1,0 +1,611 @@
+/* ==========================================================================
+   FLUID — prototype atmosphere
+   --------------------------------------------------------------------------
+   The gallery mechanics from the Cascading experiment, re-pointed at FAUX.
+
+   One idea carries the whole page: a single hue travels from `iris` (the
+   cold blues, graded like the eyes in the old headshot) out through violet
+   and magenta to `ember` (the warmth sampled from the sunset in the new
+   one) — and then back home to iris. Cold to warm to cold, across the
+   length of the scroll. Old photo to new photo.
+
+   PERFORMANCE IS LOAD-BEARING HERE, and every rule below is the second
+   draft. The first version derived every colour from the travelling hue
+   and the screen flashed on every frame. The constraints that fixed it:
+
+     1. ONE property reads the travelling variables — `.fluid-weather`'s
+        background. Everything above it is plain black/white alpha, so the
+        hue tints the page the way light tints a room. Nothing else needs
+        re-rasterising when the hue moves.
+     2. The travelling vars are `inherits: false`. Inherited on :root, each
+        frame forced a style-recalc walk of the whole tree (~2.2ms/frame
+        before a pixel was painted). Scoped, the same change costs 0.06ms.
+     3. Rooms animate `visibility`, not just `opacity`. A layer with an
+        animating opacity stays resident on the GPU even at 0 — nine rooms
+        held ~200MB of layer surface at once and the compositor evicted
+        tiles, which is what the flashing actually was.
+     4. No `backdrop-filter`, no animated blur radii, no keyframe that
+        touches a layout property.
+   ========================================================================== */
+
+@property --fh { syntax: "<number>";     inherits: false; initial-value: 232; }
+@property --fc { syntax: "<number>";     inherits: false; initial-value: .03; }
+@property --fl { syntax: "<percentage>"; inherits: false; initial-value: 5%;  }
+
+.fluid {
+  /* static light and ink — none of these ever invalidate */
+  --f-lume: rgb(234 251 255);
+  --f-glow: rgb(189 240 255);
+  --f-chalk: rgb(232 244 251);
+  --f-mist: rgb(157 184 201);
+  --f-ember: #ffb454;
+
+  --f-pad: clamp(1.35rem, 4.5vw, 5rem);
+  --f-slow: cubic-bezier(0.32, 0, 0.18, 1);
+  --f-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  position: relative;
+  color: var(--f-chalk);
+}
+
+/* ── the one animated paint ───────────────────────────────────────────────
+   Fixed, so it is one screen of solid colour. On `body` this same fill sat
+   in the document-sized scrolling layer and invalidated its tiles every
+   frame. ------------------------------------------------------------------ */
+.fluid-weather {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: oklch(var(--fl) var(--fc) var(--fh));
+
+  animation-name: fluid-atmosphere;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: scroll(root block);
+}
+
+/* Hue numbers only ever increase then decrease — never crossing green,
+   which is what a naive 232 -> 62 interpolation would pass straight
+   through. Values above 360 wrap; `414` is ember, `330` is on the way home. */
+@keyframes fluid-atmosphere {
+  0%   { --fh: 232; --fc: .030; --fl: 5%;  }   /* iris — night */
+  13%  { --fh: 244; --fc: .055; --fl: 10%; }
+  27%  { --fh: 276; --fc: .065; --fl: 16%; }   /* violet drift */
+  41%  { --fh: 312; --fc: .070; --fl: 13%; }
+  54%  { --fh: 348; --fc: .065; --fl: 18%; }
+  66%  { --fh: 386; --fc: .075; --fl: 22%; }   /* = 26, ember arriving */
+  78%  { --fh: 414; --fc: .080; --fl: 26%; }   /* = 54, ember peak */
+  89%  { --fh: 330; --fc: .055; --fl: 14%; }   /* turning back */
+  100% { --fh: 232; --fc: .028; --fl: 5%;  }   /* iris — home */
+}
+
+/* the prototype takes over the whole viewport; the standing chrome would
+   only collide with it */
+body:has(.fluid) .faux-veil,
+body:has(.fluid) .side-panel,
+body:has(.fluid) .navbar { display: none; }
+body:has(.fluid) { overflow-x: clip; }
+
+/* ── type ─────────────────────────────────────────────────────────────── */
+.fluid-display {
+  font-family: var(--font-body), "Space Grotesk", sans-serif;
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.fluid-xl { font-size: min(clamp(2.6rem, 1rem + 8.5vw, 7.5rem), 19svh); }
+.fluid-l  { font-size: min(clamp(2rem, 1rem + 4.6vw, 4.4rem), 15svh); }
+.fluid-m  { font-size: min(clamp(1.5rem, 1rem + 2.4vw, 2.6rem), 11svh); }
+
+.fluid-over {
+  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  font-size: clamp(0.6rem, 0.57rem + 0.12vw, 0.72rem);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--f-mist);
+}
+
+.fluid-lede {
+  max-width: 42ch;
+  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.2rem);
+  line-height: 1.55;
+  color: var(--f-chalk);
+  opacity: 0.82;
+  text-wrap: pretty;
+}
+
+.fluid-mono {
+  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  font-size: clamp(0.68rem, 0.64rem + 0.16vw, 0.82rem);
+}
+
+/* ── wall label: gallery convention, portfolio content ──────────────────── */
+.fluid-label {
+  position: absolute;
+  z-index: 3;
+  inset-block-end: clamp(1.6rem, 5.5vh, 3.4rem);
+  inset-inline-start: var(--f-pad);
+  max-width: 26ch;
+  padding-inline-start: 0.9rem;
+  border-inline-start: 1px solid rgb(189 240 255 / 0.3);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  line-height: 1.8;
+  color: var(--f-mist);
+
+  /* A caption must never stack with its neighbour at a join. Pinned to
+     the named ranges, the outgoing one is gone by the MIDPOINT of the join
+     (exit 50%) and the incoming one only starts there (entry 50%) — half a
+     viewport each way, identical in every room. */
+  animation-name: fluid-caption;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: --room;
+  animation-range: cover 0% cover 100%;
+}
+@keyframes fluid-caption {
+  entry 50%  { opacity: 0;    translate: 0 0.5rem; }
+  entry 100% { opacity: 0.85; translate: 0 0; }
+  exit 0%    { opacity: 0.85; translate: 0 0; }
+  exit 50%   { opacity: 0;    translate: 0 0.5rem; }
+}
+.fluid-label b { display: block; color: var(--f-glow); font-weight: 500; }
+
+/* ── the slow reveal — opacity + translate only, both composited ───────── */
+.fluid-in {
+  animation-name: fluid-reveal;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: view();
+  animation-range: entry 8% cover 46%;
+}
+@keyframes fluid-reveal {
+  from { opacity: 0; translate: 0 1.1rem; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+/* ── chrome ────────────────────────────────────────────────────────────── */
+.fluid-chrome {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1rem, 2.4vw, 1.9rem) var(--f-pad);
+  pointer-events: none;
+  font-family: var(--font-mono), monospace;
+}
+.fluid-chrome a { pointer-events: auto; color: inherit; text-decoration: none; }
+/* Hover swaps the handle for the surname it translates — 12ch <=> 6ch,
+   which only lands exactly because the face is monospaced. Lifted from
+   styles/components/Navbar.css so the two stay recognisably the same. */
+.fluid-logo {
+  display: grid;
+  gap: 0.34em;
+  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  text-decoration: none;
+}
+.fluid-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--f-glow);
+  font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: 0;              /* the word-swap needs exact ch widths */
+  transition: translate 0.6s var(--f-spring), text-shadow 0.6s var(--f-slow);
+}
+.fluid-logo:hover .fluid-logo-row,
+.fluid-logo:focus-visible .fluid-logo-row {
+  translate: 0 -2px;
+  text-shadow: 0 0 18px rgb(125 249 255 / 0.7);
+}
+.fluid-logo .lb { color: rgb(0 135 224); font-weight: 400; }
+.fluid-logo .lw {
+  display: inline-grid;
+  width: 12ch;
+  overflow: hidden;
+  transition: width 0.55s var(--f-slow);
+}
+.fluid-logo .lw > span {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  transition: opacity 0.4s var(--f-slow), translate 0.55s var(--f-spring);
+}
+.fluid-logo .wn { font-style: italic; color: var(--f-ember); opacity: 0; translate: 0 110%; }
+.fluid-logo:hover .lw,
+.fluid-logo:focus-visible .lw { width: 6ch; }
+.fluid-logo:hover .wh,
+.fluid-logo:focus-visible .wh { opacity: 0; translate: 0 -110%; }
+.fluid-logo:hover .wn,
+.fluid-logo:focus-visible .wn { opacity: 1; translate: 0 0; }
+.fluid-logo .lc { color: var(--f-lume); animation: fluid-blink 1.2s steps(1) infinite; }
+@keyframes fluid-blink { 50% { opacity: 0; } }
+.fluid-logo-sub {
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--f-mist);
+  opacity: 0.7;
+}
+
+/* the shimmering brand mark, also from the live site */
+.fluid-shimmer {
+  background-image: linear-gradient(110deg, rgb(125 249 255), rgb(0 191 255) 45%, rgb(0 135 224));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: fluid-shimmer-slide 9s var(--f-slow) infinite alternate;
+}
+@keyframes fluid-shimmer-slide { to { background-position: 100% 0; } }
+.fluid-where {
+  text-align: right;
+  display: grid;
+  gap: 0.4em;
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--f-mist);
+}
+.fluid-where b { font-size: 1.5em; color: var(--f-chalk); font-weight: 400; }
+
+/* the way out to the classic one-page view: on screen in every room, so it
+   is the loudest thing in the chrome — ember, not the chalk of the rest */
+.fluid-chrome-end {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(0.9rem, 2.4vw, 2rem);
+}
+.fluid-classic {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 1.1em;
+  border: 1px solid var(--f-ember);
+  border-radius: 2px;
+  background: rgb(255 180 84 / 0.12);
+  box-shadow: 0 0 24px rgb(255 180 84 / 0.18);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--f-ember);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.35s, color 0.35s, box-shadow 0.35s;
+}
+.fluid-classic-hint { color: var(--f-chalk); opacity: 0.7; letter-spacing: 0.12em; text-transform: none; }
+.fluid-classic-arrow { transition: translate 0.35s var(--f-spring); }
+.fluid-classic:hover,
+.fluid-classic:focus-visible {
+  background: var(--f-ember);
+  color: #221302;
+  box-shadow: 0 0 32px rgb(255 180 84 / 0.4);
+}
+.fluid-classic:hover .fluid-classic-hint,
+.fluid-classic:focus-visible .fluid-classic-hint { color: #221302; }
+.fluid-classic:hover .fluid-classic-arrow,
+.fluid-classic:focus-visible .fluid-classic-arrow { translate: 3px 0; }
+@media (max-width: 760px) {
+  .fluid-classic { padding: 0.65em 0.85em; font-size: 0.6rem; letter-spacing: 0.12em; }
+  .fluid-classic-hint { display: none; }
+}
+
+/* chrome withdraws over the last stretch so it never sits on the contact
+   details */
+.fluid-chrome,
+.fluid-ticks,
+.fluid-rule,
+.fluid-timeline {
+  animation-name: fluid-withdraw;
+  animation-duration: auto;
+  animation-timing-function: var(--f-slow);
+  animation-fill-mode: both;
+  animation-timeline: scroll(root block);
+  animation-range: 90% 97%;
+}
+@keyframes fluid-withdraw { from { opacity: 1; } to { opacity: 0; } }
+.no-sdt .fluid-chrome,
+.no-sdt .fluid-ticks,
+.no-sdt .fluid-rule,
+.no-sdt .fluid-timeline { animation-name: none; }
+
+.fluid-rule {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: 51;
+  height: 1px;
+  pointer-events: none;
+  background: rgb(189 240 255 / 0.12);
+}
+.fluid-rule i {
+  display: block;
+  height: 100%;
+  transform-origin: 0 50%;
+  background: var(--f-glow);
+  opacity: 0.55;
+  animation-name: fluid-progress;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: scroll(root block);
+}
+@keyframes fluid-progress { from { scale: 0 1; } to { scale: 1 1; } }
+.no-sdt .fluid-rule i { scale: var(--page, 0) 1; }
+
+.fluid-ticks {
+  position: fixed;
+  inset-inline-end: var(--f-pad);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  z-index: 52;
+  display: grid;
+  gap: clamp(0.5rem, 1.2vh, 0.9rem);
+  justify-items: end;
+}
+.fluid-ticks a {
+  position: relative;
+  display: block;
+  width: 13px;
+  height: 1px;
+  background: rgb(189 240 255 / 0.32);
+  transition: width 0.45s var(--f-slow), background 0.45s;
+}
+.fluid-ticks a::after { content: ""; position: absolute; inset: -7px -4px; }
+.fluid-ticks a em {
+  position: absolute;
+  inset-inline-end: 21px;
+  inset-block-start: 50%;
+  translate: 0.4rem -50%;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.56rem;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+  color: var(--f-mist);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s, translate 0.35s var(--f-slow);
+}
+.fluid-ticks a:hover em,
+.fluid-ticks a:focus-visible em { opacity: 1; translate: 0 -50%; }
+.fluid-ticks a:hover { width: 24px; }
+.fluid-ticks a.here { width: 28px; background: var(--f-glow); }
+
+/* ── the tour bar ───────────────────────────────────────────────────────
+   Always states which of three things is happening — waiting, driving, or
+   handing control back — because a page that scrolls itself without saying
+   so reads as broken rather than as a feature. -------------------------- */
+.fluid-tour {
+  position: fixed;
+  inset-block-end: clamp(1.4rem, 4vh, 2.6rem);
+  inset-inline: 0;
+  z-index: 53;
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  pointer-events: none;
+}
+.fluid-tour-cue {
+  width: 1px;
+  height: clamp(1.8rem, 5vh, 3rem);
+  background: linear-gradient(var(--f-mist), transparent);
+  transform-origin: 50% 100%;
+  animation: cue-pulse 4.2s var(--f-slow) infinite;
+}
+.fluid-tour-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.6em 1.1em;
+  border: 1px solid rgb(189 240 255 / 0.18);
+  border-radius: 999px;
+  background: rgb(6 15 26 / 0.55);
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(0.58rem, 0.55rem + 0.12vw, 0.68rem);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--f-mist);
+  cursor: pointer;
+  transition: color 0.35s, border-color 0.35s, background 0.35s;
+}
+.fluid-tour-btn:hover,
+.fluid-tour-btn:focus-visible { color: var(--f-chalk); border-color: rgb(189 240 255 / 0.45); }
+.fluid-tour-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.fluid-tour.is-touring .fluid-tour-dot {
+  background: var(--f-ember);
+  box-shadow: 0 0 10px 2px rgb(255 180 84 / 0.6);
+  animation: tour-pulse 2.4s ease-in-out infinite;
+}
+.fluid-tour.is-paused .fluid-tour-dot { background: var(--f-glow); }
+.fluid-tour.is-touring .fluid-tour-label,
+.fluid-tour.is-done .fluid-tour-label { color: var(--f-chalk); }
+@keyframes cue-pulse {
+  0%, 100% { scale: 1 0.2; opacity: 0.25; }
+  50%      { scale: 1 1;   opacity: 0.9; }
+}
+@keyframes tour-pulse {
+  0%, 100% { opacity: 0.45; scale: 0.85; }
+  50%      { opacity: 1;    scale: 1.15; }
+}
+
+@media (max-width: 560px) {
+  .fluid-tour-btn { max-width: calc(100vw - 2 * var(--f-pad)); }
+  .fluid-tour-label { white-space: normal; text-align: center; line-height: 1.5; }
+}
+
+/* ── career timeline ────────────────────────────────────────────────────
+   A single rail carrying two readings at once: it FILLS with how far
+   through the page you are, and LIGHTS the years the content in front of
+   you belongs to. Left edge, opposite the room ticks. ------------------- */
+.fluid-timeline {
+  position: fixed;
+  inset-inline-start: clamp(0.7rem, 1.6vw, 1.5rem);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  z-index: 52;
+  height: min(46vh, 26rem);
+  pointer-events: none;
+  font-family: var(--font-mono), monospace;
+  --tl-progress: 0;
+}
+.tl-year {
+  position: absolute;
+  inset-inline-start: 0;
+  font-size: 0.5rem;
+  letter-spacing: 0.16em;
+  color: var(--f-mist);
+  opacity: 0.4;
+}
+.tl-year-top { inset-block-start: -1.2rem; }
+.tl-year-end { inset-block-end: -1.2rem; }
+
+.tl-rail {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 2px;
+  width: 1px;
+  background: rgb(189 240 255 / 0.16);
+}
+/* the flow reading */
+.tl-fill {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  height: calc(var(--tl-progress) * 100%);
+  background: linear-gradient(var(--f-glow), var(--f-ember));
+  opacity: 0.75;
+}
+.tl-notch {
+  position: absolute;
+  inset-block-start: var(--y);
+  inset-inline-start: -2px;
+  width: 5px;
+  height: 1px;
+  background: rgb(189 240 255 / 0.3);
+}
+
+/* the career reading */
+.tl-eras { position: absolute; inset: 0; }
+.tl-era {
+  position: absolute;
+  inset-block-start: var(--from);
+  height: max(3px, calc(var(--to) - var(--from)));
+  inset-inline-start: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  color: var(--f-mist);
+  opacity: 0.45;
+  transition: opacity 0.5s var(--f-slow), width 0.5s var(--f-slow), color 0.5s;
+}
+.tl-era.is-study { color: var(--f-glow); }
+.tl-era.is-build { color: var(--f-ember); }
+
+.tl-era b,
+.tl-era em {
+  position: absolute;
+  inset-inline-start: 9px;
+  white-space: nowrap;
+  font-style: normal;
+  font-weight: 400;
+  opacity: 0;
+  translate: -0.3rem 0;
+  transition: opacity 0.45s var(--f-slow), translate 0.45s var(--f-slow);
+}
+.tl-era b {
+  inset-block-start: -0.15em;
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  color: var(--f-chalk);
+}
+.tl-era em { inset-block-start: 0.95em; font-size: 0.48rem; letter-spacing: 0.14em; color: var(--f-mist); }
+
+.tl-era.is-now { opacity: 1; width: 3px; }
+.tl-era.is-now b,
+.tl-era.is-now em { opacity: 1; translate: 0 0; }
+
+/* when nothing on screen is dated, the whole rail recedes */
+.fluid-timeline:not(.has-era) .tl-era { opacity: 0.3; }
+
+@media (max-width: 1024px) { .fluid-timeline { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .tl-era, .tl-era b, .tl-era em { transition: none; }
+}
+
+/* ── shared bits ───────────────────────────────────────────────────────── */
+.fluid-btn {
+  display: inline-block;
+  padding: 0.85em 1.6em;
+  border: 1px solid rgb(189 240 255 / 0.34);
+  border-radius: 2px;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--f-chalk);
+  text-decoration: none;
+  background: rgb(255 255 255 / 0.04);
+  transition: background 0.35s, border-color 0.35s, color 0.35s, translate 0.35s var(--f-slow);
+  cursor: pointer;
+}
+.fluid-btn:hover,
+.fluid-btn:focus-visible {
+  background: rgb(255 255 255 / 0.1);
+  border-color: rgb(189 240 255 / 0.7);
+  translate: 0 -2px;
+}
+.fluid-btn.solid {
+  background: var(--f-ember);
+  border-color: var(--f-ember);
+  color: #221302;
+}
+.fluid-btn.solid:hover { background: #ffc776; border-color: #ffc776; }
+
+.fluid-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.fluid :focus-visible { outline: 1px solid var(--f-glow); outline-offset: 0.4rem; }
+
+@media (max-width: 760px) {
+  .fluid-ticks a { width: 9px; }
+  .fluid-ticks a.here { width: 18px; }
+  .fluid-label { font-size: 0.62rem; max-width: 20ch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fluid-in, .fluid-label { animation-name: none; opacity: 1; translate: none; }
+  .fluid-logo .lc, .fluid-shimmer, .fluid-tour-cue,
+  .fluid-tour.is-touring .fluid-tour-dot { animation: none; }
+  .fluid-shimmer { color: var(--f-glow); background-image: none; }
+}
