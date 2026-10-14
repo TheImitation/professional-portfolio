@@ -890,14 +890,6 @@
 .egress-list a { color: var(--f-chalk); text-decoration: none; }
 .egress-list a:hover { color: var(--f-glow); }
 .egress-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
-.egress-foot {
-  max-width: 46ch;
-  font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.2rem);
-  line-height: 1.45;
-  color: var(--f-chalk);
-  opacity: 0.72;
-}
-.egress-foot span { display: block; padding-block-start: 0.5em; font-size: 0.76em; opacity: 0.65; }
 
 
 /* ── fallback: no scroll-driven animation support ───────────────────────── */

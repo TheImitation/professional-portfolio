@@ -312,19 +312,7 @@ export default function FluidPage()
                   <li><a href="/classic">{CTA.classic} →</a></li>
                 </ul>
               </div>
-
-              <div className="fluid-in">
-                <h3>{GALLERY.egress.thisPage}</h3>
-                <ul className="egress-list">
-                  {GALLERY.egress.techniques.map((technique) => <li key={technique}>{technique}</li>)}
-                </ul>
-              </div>
             </div>
-
-            <p className="egress-foot fluid-in">
-              {GALLERY.egress.foot}
-              <span>{GALLERY.egress.route}</span>
-            </p>
 
             <div className="fluid-in"><FluidChannels /></div>
           </div>

@@ -246,16 +246,6 @@ export const GALLERY = {
     over: `${room("egress").numeral} / ${SECTIONS.contact.topic}`,
     available: "Available for",
     elsewhere: "Elsewhere",
-    thisPage: "This page",
-    techniques: [
-      "animation-timeline: scroll() / view()",
-      "view-timeline & animation-range",
-      "@property interpolation",
-      "oklch() colour",
-      "No canvas, no WebGL",
-    ],
-    foot: "The colour shifts from cool to warm and back as you scroll.",
-    route: `${capitalise(roomCount)} rooms, in any order.`,
   },
 };
 
