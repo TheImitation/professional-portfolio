@@ -13,9 +13,12 @@ import { TOUR } from "@/datasets/Copy";
    The bar at the foot of the page always says which of those is happening,
    because an auto-scrolling page that does not explain itself just feels
    broken.
+
+   The bar is also its pause/play button. Pausing holds the tour for good:
+   no wheel, key or quiet spell restarts it until the reader presses play.
    ========================================================================== */
 
-type Mode = "idle" | "touring" | "paused" | "done";
+type Mode = "idle" | "touring" | "paused" | "held" | "done";
 
 const SPEED = 275;         /* px per second — ~1 min end to end, ~2.4s a plate */
 const RESUME_AFTER = 2200; /* ms of quiet before the tour resumes */
@@ -46,7 +49,7 @@ export default function FluidTour()
   const stepRef = useRef(0);      /* px per frame, a whole number of device px */
   const quietRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startRef = useRef<() => void>(() => {});
-  const stopRef = useRef<() => void>(() => {});
+  const holdRef = useRef<() => void>(() => {});
 
   useEffect(() =>
   {
@@ -124,7 +127,8 @@ export default function FluidTour()
 
     const play = () =>
     {
-      if (modeRef.current === "touring" || atBottom()) return;
+      if (modeRef.current === "touring") return;
+      if (atBottom()) { if (modeRef.current === "held") set("done"); return; }
       /* smooth scrolling would fight a per-frame scrollTo */
       root.style.scrollBehavior = "auto";
       set("touring");
@@ -137,12 +141,16 @@ export default function FluidTour()
     };
 
     startRef.current = play;
-    stopRef.current = () => halt("idle");
+    holdRef.current = () =>
+    {
+      if (quietRef.current) { clearTimeout(quietRef.current); quietRef.current = null; }
+      halt("held");
+    };
 
     /* the reader took the wheel — yield, then offer it back */
     const yieldControl = () =>
     {
-      if (modeRef.current === "idle" || modeRef.current === "done") return;
+      if (modeRef.current === "idle" || modeRef.current === "held" || modeRef.current === "done") return;
       set("paused");
       if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = 0; }
       if (quietRef.current) clearTimeout(quietRef.current);
@@ -154,6 +162,7 @@ export default function FluidTour()
 
     const onWheel = () =>
     {
+      if (modeRef.current === "held") return;
       if (modeRef.current === "idle") { if (!reduced) play(); return; }
       yieldControl();
     };
@@ -162,7 +171,9 @@ export default function FluidTour()
     {
       /* keys belong to an open overview (Esc closes it, not the tour) */
       if (document.querySelector("dialog[open]")) return;
-      if (event.key === "Escape") { halt("idle"); return; }
+      /* held means held: only a click on the bar lets it go */
+      if (modeRef.current === "held") return;
+      if (event.key === "Escape") { holdRef.current(); return; }
       if (event.key === "Enter" && (modeRef.current === "idle" || modeRef.current === "done"))
       {
         const target = event.target as HTMLElement | null;
@@ -194,6 +205,8 @@ export default function FluidTour()
   }, []);
 
   const copy: Record<Mode, { label: string; action: string }> = TOUR;
+  /* the glyph shows what a click will do: pause while it runs, play otherwise */
+  const running = mode === "touring" || mode === "paused";
 
   return (
     <div className={`fluid-tour is-${mode}`}>
@@ -204,7 +217,7 @@ export default function FluidTour()
         aria-label={copy[mode].action}
         onClick={() =>
         {
-          if (mode === "touring" || mode === "paused") stopRef.current();
+          if (mode === "touring" || mode === "paused") holdRef.current();
           else
           {
             if (mode === "done") window.scrollTo({ top: 0, behavior: "auto" });
@@ -214,6 +227,11 @@ export default function FluidTour()
       >
         <span className="fluid-tour-dot" aria-hidden="true" />
         <span className="fluid-tour-label" aria-live="polite">{copy[mode].label}</span>
+        <svg className="fluid-tour-glyph" viewBox="0 0 10 10" aria-hidden="true">
+          {running
+            ? <path d="M2.5 1.5h1.8v7H2.5ZM5.7 1.5h1.8v7H5.7Z" />
+            : <path d="M2.5 1.5 8.5 5 2.5 8.5Z" />}
+        </svg>
       </button>
     </div>
   );

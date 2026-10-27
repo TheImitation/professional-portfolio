@@ -421,6 +421,12 @@ body:has(.fluid) { overflow-x: clip; }
   cursor: pointer;
   transition: color 0.35s, border-color 0.35s, background 0.35s;
 }
+.fluid-tour-glyph {
+  width: 0.9em;
+  height: 0.9em;
+  flex: none;
+  fill: currentColor;
+}
 .fluid-tour-btn:hover,
 .fluid-tour-btn:focus-visible { color: var(--f-chalk); border-color: rgb(189 240 255 / 0.45); }
 .fluid-tour-dot {
@@ -435,7 +441,8 @@ body:has(.fluid) { overflow-x: clip; }
   box-shadow: 0 0 10px 2px rgb(255 180 84 / 0.6);
   animation: tour-pulse 2.4s ease-in-out infinite;
 }
-.fluid-tour.is-paused .fluid-tour-dot { background: var(--f-glow); }
+.fluid-tour.is-paused .fluid-tour-dot,
+.fluid-tour.is-held .fluid-tour-dot { background: var(--f-glow); }
 .fluid-tour.is-touring .fluid-tour-label,
 .fluid-tour.is-done .fluid-tour-label { color: var(--f-chalk); }
 @keyframes cue-pulse {

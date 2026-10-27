@@ -251,7 +251,8 @@ export const GALLERY = {
 
 export const TOUR = {
   idle:    { label: "scroll once, or press ⏎, then let go", action: "Begin the tour" },
-  touring: { label: "touring. scroll to take over, esc to stop", action: "Stop the tour" },
-  paused:  { label: "you have the wheel. resuming in a moment", action: "Stop the tour" },
+  touring: { label: "touring. scroll to take over, click or esc to pause", action: "Pause the tour" },
+  paused:  { label: "you have the wheel. resuming in a moment", action: "Pause the tour" },
+  held:    { label: "paused. click to resume the tour", action: "Resume the tour" },
   done:    { label: "that was the tour. press ⏎ to walk it again", action: "Walk it again" },
 };
